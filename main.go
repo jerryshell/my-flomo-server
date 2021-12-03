@@ -3,7 +3,37 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/sony/sonyflake"
+	"time"
 )
+
+var sf *sonyflake.Sonyflake
+
+func GetMachineID() (uint16, error) {
+	return uint16(1), nil
+}
+
+func init() {
+	var st = sonyflake.Settings{
+		MachineID: GetMachineID,
+	}
+	sf = sonyflake.NewSonyflake(st)
+	if sf == nil {
+		panic("sonyflake not created")
+	}
+}
+
+var memoList = []Memo{}
+
+type MemoCreateForm struct {
+	Content string `json:"content" required:"true"`
+}
+
+type Memo struct {
+	Id         uint64 `json:"id"`
+	Content    string `json:"content"`
+	CreateTime string `json:"createTime"`
+}
 
 func main() {
 	r := gin.Default()
@@ -17,23 +47,35 @@ func main() {
 		c.JSON(200, gin.H{
 			"success": true,
 			"message": "success",
-			"data": []gin.H{
-				{
-					"id":         "3",
-					"content":    "2016年，WhatsApp 的用户超过10亿，但是只有50个工程师。每个小团队由1到3名工程师组成，拥有很大的自主权。\n-- https://www.quastor.org/p/how-whatsapp-scaled-to-1-billion",
-					"createTime": "2021-12-01 14:29:24",
-				},
-				{
-					"id":         "2",
-					"content":    "一个可运行的复杂系统，总是从一个简单系统演变而来的。似乎可以因此推断：从头开始设计一个复杂系统，永远不会奏效，必须从一个简单系统开始设计。\n-- https://www.ivanmontilla.com/blog/galls-law-and-how-i-ignored-it",
-					"createTime": "2021-10-25 17:51:25",
-				},
-				{
-					"id":         "1",
-					"content":    "切勿交浅言深",
-					"createTime": "2021-10-06 17:49:11",
-				},
-			},
+			"data":    memoList,
+		})
+	})
+	r.POST("/memo/create", func(c *gin.Context) {
+		var form MemoCreateForm
+		if err := c.ShouldBindJSON(&form); err != nil {
+			c.JSON(400, gin.H{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
+		id, err := sf.NextID()
+		if err != nil {
+			c.JSON(500, gin.H{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
+		memo := Memo{
+			Id:         id,
+			Content:    form.Content,
+			CreateTime: time.Now().Format("2006-01-02 15:04:05"),
+		}
+		memoList = append(memoList, memo)
+		c.JSON(200, gin.H{
+			"success": true,
+			"message": "success",
 		})
 	})
 	err := r.Run()
