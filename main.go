@@ -1,19 +1,24 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sony/sonyflake"
-	"time"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var sf *sonyflake.Sonyflake
+var DB *gorm.DB
+var Memos []Memo
 
 func GetMachineID() (uint16, error) {
 	return uint16(1), nil
 }
 
 func init() {
+	// 初始化雪花id
 	var st = sonyflake.Settings{
 		MachineID: GetMachineID,
 	}
@@ -21,18 +26,20 @@ func init() {
 	if sf == nil {
 		panic("sonyflake not created")
 	}
-}
 
-var memoList = []Memo{}
+	// 初始化 MySQL
+	dsn := "root:toor@tcp(devenv.d8s.fun:3306)/flomo?charset=utf8mb4&parseTime=True&loc=Local"
+	db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB = db
+}
 
 type MemoCreateForm struct {
 	Content string `json:"content" required:"true"`
 }
 
 type Memo struct {
-	Id         uint64 `json:"id"`
-	Content    string `json:"content"`
-	CreateTime string `json:"createTime"`
+	gorm.Model
+	Content string `json:"content"`
 }
 
 func main() {
@@ -43,11 +50,15 @@ func main() {
 		AllowHeaders:     []string{"*"},
 		AllowCredentials: true,
 	}))
+
 	r.GET("/memo/list", func(c *gin.Context) {
+
+		_ = DB.Find(&Memos)
+		fmt.Println(Memos)
 		c.JSON(200, gin.H{
 			"success": true,
 			"message": "success",
-			"data":    memoList,
+			"data":    Memos,
 		})
 	})
 	r.POST("/memo/create", func(c *gin.Context) {
@@ -68,14 +79,14 @@ func main() {
 			return
 		}
 		memo := Memo{
-			Id:         id,
-			Content:    form.Content,
-			CreateTime: time.Now().Format("2006-01-02 15:04:05"),
+			Content: form.Content,
 		}
-		memoList = append(memoList, memo)
+		memo.ID = uint(id)
+		//memoList = append(memoList, memo)
+		_ = DB.Create(&memo)
 		c.JSON(200, gin.H{
 			"success": true,
-			"message": "success",
+			"message": id,
 		})
 	})
 	err := r.Run()
