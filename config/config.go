@@ -11,7 +11,7 @@ type Config struct {
 	DSN     string `json:"dsn"`
 }
 
-var Data Config
+var Data *Config
 
 func init() {
 	config, err := readConfig()
@@ -21,19 +21,19 @@ func init() {
 	Data = config
 }
 
-func readConfig() (Config, error) {
+func readConfig() (*Config, error) {
 	jsonFile, err := os.Open("config.json")
 	defer jsonFile.Close()
 	if err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
 
 	jsonFileByte, _ := ioutil.ReadAll(jsonFile)
 	var config Config
 	err = json.Unmarshal(jsonFileByte, &config)
 	if err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
 
-	return config, nil
+	return &config, nil
 }
