@@ -11,14 +11,14 @@ type Config struct {
 	DSN     string `json:"dsn"`
 }
 
-var Map Config
+var Data Config
 
 func init() {
-	configMap, err := readConfig()
+	config, err := readConfig()
 	if err != nil {
 		panic(err)
 	}
-	Map = configMap
+	Data = config
 }
 
 func readConfig() (Config, error) {

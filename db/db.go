@@ -11,7 +11,7 @@ var DB *gorm.DB
 
 func init() {
 	// 初始化 MySQL
-	dsn := config.Map.DSN
+	dsn := config.Data.DSN
 	db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	DB = db
 
