@@ -53,6 +53,36 @@ func MemoCreate(c *gin.Context) {
 	})
 }
 
+func MemoUpdate(c *gin.Context) {
+	var formData form.MemoUpdateForm
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	memo := model.Memo{}
+	_ = db.DB.First(&memo, formData.ID)
+	if memo.ID == "" {
+		c.JSON(404, gin.H{
+			"success": false,
+			"message": "not found",
+		})
+		return
+	}
+
+	memo.Content = formData.Content
+	_ = db.DB.Save(&memo)
+
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "ok",
+		"data":    memo,
+	})
+}
+
 func MemoDelete(c *gin.Context) {
 	id := c.Param("id")
 	memo := model.Memo{}
