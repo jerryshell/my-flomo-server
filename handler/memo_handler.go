@@ -10,7 +10,7 @@ import (
 
 func MemoList(c *gin.Context) {
 	var memoList []model.Memo
-	_ = db.DB.Find(&memoList)
+	_ = db.DB.Order("created_at desc").Find(&memoList)
 
 	c.JSON(200, gin.H{
 		"success": true,
@@ -29,7 +29,7 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
-	id, err := util.NextID()
+	id, err := util.NextIDStr()
 	if err != nil {
 		c.JSON(500, gin.H{
 			"success": false,
@@ -50,5 +50,18 @@ func MemoCreate(c *gin.Context) {
 		"success": true,
 		"message": "ok",
 		"data":    memo,
+	})
+}
+
+func MemoDelete(c *gin.Context) {
+	id := c.Param("id")
+	memo := model.Memo{}
+	_ = db.DB.First(&memo, id)
+
+	_ = db.DB.Delete(&memo)
+
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "ok",
 	})
 }
