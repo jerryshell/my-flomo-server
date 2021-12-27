@@ -25,7 +25,7 @@ func NextID() (uint64, error) {
 }
 
 func NextIDStr() (string, error) {
-	id, err := sf.NextID()
+	id, err := NextID()
 	if err != nil {
 		return "", err
 	}

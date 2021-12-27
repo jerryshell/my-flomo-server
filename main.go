@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/route"
+	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/robfig/cron/v3"
 	"log"
 )
@@ -34,6 +35,12 @@ func initCron() {
 	c := cron.New()
 	_, err := c.AddFunc("0 20 * * *", func() {
 		log.Println("20:00")
+		memo, err := service.SendRandomMemo()
+		log.Println(memo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	})
 	if err != nil {
 		log.Fatal(err)

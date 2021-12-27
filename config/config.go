@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -29,7 +30,12 @@ func init() {
 
 func readConfig() (*Config, error) {
 	jsonFile, err := os.Open("config.json")
-	defer jsonFile.Close()
+	defer func(jsonFile *os.File) {
+		err := jsonFile.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(jsonFile)
 	if err != nil {
 		return &Config{}, err
 	}

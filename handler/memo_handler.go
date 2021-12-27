@@ -90,7 +90,7 @@ func MemoDelete(c *gin.Context) {
 }
 
 func SendRandomMemo(c *gin.Context) {
-	err := service.SendRandomMemo()
+	memo, err := service.SendRandomMemo()
 	if err != nil {
 		c.JSON(400, gin.H{
 			"success": false,
@@ -102,5 +102,6 @@ func SendRandomMemo(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"success": true,
 		"message": "ok",
+		"data":    memo,
 	})
 }

@@ -7,12 +7,14 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
 	"gopkg.in/gomail.v2"
+	"math/rand"
+	"time"
 )
 
-func MemoList() *[]model.Memo {
+func MemoList() []model.Memo {
 	var memoList []model.Memo
 	_ = db.DB.Order("created_at desc").Find(&memoList)
-	return &memoList
+	return memoList
 }
 
 func MemoCreate(content string) (*model.Memo, error) {
@@ -51,15 +53,27 @@ func MemoDelete(id string) {
 	_ = db.DB.Delete(&memo)
 }
 
-func SendRandomMemo() error {
-	// TODO 随机选择一个 Memo
-	smtpContent := "test memo"
+func GetRandomMemo() (*model.Memo, error) {
+	memoList := MemoList()
+	if len(memoList) <= 0 {
+		return nil, errors.New("memo 数据为空")
+	}
+	rand.Seed(time.Now().UnixNano())
+	index := rand.Intn(len(memoList))
+	return &memoList[index], nil
+}
+
+func SendRandomMemo() (*model.Memo, error) {
+	memo, err := GetRandomMemo()
+	if err != nil {
+		return nil, err
+	}
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", config.Data.SmtpUsername)
 	m.SetHeader("To", config.Data.SmtpTo)
 	m.SetHeader("Subject", config.Data.SmtpSubject)
-	m.SetBody("text/html", smtpContent)
+	m.SetBody("text/plain", memo.Content)
 
 	d := gomail.NewDialer(
 		config.Data.SmtpHost,
@@ -67,9 +81,9 @@ func SendRandomMemo() error {
 		config.Data.SmtpUsername,
 		config.Data.SmtpPassword,
 	)
-	if err := d.DialAndSend(m); err != nil {
-		return err
+	if err = d.DialAndSend(m); err != nil {
+		return nil, err
 	}
 
-	return nil
+	return memo, nil
 }
