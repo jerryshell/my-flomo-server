@@ -2,17 +2,13 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/form"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/util"
-	"gopkg.in/gomail.v2"
+	"github.com/jerryshell/my-flomo-server/service"
+	"strings"
 )
 
 func MemoList(c *gin.Context) {
-	var memoList []model.Memo
-	_ = db.DB.Order("created_at desc").Find(&memoList)
+	memoList := service.MemoList()
 
 	c.JSON(200, gin.H{
 		"success": true,
@@ -31,22 +27,23 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
-	id, err := util.NextIDStr()
+	content := strings.TrimSpace(formData.Content)
+	if len(content) <= 0 {
+		c.JSON(400, gin.H{
+			"success": false,
+			"message": "内容不能为空",
+		})
+		return
+	}
+
+	memo, err := service.MemoCreate(content)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(400, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
 		return
 	}
-
-	memo := model.Memo{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Content: formData.Content,
-	}
-	_ = db.DB.Create(&memo)
 
 	c.JSON(200, gin.H{
 		"success": true,
@@ -65,18 +62,14 @@ func MemoUpdate(c *gin.Context) {
 		return
 	}
 
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, formData.ID)
-	if memo.ID == "" {
-		c.JSON(404, gin.H{
+	memo, err := service.MemoUpdate(formData.ID, formData.Content)
+	if err != nil {
+		c.JSON(400, gin.H{
 			"success": false,
-			"message": "not found",
+			"message": err.Error(),
 		})
 		return
 	}
-
-	memo.Content = formData.Content
-	_ = db.DB.Save(&memo)
 
 	c.JSON(200, gin.H{
 		"success": true,
@@ -87,10 +80,8 @@ func MemoUpdate(c *gin.Context) {
 
 func MemoDelete(c *gin.Context) {
 	id := c.Param("id")
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, id)
 
-	_ = db.DB.Delete(&memo)
+	service.MemoDelete(id)
 
 	c.JSON(200, gin.H{
 		"success": true,
@@ -99,22 +90,8 @@ func MemoDelete(c *gin.Context) {
 }
 
 func SendRandomMemo(c *gin.Context) {
-	// TODO 随机选择一个 Memo
-	smtpContent := "test memo"
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", config.Data.SmtpUsername)
-	m.SetHeader("To", config.Data.SmtpTo)
-	m.SetHeader("Subject", config.Data.SmtpSubject)
-	m.SetBody("text/html", smtpContent)
-
-	d := gomail.NewDialer(
-		config.Data.SmtpHost,
-		config.Data.SmtpPort,
-		config.Data.SmtpUsername,
-		config.Data.SmtpPassword,
-	)
-	if err := d.DialAndSend(m); err != nil {
+	err := service.SendRandomMemo()
+	if err != nil {
 		c.JSON(400, gin.H{
 			"success": false,
 			"message": err.Error(),
