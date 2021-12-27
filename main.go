@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/route"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/robfig/cron/v3"
@@ -33,8 +34,8 @@ func main() {
 
 func initCron() {
 	c := cron.New()
-	_, err := c.AddFunc("0 20 * * *", func() {
-		log.Println("20:00")
+	_, err := c.AddFunc(config.Data.CronSpec, func() {
+		log.Println("cron job: " + config.Data.CronSpec)
 		memo, err := service.SendRandomMemo()
 		log.Println(memo)
 		if err != nil {

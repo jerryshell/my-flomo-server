@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Version      string `json:"version"`
 	DSN          string `json:"dsn"`
+	CronSpec     string `json:"cronSpec"`
 	SmtpHost     string `json:"smtpHost"`
 	SmtpPort     int    `json:"smtpPort"`
 	SmtpUsername string `json:"smtpUsername"`
