@@ -31,9 +31,9 @@ func main() {
 }
 
 func initCron() {
-	c := cron.New(cron.WithSeconds())
-	_, err := c.AddFunc("* * * * * *", func() {
-		log.Println("cron test")
+	c := cron.New()
+	_, err := c.AddFunc("0 20 * * *", func() {
+		log.Println("20:00")
 	})
 	if err != nil {
 		log.Fatal(err)
