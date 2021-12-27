@@ -7,8 +7,14 @@ import (
 )
 
 type Config struct {
-	Version string `json:"version"`
-	DSN     string `json:"dsn"`
+	Version      string `json:"version"`
+	DSN          string `json:"dsn"`
+	SmtpHost     string `json:"smtpHost"`
+	SmtpPort     int    `json:"smtpPort"`
+	SmtpUsername string `json:"smtpUsername"`
+	SmtpPassword string `json:"smtpPassword"`
+	SmtpTo       string `json:"smtpTo"`
+	SmtpSubject  string `json:"smtpSubject"`
 }
 
 var Data *Config
