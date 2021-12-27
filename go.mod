@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/sony/sonyflake v1.0.0
 	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.22.4
