@@ -17,6 +17,11 @@ func MemoList() []model.Memo {
 	return memoList
 }
 
+func MemoSave(memo *model.Memo) error {
+	db.DB.Save(memo)
+	return nil
+}
+
 func MemoCreate(content string) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
