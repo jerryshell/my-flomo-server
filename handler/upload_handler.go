@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
 	"log"
@@ -26,10 +27,7 @@ func Upload(c *gin.Context) {
 		err := c.SaveUploadedFile(file, filePath)
 		if err != nil {
 			removeFileList(successSaveFilePathList)
-			c.JSON(500, gin.H{
-				"success": false,
-				"message": "file: [" + filename + "] :: " + err.Error(),
-			})
+			c.JSON(500, result.ErrorWithMessage("file: ["+filename+"] :: "+err.Error()))
 			return
 		}
 		successSaveFilePathList = append(successSaveFilePathList, filePath)
@@ -88,10 +86,7 @@ func Upload(c *gin.Context) {
 	}
 
 	removeFileList(successSaveFilePathList)
-	c.JSON(200, gin.H{
-		"success": true,
-		"message": "ok",
-	})
+	c.JSON(200, result.Success())
 }
 
 func removeFileList(filePathList []string) {

@@ -22,15 +22,15 @@ func MemoSave(memo *model.Memo) error {
 	return nil
 }
 
-func MemoCreate(memo model.Memo) (*model.Memo, error) {
+func MemoCreate(memo model.Memo) error {
 	id, err := util.NextIDStr()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	memo.ID = id
 	_ = db.DB.Create(memo)
 
-	return &memo, nil
+	return nil
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
