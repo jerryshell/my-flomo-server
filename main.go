@@ -8,6 +8,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/robfig/cron/v3"
 	"log"
+	"strconv"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 	route.Setup(app)
 
 	// run
-	_ = app.Run("0.0.0.0:8080")
+	_ = app.Run("0.0.0.0:" + strconv.Itoa(config.Data.Port))
 }
 
 func initCron() {

@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	Version       string `json:"version"`
+	Port          int    `json:"port"`
 	DSN           string `json:"dsn"`
 	CronSpec      string `json:"cronSpec"`
 	FileUploadDir string `json:"fileUploadDir"`
