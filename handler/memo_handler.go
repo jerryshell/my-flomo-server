@@ -29,9 +29,9 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
+	// TODO: 此处执行 token 解析，获取 userId
 	token := formData.Token
 	log.Println("[MemoForPlugin] token: ", token)
-	// TODO: 此处执行 token 解析，获取 userId
 	userID := "这里是最后解析出来的userId"
 
 	content := strings.TrimSpace(formData.Content)
