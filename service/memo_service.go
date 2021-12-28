@@ -22,19 +22,13 @@ func MemoSave(memo *model.Memo) error {
 	return nil
 }
 
-func MemoCreate(content string) (*model.Memo, error) {
+func MemoCreate(memo model.Memo) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
 		return nil, err
 	}
-
-	memo := model.Memo{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Content: content,
-	}
-	_ = db.DB.Create(&memo)
+	memo.ID = id
+	_ = db.DB.Create(memo)
 
 	return &memo, nil
 }
