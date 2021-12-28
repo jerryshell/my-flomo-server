@@ -15,7 +15,7 @@ type Config struct {
 	SmtpHost      string `json:"smtpHost"`
 	SmtpPort      int    `json:"smtpPort"`
 	SmtpUsername  string `json:"smtpUsername"`
-	SmtpPassword  string `json:"smtpPassword"`
+	SMTPPassword  string `json:"smtpPassword"`
 	SmtpTo        string `json:"smtpTo"`
 	SmtpSubject   string `json:"smtpSubject"`
 }

@@ -54,7 +54,7 @@ func MemoDelete(id string) {
 
 func GetRandomMemo() (*model.Memo, error) {
 	memoList := MemoList()
-	if len(memoList) <= 0 {
+	if len(memoList) == 0 {
 		return nil, errors.New("memo 数据为空")
 	}
 	rand.Seed(time.Now().UnixNano())
@@ -78,7 +78,7 @@ func SendRandomMemo() (*model.Memo, error) {
 		config.Data.SmtpHost,
 		config.Data.SmtpPort,
 		config.Data.SmtpUsername,
-		config.Data.SmtpPassword,
+		config.Data.SMTPPassword,
 	)
 	if err = d.DialAndSend(m); err != nil {
 		return nil, err

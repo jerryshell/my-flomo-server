@@ -17,43 +17,10 @@ func MemoList(c *gin.Context) {
 }
 
 func MemoCreate(c *gin.Context) {
-	var formData form.MemoCreateForm
-	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
-		return
-	}
-
 	// TODO: 此处执行 token 解析，获取 userId
-	token := formData.Token
+	token := "这里是从 header 中拿到的 token"
 	log.Println("[MemoForPlugin] token: ", token)
-	userID := "这里是最后解析出来的userId"
-
-	content := strings.TrimSpace(formData.Content)
-	if len(content) == 0 {
-		c.JSON(400, result.ErrorWithMessage("内容不能为空"))
-		return
-	}
-
-	memo := model.Memo{
-		Content: content,
-		UserId:  userID,
-	}
-
-	err := service.MemoCreate(memo)
-	if err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
-		return
-	}
-
-	c.JSON(200, result.SuccessWithData(memo))
-}
-
-// MemoForPlugin 这里是兼容 flomo 生态的接口
-func MemoForPlugin(c *gin.Context) {
-	// TODO: 此处执行 token 解析，获取 userId
-	token := c.Param("token")
-	log.Println("[MemoForPlugin] token: ", token)
-	userID := "这里是最后解析出来的userId"
+	userID := "这里是从 token 解析出来的userId"
 
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
@@ -69,7 +36,7 @@ func MemoForPlugin(c *gin.Context) {
 
 	memo := model.Memo{
 		Content: content,
-		UserId:  userID,
+		UserID:  userID,
 	}
 
 	err := service.MemoCreate(memo)
@@ -82,6 +49,10 @@ func MemoForPlugin(c *gin.Context) {
 }
 
 func MemoUpdate(c *gin.Context) {
+	// TODO: 在此处校验 token
+	token := "这里是从 header 中拿到的 token"
+	log.Println("[MemoForPlugin] token: ", token)
+
 	var formData form.MemoUpdateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(400, result.ErrorWithMessage(err.Error()))
