@@ -6,12 +6,12 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
-	github.com/go-basic/uuid v1.0.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sony/sonyflake v1.0.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.22.4
+	github.com/satori/go.uuid v1.2.0
 )
 
 require (

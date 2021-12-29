@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-basic/uuid"
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/model"
@@ -10,6 +9,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
+	uuid "github.com/satori/go.uuid"
 	"log"
 	"strings"
 )
@@ -34,7 +34,7 @@ func CreatePluginSecret(c *gin.Context) {
 	Secret := gen.PluginSecret{
 		ID:         id,
 		UserID:     userID,
-		UserSecret: uuid.New(),
+		UserSecret: uuid.NewV4().String(),
 	}
 
 	// TODO：db.DB.Create(Secret) 这里需要写入数据库
