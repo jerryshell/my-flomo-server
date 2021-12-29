@@ -35,7 +35,6 @@ linters:
     - staticcheck
     - typecheck
     - deadcode
-    - ddd
     - errcheck
     - gosimple
     - govet
