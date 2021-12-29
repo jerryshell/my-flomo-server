@@ -13,5 +13,5 @@ func Setup(app *gin.Engine) {
 	app.GET("/memo/sendRandomMemo", handler.SendRandomMemo)
 	app.POST("/upload", handler.Upload)
 	app.POST("/plugin/create/:secret", handler.CreateMemoByPluginSecret)
-	app.GET("/plugin/new", handler.CreatePluginSecret)
+	app.GET("/plugin/secret", handler.CreatePluginSecret)
 }
