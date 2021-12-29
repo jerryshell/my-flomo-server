@@ -37,7 +37,8 @@ func CreatePluginSecret(c *gin.Context) {
 		UserSecret: uuid.NewV4().String(),
 	}
 
-	// TODO：db.DB.Create(Secret) 这里需要写入数据库
+	res := db.DB.Create(&Secret)
+	log.Println("[CreatePluginSecret][Create] RowsAffected:", res.RowsAffected)
 	log.Printf("[MemoCreateForPlugin] 创建 secret 用户: %s,secret: %s", userID, Secret)
 	c.JSON(200, result.ErrorWithMessage(Secret.UserSecret))
 }
