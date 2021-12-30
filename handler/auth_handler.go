@@ -7,6 +7,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
 )
@@ -19,9 +20,15 @@ func Login(c *gin.Context) {
 	}
 
 	var user = model.User{}
-	db.DB.Where("username = ? AND password = ?", formData.Username, formData.Password).First(&user)
+	db.DB.Where("username = ?", formData.Username).First(&user)
 	if user == (model.User{}) {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("用户名或密码错误"))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("用户不存在"))
+		return
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("密码错误"))
 		return
 	}
 
