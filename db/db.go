@@ -20,4 +20,9 @@ func init() {
 	if err != nil {
 		panic("Memo autoMigrate failed")
 	}
+
+	err = db.AutoMigrate(&model.User{})
+	if err != nil {
+		panic("User autoMigrate failed")
+	}
 }

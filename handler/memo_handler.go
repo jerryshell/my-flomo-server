@@ -7,6 +7,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"log"
+	"net/http"
 	"strings"
 )
 
@@ -24,24 +25,24 @@ func MemoCreate(c *gin.Context) {
 
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	content := strings.TrimSpace(formData.Content)
 	if len(content) == 0 {
-		c.JSON(400, result.ErrorWithMessage("内容不能为空"))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("内容不能为空"))
 		return
 	}
 
 	memo := model.Memo{
-		Content: content,
 		UserID:  userID,
+		Content: content,
 	}
 
 	err := service.MemoCreate(memo)
 	if err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
@@ -55,13 +56,13 @@ func MemoUpdate(c *gin.Context) {
 
 	var formData form.MemoUpdateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	memo, err := service.MemoUpdate(formData.ID, formData.Content)
 	if err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
@@ -79,7 +80,7 @@ func MemoDelete(c *gin.Context) {
 func SendRandomMemo(c *gin.Context) {
 	memo, err := service.SendRandomMemo()
 	if err != nil {
-		c.JSON(400, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return
 	}
 

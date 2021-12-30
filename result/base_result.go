@@ -1,5 +1,7 @@
 package result
 
+import "net/http"
+
 type BaseResult struct {
 	Success bool        `json:"success"`
 	Code    int         `json:"code"`
@@ -37,7 +39,7 @@ func SuccessWithDataAndMessage(data interface{}, message string) *BaseResult {
 func Error() *BaseResult {
 	return &BaseResult{
 		Success: false,
-		Code:    400,
+		Code:    http.StatusBadRequest,
 		Message: "error",
 		Data:    nil,
 	}
@@ -46,7 +48,7 @@ func Error() *BaseResult {
 func ErrorWithMessage(message string) *BaseResult {
 	return &BaseResult{
 		Success: false,
-		Code:    400,
+		Code:    http.StatusBadRequest,
 		Message: message,
 		Data:    nil,
 	}
