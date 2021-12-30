@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Port          int    `json:"port"`
 	DSN           string `json:"dsn"`
+	JwtKey        string `json:"jwtKey"`
 	CronSpec      string `json:"cronSpec"`
 	FileUploadDir string `json:"fileUploadDir"`
 	SmtpHost      string `json:"smtpHost"`

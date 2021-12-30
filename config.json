@@ -1,6 +1,7 @@
 {
   "port": 8080,
   "dsn": "my_flomo:my_flomo@tcp(devenv.d8s.fun:3306)/my_flomo?charset=utf8mb4&parseTime=True&loc=Asia%2fShanghai",
+  "jwtKey": "jwT_p@sSw0rd",
   "cronSpec": "0 20 * * *",
   "fileUploadDir": "./",
   "smtpHost": "smtp-mail.outlook.com",
