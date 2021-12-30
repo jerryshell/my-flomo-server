@@ -14,6 +14,7 @@ func Setup(app *gin.Engine) {
 	app.POST("/upload", handler.Upload)
 	app.POST("/auth/login", handler.Login)
 	app.POST("/auth/verifyToken/token/:token", handler.VerifyToken)
+	app.POST("/auth/register/", handler.Register)
 	//app.POST("/plugin/create/:secret", handler.CreateMemoByPluginSecret)
 	//app.GET("/plugin/secret", handler.CreatePluginSecret)
 }

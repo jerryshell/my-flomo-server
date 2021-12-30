@@ -9,7 +9,9 @@ import (
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
+	"github.com/jerryshell/my-flomo-server/service"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -52,6 +54,37 @@ func Login(c *gin.Context) {
 		"email":     user.Email,
 		"token":     token,
 		"expiresAt": expiresAt,
+	}))
+}
+
+func Register(c *gin.Context) {
+	var formData = form.UserRegisterForm{}
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	var user = model.User{}
+	db.DB.Where("username = ?", formData.Username).First(&user)
+	if user != (model.User{}) {
+		c.JSON(http.StatusOK, result.ErrorWithMessage("用户已存在"))
+		return
+	}
+
+	password, err := bcrypt.GenerateFromPassword([]byte(formData.Password), 10)
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage("加密错误"))
+		return
+	}
+	res, err := service.UserCreate(formData.Username, string(password))
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage("注册失败"))
+		return
+	}
+	log.Println(res)
+	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
+		"username": formData.Username,
+		"result":   "注册成功",
 	}))
 }
 
