@@ -23,8 +23,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	var user = model.User{}
-	db.DB.Where("username = ?", formData.Username).First(&user)
+	user := service.GetUserByUsername(formData.Username)
 	if user == (model.User{}) {
 		c.JSON(http.StatusOK, result.ErrorWithMessage("用户不存在"))
 		return
