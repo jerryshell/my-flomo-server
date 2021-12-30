@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/satori/go.uuid v1.2.0
 	github.com/sony/sonyflake v1.0.0
 	golang.org/x/crypto v0.0.0-20211202192323-5770296d904e
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df

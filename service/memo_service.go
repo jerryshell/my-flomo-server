@@ -23,7 +23,7 @@ func MemoSave(memo *model.Memo) error {
 	return nil
 }
 
-func MemoCreate(content string) (*model.Memo, error) {
+func MemoCreate(content string, userId string) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
 		return nil, err
@@ -33,6 +33,7 @@ func MemoCreate(content string) (*model.Memo, error) {
 			ID: id,
 		},
 		Content: content,
+		UserID:  userId,
 	}
 	log.Println("memo", memo)
 	_ = db.DB.Create(memo)

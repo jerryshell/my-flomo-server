@@ -17,7 +17,11 @@ func MemoList(c *gin.Context) {
 }
 
 func MemoCreate(c *gin.Context) {
-	//userID := "1"
+	// TODO: 在此处校验 token
+	token := "这里是从 header 中拿到的 token"
+	log.Println("[MemoForPlugin] token: ", token)
+	// 这里是从 token 中拿到的 userId
+	userID := "2"
 
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
@@ -31,7 +35,7 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
-	memo, err := service.MemoCreate(content)
+	memo, err := service.MemoCreate(content, userID)
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
