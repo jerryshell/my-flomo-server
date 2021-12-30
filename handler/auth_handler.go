@@ -17,20 +17,20 @@ import (
 func Login(c *gin.Context) {
 	var formData = form.UserLoginForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	var user = model.User{}
 	db.DB.Where("username = ?", formData.Username).First(&user)
 	if user == (model.User{}) {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("用户不存在"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("用户不存在"))
 		return
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("用户名或密码错误"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("用户名或密码错误"))
 		return
 	}
 
@@ -43,11 +43,11 @@ func Login(c *gin.Context) {
 		Subject:   user.Username,
 	}).SignedString([]byte(config.Data.JwtKey))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(200, result.SuccessWithData(gin.H{
+	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
 		"username":  user.Username,
 		"email":     user.Email,
 		"token":     token,
@@ -64,11 +64,11 @@ func VerifyToken(c *gin.Context) {
 		return []byte(config.Data.JwtKey), nil
 	})
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 	if !token.Valid {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("token 无效"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("token 无效"))
 		return
 	}
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{

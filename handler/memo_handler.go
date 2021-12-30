@@ -13,7 +13,7 @@ import (
 func MemoList(c *gin.Context) {
 	memoList := service.MemoList()
 
-	c.JSON(200, result.SuccessWithData(memoList))
+	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
 
 func MemoCreate(c *gin.Context) {
@@ -21,23 +21,23 @@ func MemoCreate(c *gin.Context) {
 
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	content := strings.TrimSpace(formData.Content)
 	if len(content) == 0 {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("内容不能为空"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("内容不能为空"))
 		return
 	}
 
 	memo, err := service.MemoCreate(content)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(200, result.SuccessWithData(memo))
+	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 }
 
 func MemoUpdate(c *gin.Context) {
@@ -47,17 +47,17 @@ func MemoUpdate(c *gin.Context) {
 
 	var formData form.MemoUpdateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	memo, err := service.MemoUpdate(formData.ID, formData.Content)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(200, result.SuccessWithData(memo))
+	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 }
 
 func MemoDelete(c *gin.Context) {
@@ -65,15 +65,15 @@ func MemoDelete(c *gin.Context) {
 
 	service.MemoDelete(id)
 
-	c.JSON(200, result.Success())
+	c.JSON(http.StatusOK, result.Success())
 }
 
 func SendRandomMemo(c *gin.Context) {
 	memo, err := service.SendRandomMemo()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(200, result.SuccessWithData(memo))
+	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 }

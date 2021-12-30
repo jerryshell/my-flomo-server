@@ -27,7 +27,7 @@ package handler
 //	log.Println("[MemoCreateForPlugin][WithUserSecret]", userSecret)
 //	if len(userSecret) != 0 {
 //		log.Println("[MemoCreateForPlugin] secret: 已存在")
-//		c.JSON(200, result.ErrorWithMessage(userSecret[0].UserSecret))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage(userSecret[0].UserSecret))
 //		return
 //	}
 //	id, _ := util.NextIDStr()
@@ -40,7 +40,7 @@ package handler
 //	res := db.DB.Create(&Secret)
 //	log.Println("[CreatePluginSecret][Create] RowsAffected:", res.RowsAffected)
 //	log.Printf("[MemoCreateForPlugin] 创建 secret 用户: %s,secret: %s", userID, Secret)
-//	c.JSON(200, result.ErrorWithMessage(Secret.UserSecret))
+//	c.JSON(http.StatusOK, result.ErrorWithMessage(Secret.UserSecret))
 //}
 //
 //// CreateMemoByPluginSecret 这里是兼容 flomo 生态的接口
@@ -49,7 +49,7 @@ package handler
 //	log.Println("[MemoForPlugin] secret: ", secret)
 //	if secret == "" {
 //		log.Println("[MemoForPlugin] secret: 空")
-//		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("secret 为空"))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage("secret 为空"))
 //		return
 //	}
 //
@@ -58,20 +58,20 @@ package handler
 //	log.Println("[MemoCreateForPlugin][WithUserSecret]", userSecret)
 //	if len(userSecret) == 0 {
 //		log.Println("[MemoCreateForPlugin] secret: 不存在")
-//		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("secret 不存在"))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage("secret 不存在"))
 //		return
 //	}
 //
 //	userID := userSecret[0].UserID
 //	var formData form.MemoCreateForm
 //	if err := c.ShouldBindJSON(&formData); err != nil {
-//		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 //		return
 //	}
 //
 //	content := strings.TrimSpace(formData.Content)
 //	if len(content) == 0 {
-//		c.JSON(http.StatusBadRequest, result.ErrorWithMessage("内容不能为空"))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage("内容不能为空"))
 //		return
 //	}
 //
@@ -82,9 +82,9 @@ package handler
 //
 //	err := service.MemoCreate(memo)
 //	if err != nil {
-//		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
+//		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 //		return
 //	}
 //
-//	c.JSON(200, result.SuccessWithData(memo))
+//	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 //}

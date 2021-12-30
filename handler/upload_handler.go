@@ -86,7 +86,7 @@ func Upload(c *gin.Context) {
 	}
 
 	removeFileList(successSaveFilePathList)
-	c.JSON(200, result.Success())
+	c.JSON(http.StatusOK, result.Success())
 }
 
 func removeFileList(filePathList []string) {
