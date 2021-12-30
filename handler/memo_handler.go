@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/form"
-	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"log"
@@ -18,10 +17,7 @@ func MemoList(c *gin.Context) {
 }
 
 func MemoCreate(c *gin.Context) {
-	// TODO: 此处执行 token 解析，获取 userId
-	token := "这里是从 header 中拿到的 token"
-	log.Println("[MemoForPlugin] token: ", token)
-	userID := "这里是从 token 解析出来的userId"
+	//userID := "1"
 
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
@@ -35,12 +31,7 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
-	memo := model.Memo{
-		UserID:  userID,
-		Content: content,
-	}
-
-	err := service.MemoCreate(memo)
+	memo, err := service.MemoCreate(content)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, result.ErrorWithMessage(err.Error()))
 		return

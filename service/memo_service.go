@@ -7,6 +7,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
 	"gopkg.in/gomail.v2"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -22,15 +23,21 @@ func MemoSave(memo *model.Memo) error {
 	return nil
 }
 
-func MemoCreate(memo model.Memo) error {
+func MemoCreate(content string) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	memo.ID = id
+	memo := &model.Memo{
+		BaseModel: model.BaseModel{
+			ID: id,
+		},
+		Content: content,
+	}
+	log.Println("memo", memo)
 	_ = db.DB.Create(memo)
 
-	return nil
+	return memo, nil
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
