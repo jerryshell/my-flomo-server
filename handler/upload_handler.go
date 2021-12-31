@@ -34,6 +34,8 @@ func Upload(c *gin.Context) {
 		successSaveFilePathList = append(successSaveFilePathList, filePath)
 	}
 
+	user := c.MustGet("user").(*model.User)
+
 	for _, filePath := range successSaveFilePathList {
 		log.Println("handle filePath: ", filePath)
 		file, err := os.Open(filePath)
@@ -74,6 +76,7 @@ func Upload(c *gin.Context) {
 					CreatedAt: memoTime,
 					UpdatedAt: memoTime,
 				},
+				UserID:  user.ID,
 				Content: memoContent,
 			}
 			log.Println(memo)
