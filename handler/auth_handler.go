@@ -4,13 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/form"
-	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -24,8 +21,12 @@ func LoginOrRegister(c *gin.Context) {
 
 	user := service.UserGetByUsername(formData.Username)
 	if user.ID == "" {
-		Register(c)
-		return
+		userByRegister, err := service.Register(formData.Username, formData.Password)
+		if err != nil {
+			c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+			return
+		}
+		user = userByRegister
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
@@ -56,34 +57,19 @@ func LoginOrRegister(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	var formData = form.UserLoginOrRegisterForm{}
-	if err := c.ShouldBindJSON(&formData); err != nil {
+	formData := &form.UserLoginOrRegisterForm{}
+	if err := c.ShouldBindJSON(formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	var user = model.User{}
-	db.DB.Where("username = ?", formData.Username).First(&user)
-	if user != (model.User{}) {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("用户已存在"))
+	_, err := service.Register(formData.Username, formData.Password)
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(formData.Password), 10)
-	if err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("加密错误"))
-		return
-	}
-	res, err := service.UserCreate(formData.Username, string(password))
-	if err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("注册失败"))
-		return
-	}
-	log.Println(res)
-	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
-		"username": formData.Username,
-		"result":   "注册成功",
-	}))
+	c.JSON(http.StatusOK, result.Success())
 }
 
 func VerifyToken(c *gin.Context) {
