@@ -16,9 +16,9 @@ func UserList() []model.User {
 }
 
 func UserGetByUsername(username string) *model.User {
-	var user model.User
-	db.DB.Where("username = ?", username).First(&user)
-	return &user
+	user := &model.User{}
+	db.DB.Where("username = ?", username).First(user)
+	return user
 }
 
 func UserSave(user *model.User) error {

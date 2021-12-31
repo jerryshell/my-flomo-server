@@ -35,7 +35,7 @@ func Login(c *gin.Context) {
 	}
 
 	now := time.Now().Unix()
-	expiresAt := time.Now().Add(time.Hour * 24).Unix()
+	expiresAt := time.Now().Add(time.Second * 3).Unix()
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		IssuedAt:  now,
 		Issuer:    "my-flomo-server",

@@ -53,3 +53,21 @@ func ErrorWithMessage(message string) *BaseResult {
 		Data:    nil,
 	}
 }
+
+func TokenError() *BaseResult {
+	return &BaseResult{
+		Success: false,
+		Code:    http.StatusUnauthorized,
+		Message: "token 无效",
+		Data:    nil,
+	}
+}
+
+func TokenErrorWithMessage(message string) *BaseResult {
+	return &BaseResult{
+		Success: false,
+		Code:    http.StatusUnauthorized,
+		Message: message,
+		Data:    nil,
+	}
+}

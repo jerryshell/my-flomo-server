@@ -11,13 +11,15 @@ func JwtMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("token")
 		if tokenString == "" {
-			c.JSON(200, result.ErrorWithMessage("token is empty"))
+			c.Abort()
+			c.JSON(http.StatusOK, result.TokenError())
 			return
 		}
 
 		mapClaims, err := service.VerifyToken(tokenString)
 		if err != nil {
-			c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+			c.Abort()
+			c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 			return
 		}
 
@@ -25,8 +27,9 @@ func JwtMiddleware() gin.HandlerFunc {
 		c.Set("username", username)
 
 		user := service.UserGetByUsername(username)
-		if user == nil {
-			c.JSON(http.StatusOK, result.ErrorWithMessage("用户不存在"))
+		if user.ID == "" {
+			c.Abort()
+			c.JSON(http.StatusOK, result.TokenErrorWithMessage("用户不存在"))
 			return
 		}
 		c.Set("user", user)
