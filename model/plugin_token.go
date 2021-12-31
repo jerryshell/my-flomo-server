@@ -1,7 +1,7 @@
 package model
 
-type Secret struct {
+type PluginToken struct {
 	BaseModel
 	UserId string `json:"userId"`
-	Secret string `json:"secret"`
+	Token  string `json:"token"`
 }

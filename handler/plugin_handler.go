@@ -14,54 +14,51 @@ import (
 	"strings"
 )
 
-// CreatePluginSecret 这里是兼容 flomo 生态的接口
-func CreatePluginSecret(c *gin.Context) {
+// CreatePluginToken 这里是兼容 flomo 生态的接口
+func CreatePluginToken(c *gin.Context) {
 	// TODO: 此处执行 token 解析，获取 userId
 	token := "这里是从 header 中拿到的 token"
 	log.Println("[MemoForPlugin] token: ", token)
 	// TODO: 这里是从 token 解析出来的userId
 	userID := "2"
 
-	userSecret, err := service.GetSecretByUserId(userID)
-	log.Println("[MemoCreateForPlugin][WithUserSecret]", userSecret)
+	userSecret, err := service.GetByUserId(userID)
 	if err == nil {
-		log.Println("[CreatePluginSecret]", userSecret)
-		c.JSON(http.StatusOK, result.ErrorWithMessage(userSecret.Secret))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(userSecret.Token))
 		return
 	}
+
 	id, _ := util.NextIDStr()
-	Secret := model.Secret{
+	pluginToken := model.PluginToken{
 		BaseModel: model.BaseModel{
 			ID: id,
 		},
 		UserId: userID,
-		Secret: uuid.NewV4().String(),
+		Token:  uuid.NewV4().String(),
 	}
 
-	res := db.DB.Create(&Secret)
-	log.Printf("[CreatePluginSecret] 创建 secret 用户: %s,secret: %s 影响行数：%s", userID, Secret, res.RowsAffected)
-	c.JSON(http.StatusOK, result.ErrorWithMessage(Secret.Secret))
+	_ = db.DB.Create(&pluginToken)
+
+	c.JSON(http.StatusOK, result.ErrorWithMessage(pluginToken.Token))
 }
 
-// CreateMemoByPluginSecret 这里是兼容 flomo 生态的接口
-func CreateMemoByPluginSecret(c *gin.Context) {
-	secret := c.Param("secret")
-	log.Println("[CreateMemoByPluginSecret] secret: ", secret)
+// CreateMemoByPluginToken 这里是兼容 flomo 生态的接口
+func CreateMemoByPluginToken(c *gin.Context) {
+	pluginToken := c.Param("pluginToken")
 
-	if secret == "" {
-		log.Println("[CreateMemoByPluginSecret] secret: 空")
-		c.JSON(http.StatusOK, result.ErrorWithMessage("secret 为空"))
+	if pluginToken == "" {
+		c.JSON(http.StatusOK, result.ErrorWithMessage("pluginToken 为空"))
 		return
 	}
 
-	userSecret, err := service.GetSecretBySecret(secret)
+	userSecret, err := service.GetByToken(pluginToken)
 
 	if err != nil {
-		log.Println("[CreateMemoByPluginSecret][GetSecretBySecret] secret 不存在")
-		c.JSON(http.StatusOK, result.ErrorWithMessage("secret 为空"))
+		log.Println("[CreateMemoByPluginToken][GetByToken] pluginToken 不存在")
+		c.JSON(http.StatusOK, result.ErrorWithMessage("pluginToken 为空"))
 		return
 	}
-	log.Printf("[CreateMemoByPluginSecret][GetSecretBySecret] userId：%s,secret：%s", userSecret.UserId, userSecret.Secret)
+	log.Printf("[CreateMemoByPluginToken][GetByToken] userId：%s,pluginToken：%s", userSecret.UserId, userSecret.Token)
 	var formData form.MemoCreateForm
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))

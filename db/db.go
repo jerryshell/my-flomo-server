@@ -25,4 +25,9 @@ func init() {
 	if err != nil {
 		panic("User autoMigrate failed")
 	}
+
+	err = db.AutoMigrate(&model.PluginToken{})
+	if err != nil {
+		panic("PluginToken autoMigrate failed")
+	}
 }
