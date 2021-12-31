@@ -15,16 +15,16 @@ import (
 	"time"
 )
 
-func Login(c *gin.Context) {
-	var formData = form.UserLoginForm{}
+func LoginOrRegister(c *gin.Context) {
+	var formData = form.UserLoginOrRegisterForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	user := service.UserGetByUsername(formData.Username)
-	if user == nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("用户不存在"))
+	if user.ID == "" {
+		Register(c)
 		return
 	}
 
@@ -56,7 +56,7 @@ func Login(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	var formData = form.UserRegisterForm{}
+	var formData = form.UserLoginOrRegisterForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return

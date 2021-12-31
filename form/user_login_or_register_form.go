@@ -1,6 +1,6 @@
 package form
 
-type UserRegisterForm struct {
+type UserLoginOrRegisterForm struct {
 	Username string `json:"username" required:"true"`
 	Password string `json:"password" required:"true"`
 }
