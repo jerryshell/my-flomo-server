@@ -3,9 +3,9 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/form"
+	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -17,14 +17,8 @@ func MemoList(c *gin.Context) {
 }
 
 func MemoCreate(c *gin.Context) {
-	// TODO: 在此处校验 token
-	token := "这里是从 header 中拿到的 token"
-	log.Println("[MemoForPlugin] token: ", token)
-	// 这里是从 token 中拿到的 userId
-	userID := "2"
-
-	var formData form.MemoCreateForm
-	if err := c.ShouldBindJSON(&formData); err != nil {
+	formData := &form.MemoCreateForm{}
+	if err := c.ShouldBindJSON(formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -35,7 +29,9 @@ func MemoCreate(c *gin.Context) {
 		return
 	}
 
-	memo, err := service.MemoCreate(content, userID)
+	user := c.MustGet("user").(*model.User)
+
+	memo, err := service.MemoCreate(content, user.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -45,11 +41,7 @@ func MemoCreate(c *gin.Context) {
 }
 
 func MemoUpdate(c *gin.Context) {
-	// TODO: 在此处校验 token
-	token := "这里是从 header 中拿到的 token"
-	log.Println("[MemoForPlugin] token: ", token)
-
-	var formData form.MemoUpdateForm
+	formData := &form.MemoUpdateForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -73,7 +65,7 @@ func MemoDelete(c *gin.Context) {
 }
 
 func SendRandomMemo(c *gin.Context) {
-	memo, err := service.SendRandomMemo()
+	memo, err := service.MemoSendRandom()
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return

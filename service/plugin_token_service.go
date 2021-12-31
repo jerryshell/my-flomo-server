@@ -7,13 +7,13 @@ import (
 	"github.com/jerryshell/my-flomo-server/util"
 )
 
-func List() []model.PluginToken {
+func PluginTokenList() []model.PluginToken {
 	var list []model.PluginToken
 	_ = db.DB.Order("created_at desc").Find(&list)
 	return list
 }
 
-func GetByUserId(userId string) (*model.PluginToken, error) {
+func PluginTokenGetByUserId(userId string) (*model.PluginToken, error) {
 	var token model.PluginToken
 	if err := db.DB.Where("user_id = ?", userId).First(&token).Error; err != nil {
 		return nil, err
@@ -21,7 +21,7 @@ func GetByUserId(userId string) (*model.PluginToken, error) {
 	return &token, nil
 }
 
-func GetByToken(token string) (*model.PluginToken, error) {
+func PluginTokenGetByToken(token string) (*model.PluginToken, error) {
 	var tokenModel model.PluginToken
 	if err := db.DB.Where("token = ?", token).First(&tokenModel).Error; err != nil {
 		return nil, err
@@ -29,14 +29,14 @@ func GetByToken(token string) (*model.PluginToken, error) {
 	return &tokenModel, nil
 }
 
-func Save(pluginToken *model.PluginToken) error {
+func PluginTokenSave(pluginToken *model.PluginToken) error {
 	if err := db.DB.Save(pluginToken).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func Create(userId string, token string) (*model.PluginToken, error) {
+func PluginTokenCreate(userId string, token string) (*model.PluginToken, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func Create(userId string, token string) (*model.PluginToken, error) {
 	return pluginToken, nil
 }
 
-func Update(id string, token string) (*model.PluginToken, error) {
+func PluginTokenUpdate(id string, token string) (*model.PluginToken, error) {
 	pluginToken := model.PluginToken{}
 
 	_ = db.DB.First(&pluginToken, id)
@@ -69,7 +69,7 @@ func Update(id string, token string) (*model.PluginToken, error) {
 	return &pluginToken, nil
 }
 
-func Delete(id string) {
+func PluginTokenDeleteById(id string) {
 	pluginToken := model.PluginToken{}
 	_ = db.DB.First(&pluginToken, id)
 	if pluginToken.ID == "" {

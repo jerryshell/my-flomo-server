@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
@@ -23,8 +22,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user := service.GetUserByUsername(formData.Username)
-	if user == (model.User{}) {
+	user := service.UserGetByUsername(formData.Username)
+	if user == nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage("用户不存在"))
 		return
 	}
@@ -89,21 +88,12 @@ func Register(c *gin.Context) {
 
 func VerifyToken(c *gin.Context) {
 	tokenString := c.Param("token")
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("不支持的签名方法：%v", token.Header["alg"])
-		}
-		return []byte(config.Data.JwtKey), nil
-	})
+	mapClaims, err := service.VerifyToken(tokenString)
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
-	if !token.Valid {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("token 无效"))
-		return
-	}
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
-		"username": token.Claims.(jwt.MapClaims)["sub"],
+		"username": (*mapClaims)["sub"],
 	}))
 }

@@ -9,57 +9,50 @@ import (
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
 	"github.com/satori/go.uuid"
-	"log"
 	"net/http"
 	"strings"
 )
 
 // CreatePluginToken 这里是兼容 flomo 生态的接口
 func CreatePluginToken(c *gin.Context) {
-	// TODO: 此处执行 token 解析，获取 userId
-	token := "这里是从 header 中拿到的 token"
-	log.Println("[MemoForPlugin] token: ", token)
-	// TODO: 这里是从 token 解析出来的userId
-	userID := "2"
+	user := c.MustGet("user").(*model.User)
 
-	userSecret, err := service.GetByUserId(userID)
+	pluginToken, err := service.PluginTokenGetByUserId(user.ID)
 	if err == nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage(userSecret.Token))
+		c.JSON(http.StatusOK, result.ErrorWithMessage(pluginToken.Token))
 		return
 	}
 
 	id, _ := util.NextIDStr()
-	pluginToken := model.PluginToken{
+	pluginToken = &model.PluginToken{
 		BaseModel: model.BaseModel{
 			ID: id,
 		},
-		UserId: userID,
+		UserId: user.ID,
 		Token:  uuid.NewV4().String(),
 	}
 
-	_ = db.DB.Create(&pluginToken)
+	_ = db.DB.Create(pluginToken)
 
 	c.JSON(http.StatusOK, result.ErrorWithMessage(pluginToken.Token))
 }
 
 // CreateMemoByPluginToken 这里是兼容 flomo 生态的接口
 func CreateMemoByPluginToken(c *gin.Context) {
-	pluginToken := c.Param("pluginToken")
+	token := c.Param("pluginToken")
 
-	if pluginToken == "" {
+	if token == "" {
 		c.JSON(http.StatusOK, result.ErrorWithMessage("pluginToken 为空"))
 		return
 	}
 
-	userSecret, err := service.GetByToken(pluginToken)
-
+	pluginToken, err := service.PluginTokenGetByToken(token)
 	if err != nil {
-		log.Println("[CreateMemoByPluginToken][GetByToken] pluginToken 不存在")
-		c.JSON(http.StatusOK, result.ErrorWithMessage("pluginToken 为空"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("token 无效"))
 		return
 	}
-	log.Printf("[CreateMemoByPluginToken][GetByToken] userId：%s,pluginToken：%s", userSecret.UserId, userSecret.Token)
-	var formData form.MemoCreateForm
+
+	formData := &form.MemoCreateForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -71,7 +64,7 @@ func CreateMemoByPluginToken(c *gin.Context) {
 		return
 	}
 
-	res, err := service.MemoCreate(content, userSecret.UserId)
+	res, err := service.MemoCreate(content, pluginToken.UserId)
 
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))

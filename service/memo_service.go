@@ -60,7 +60,7 @@ func MemoDelete(id string) {
 	_ = db.DB.Delete(&memo)
 }
 
-func GetRandomMemo() (*model.Memo, error) {
+func MemoGetRandom() (*model.Memo, error) {
 	memoList := MemoList()
 	if len(memoList) == 0 {
 		return nil, errors.New("memo 数据为空")
@@ -70,8 +70,8 @@ func GetRandomMemo() (*model.Memo, error) {
 	return &memoList[index], nil
 }
 
-func SendRandomMemo() (*model.Memo, error) {
-	memo, err := GetRandomMemo()
+func MemoSendRandom() (*model.Memo, error) {
+	memo, err := MemoGetRandom()
 	if err != nil {
 		return nil, err
 	}

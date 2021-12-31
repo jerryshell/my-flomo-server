@@ -5,6 +5,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 )
 
@@ -14,10 +15,10 @@ func UserList() []model.User {
 	return userList
 }
 
-func GetUserByUsername(username string) model.User {
+func UserGetByUsername(username string) *model.User {
 	var user model.User
 	db.DB.Where("username = ?", username).First(&user)
-	return user
+	return &user
 }
 
 func UserSave(user *model.User) error {
@@ -30,6 +31,7 @@ func UserCreate(username string, password string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	user := &model.User{
 		BaseModel: model.BaseModel{
 			ID: id,
@@ -50,14 +52,22 @@ func UserUpdate(userID string, password string) (*model.User, error) {
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
-	user.Password = password
+	passwordByte, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Password = string(passwordByte)
 	_ = db.DB.Save(&user)
 
 	return &user, nil
 }
 
-func UserDelete(id string) {
+func UserDeleteById(id string) {
 	user := model.User{}
 	_ = db.DB.First(&user, id)
+	if user.ID == "" {
+		return
+	}
 	_ = db.DB.Delete(&user)
 }
