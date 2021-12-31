@@ -13,12 +13,10 @@ func PluginTokenList() []model.PluginToken {
 	return list
 }
 
-func PluginTokenGetByUserId(userId string) (*model.PluginToken, error) {
-	var token model.PluginToken
-	if err := db.DB.Where("user_id = ?", userId).First(&token).Error; err != nil {
-		return nil, err
-	}
-	return &token, nil
+func PluginTokenGetByUserId(userId string) *model.PluginToken {
+	token := &model.PluginToken{}
+	db.DB.Where("user_id = ?", userId).First(token)
+	return token
 }
 
 func PluginTokenGetByToken(token string) (*model.PluginToken, error) {

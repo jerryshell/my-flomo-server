@@ -13,14 +13,27 @@ import (
 	"strings"
 )
 
+func GetPluginToken(c *gin.Context) {
+	user := c.MustGet("user").(*model.User)
+
+	pluginToken := service.PluginTokenGetByUserId(user.ID)
+	if pluginToken.ID == "" {
+		c.JSON(http.StatusOK, result.SuccessWithData("当前没有插件令牌，请重新生成"))
+		return
+	}
+
+	c.JSON(http.StatusOK, result.SuccessWithData(pluginToken.Token))
+}
+
 // CreatePluginToken 这里是兼容 flomo 生态的接口
 func CreatePluginToken(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 
-	pluginToken, err := service.PluginTokenGetByUserId(user.ID)
-	if err == nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage(pluginToken.Token))
-		return
+	pluginToken := service.PluginTokenGetByUserId(user.ID)
+
+	// 删除旧的 token
+	if pluginToken.ID != "" {
+		service.PluginTokenDeleteById(pluginToken.ID)
 	}
 
 	id, _ := util.NextIDStr()
@@ -34,7 +47,7 @@ func CreatePluginToken(c *gin.Context) {
 
 	_ = db.DB.Create(pluginToken)
 
-	c.JSON(http.StatusOK, result.ErrorWithMessage(pluginToken.Token))
+	c.JSON(http.StatusOK, result.SuccessWithData(pluginToken.Token))
 }
 
 // CreateMemoByPluginToken 这里是兼容 flomo 生态的接口
