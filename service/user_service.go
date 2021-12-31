@@ -63,6 +63,19 @@ func UserUpdate(userID string, password string) (*model.User, error) {
 	return &user, nil
 }
 
+func UserUpdateEmail(userID string, email string) (*model.User, error) {
+	user := model.User{}
+	_ = db.DB.First(&user, userID)
+	if user.ID == "" {
+		return nil, errors.New("找不到 user，id: " + userID)
+	}
+
+	user.Email = email
+	_ = db.DB.Save(&user)
+
+	return &user, nil
+}
+
 func UserDeleteById(id string) {
 	user := model.User{}
 	_ = db.DB.First(&user, id)

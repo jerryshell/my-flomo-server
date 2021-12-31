@@ -10,6 +10,7 @@ func Setup(app *gin.Engine) {
 	app.POST("/auth/login", handler.LoginOrRegister)
 	app.POST("/auth/verifyToken/token/:token", handler.VerifyToken)
 	app.POST("/auth/register/", handler.Register)
+	app.POST("/user/updateEmail", middleware.JwtMiddleware(), handler.UpdateUserEmail)
 	app.GET("/memo/list", middleware.JwtMiddleware(), handler.MemoList)
 	app.POST("/memo/create", middleware.JwtMiddleware(), handler.MemoCreate)
 	app.POST("/memo/update", middleware.JwtMiddleware(), handler.MemoUpdate)
