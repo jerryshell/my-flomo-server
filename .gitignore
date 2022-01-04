@@ -2,3 +2,6 @@
 .idea
 config.bak.json
 config.json
+my-flomo-server-darwin-amd64
+my-flomo-server-linux-amd64
+my-flomo-server-windows-amd64
