@@ -12,9 +12,9 @@ import (
 	"time"
 )
 
-func MemoList() []model.Memo {
+func MemoList(userID string) []model.Memo {
 	var memoList []model.Memo
-	_ = db.DB.Order("created_at desc").Find(&memoList)
+	_ = db.DB.Order("created_at desc").Where("user_id = ?", userID).Find(&memoList)
 	return memoList
 }
 
@@ -61,7 +61,8 @@ func MemoDelete(id string) {
 }
 
 func MemoGetRandom() (*model.Memo, error) {
-	memoList := MemoList()
+	// TODO: 根据不同用户获取不同的 Memo
+	memoList := MemoList("")
 	if len(memoList) == 0 {
 		return nil, errors.New("memo 数据为空")
 	}

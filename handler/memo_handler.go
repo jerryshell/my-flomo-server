@@ -11,7 +11,8 @@ import (
 )
 
 func MemoList(c *gin.Context) {
-	memoList := service.MemoList()
+	user := c.MustGet("user").(*model.User)
+	memoList := service.MemoList(user.ID)
 
 	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
