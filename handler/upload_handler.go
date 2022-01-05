@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var loc, _ = time.LoadLocation("Asia/Shanghai")
+var loc, _ = time.LoadLocation("UTC+8")
 
 func Upload(c *gin.Context) {
 	form, _ := c.MultipartForm()
