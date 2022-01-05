@@ -18,7 +18,7 @@ func GetPluginToken(c *gin.Context) {
 
 	pluginToken := service.PluginTokenGetByUserId(user.ID)
 	if pluginToken.ID == "" {
-		c.JSON(http.StatusOK, result.SuccessWithData("当前没有插件令牌，请重新生成"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("当前没有插件令牌，请重新生成"))
 		return
 	}
 
