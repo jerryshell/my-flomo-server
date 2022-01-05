@@ -1,6 +1,6 @@
 .DS_Store
 .idea
-config.bak.json
+config.prod.json
 config.json
 my-flomo-server-darwin-amd64
 my-flomo-server-linux-amd64
