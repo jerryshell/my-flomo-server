@@ -11,6 +11,10 @@
 
 [https://my-flomo.pages.dev/](https://my-flomo.pages.dev/)
 
+## 可执行文件下载
+
+https://github.com/jerryshell/my-flomo-server/releases
+
 ## 相关项目
 
 * [Web 端](https://github.com/jerryshell/my-flomo-web)
