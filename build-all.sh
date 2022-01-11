@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-./build-linux-amd64.sh
-./build-darwin-amd64.sh
-./build-windows-amd64.sh
+./build-amd64-linux.sh
+./build-amd64-darwin.sh
+./build-amd64-windows.sh
+./build-arm-linux.sh

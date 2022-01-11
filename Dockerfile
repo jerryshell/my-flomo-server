@@ -4,7 +4,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
     rm -rf /var/cache/apk/*
-COPY ./my-flomo-server-linux-amd64 /my-flomo-server-linux-amd64
+COPY ./my-flomo-server-amd64-linux /my-flomo-server-amd64-linux
 COPY ./config.json /config.json
 EXPOSE 8060
-CMD ["/my-flomo-server-linux-amd64"]
+CMD ["/my-flomo-server-amd64-linux"]
