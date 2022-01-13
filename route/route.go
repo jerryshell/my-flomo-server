@@ -17,7 +17,7 @@ func Setup(app *gin.Engine) {
 	app.POST("/memo/delete/id/:id", middleware.JwtMiddleware(), handler.MemoDelete)
 	app.GET("/memo/sendRandomMemo", handler.SendRandomMemo)
 	app.POST("/upload", middleware.JwtMiddleware(), handler.Upload)
-	app.POST("/plugin/createMemo/:pluginToken", middleware.JwtMiddleware(), handler.CreateMemoByPluginToken)
+	app.POST("/plugin/createMemo/:pluginToken", handler.CreateMemoByPluginToken)
 	app.POST("/plugin/createToken", middleware.JwtMiddleware(), handler.CreatePluginToken)
 	app.GET("/plugin/getToken", middleware.JwtMiddleware(), handler.GetPluginToken)
 }
