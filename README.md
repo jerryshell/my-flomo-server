@@ -24,3 +24,7 @@ https://github.com/jerryshell/my-flomo-server/releases
 
 * [Flomo](https://flomoapp.com/) （灵感来源）
 * [Water.css](https://watercss.kognise.dev/) （让后端工程师脱离 CSS 苦海）
+
+## 开源许可证
+
+[GNU Affero General Public License v3.0](https://choosealicense.com/licenses/agpl-3.0/)
