@@ -53,36 +53,58 @@ func CreatePluginToken(c *gin.Context) {
 // CreateMemoByPluginToken 这里是兼容 flomo 生态的接口
 func CreateMemoByPluginToken(c *gin.Context) {
 	token := c.Param("pluginToken")
-
 	if token == "" {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("pluginToken 为空"))
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "pluginToken 为空",
+		})
 		return
 	}
 
 	pluginToken, err := service.PluginTokenGetByToken(token)
 	if err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("token 无效"))
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "token 无效",
+		})
 		return
 	}
 
 	formData := &form.MemoCreateForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	content := strings.TrimSpace(formData.Content)
 	if len(content) == 0 {
-		c.JSON(http.StatusOK, result.ErrorWithMessage("内容不能为空"))
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "内容不能为空",
+		})
 		return
 	}
 
-	res, err := service.MemoCreate(content, pluginToken.UserId)
-
+	_, err = service.MemoCreate(content, pluginToken.UserId)
 	if err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: err.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, result.SuccessWithData(res))
+	c.JSON(http.StatusOK, result.BaseResult{
+		Code:    0,
+		Success: true,
+		Message: "已记录",
+	})
 }
