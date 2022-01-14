@@ -2,6 +2,6 @@ package model
 
 type Hashtag struct {
 	BaseModel
-	HashtagGroupID string `json:"hashtag_group_id"`
+	HashtagGroupID string `json:"hashtagGroupId"`
 	Name           string `json:"name"`
 }
