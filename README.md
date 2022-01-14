@@ -3,6 +3,7 @@
 ## 功能清单
 
 * Flomo 数据导入
+* Flomo API 兼容
 * 邮件每日回顾
 * Memo 增删改查
 * 用户登录注册
@@ -13,7 +14,33 @@
 
 ## 可执行文件下载
 
+### 1.下载可执行文件
+
 https://github.com/jerryshell/my-flomo-server/releases
+
+### 2.在可执行文件同目录下创建 config.json
+
+```json
+{
+  "port": 8060,
+  "dsn": "host=YOUR_HOST user=USER password=PASS dbname=DBNAME port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+  "jwtKey": "jwT_p@sSw0rd",
+  "cronSpec": "0 20 * * *",
+  "fileUploadDir": "./",
+  "smtpHost": "smtp-mail.outlook.com",
+  "smtpPort": 587,
+  "smtpSubject": "My Flomo 每日回顾",
+  "smtpUsername": "",
+  "smtpPassword": "",
+  "smtpTo": ""
+}
+```
+
+### 3.根据你的 PostgreSQL 数据库配置 dsn
+
+### 4.根据你的邮箱配置 smtp
+
+### 5.运行可执行文件
 
 ## 相关项目
 
