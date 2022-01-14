@@ -12,7 +12,7 @@
 
 [https://my-flomo.pages.dev/](https://my-flomo.pages.dev/)
 
-## 可执行文件下载
+## 如何运行
 
 ### 1.下载可执行文件
 
