@@ -7,4 +7,5 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 COPY ./my-flomo-server-amd64-linux /my-flomo-server-amd64-linux
 COPY ./config.json /config.json
 EXPOSE 8060
+ENV GIN_MODE=release
 CMD ["/my-flomo-server-amd64-linux"]
