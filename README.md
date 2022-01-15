@@ -10,20 +10,24 @@
 
 ## 体验 Demo
 
+**⚠️ 注意：推荐每个用户单独搭建自己的服务，体验 Demo 不保证数据安全性，所以请勿在体验 Demo 中使用真实用户名密码注册！请勿在体验 Demo 中录入敏感数据！**
+
 [https://my-flomo.pages.dev/](https://my-flomo.pages.dev/)
 
 ## 如何运行
 
-### 1.下载可执行文件
+### 1 下载可执行文件
 
 https://github.com/jerryshell/my-flomo-server/releases
 
-### 2.在可执行文件同目录下创建 config.json
+### 2 在可执行文件同目录下创建 config.json（可选）
+
+#### 2.1 如果没有 config.json，则使用以下默认配置
 
 ```json
 {
   "port": 8060,
-  "dsn": "host=YOUR_HOST user=USER password=PASS dbname=DBNAME port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+  "dsn": "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
   "jwtKey": "jwT_p@sSw0rd",
   "cronSpec": "0 20 * * *",
   "fileUploadDir": "./",
@@ -36,11 +40,11 @@ https://github.com/jerryshell/my-flomo-server/releases
 }
 ```
 
-### 3.根据你的 PostgreSQL 数据库配置 dsn
+#### 2.2 根据你的 PostgreSQL 数据库配置 dsn（可选）
 
-### 4.根据你的邮箱配置 smtp
+#### 2.3 根据你的邮箱配置 smtp（可选）
 
-### 5.运行可执行文件
+### 3 运行可执行文件
 
 ## 相关项目
 
