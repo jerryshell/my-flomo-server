@@ -21,29 +21,41 @@ type Config struct {
 	SmtpSubject   string `json:"smtpSubject"`
 }
 
+var defaultConfig = Config{
+	Port:          8060,
+	DSN:           "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+	JwtKey:        "jwT_p@sSw0rd",
+	CronSpec:      "0 20 * * *",
+	FileUploadDir: "./",
+	SmtpHost:      "smtp-mail.outlook.com",
+	SmtpPort:      587,
+	SmtpUsername:  "",
+	SMTPPassword:  "",
+	SmtpTo:        "",
+}
+
 var Data *Config
 
 func init() {
 	config, err := readConfig()
 	if err != nil {
-		panic(err)
+		log.Println("read config error:", err)
+		log.Println("use default config", defaultConfig)
+		config = &defaultConfig
 	}
 	Data = config
 }
 
 func readConfig() (*Config, error) {
 	jsonFile, err := os.Open("config.json")
-	defer func(jsonFile *os.File) {
-		err := jsonFile.Close()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}(jsonFile)
 	if err != nil {
+		_ = jsonFile.Close()
 		return &Config{}, err
 	}
 
 	jsonFileByte, _ := ioutil.ReadAll(jsonFile)
+	_ = jsonFile.Close()
+
 	var config Config
 	err = json.Unmarshal(jsonFileByte, &config)
 	if err != nil {

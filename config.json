@@ -1,6 +1,6 @@
 {
   "port": 8060,
-  "dsn": "host=DB_HOST user=DB_USER password=DB_PASS dbname=DB_NAME port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+  "dsn": "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
   "jwtKey": "jwT_p@sSw0rd",
   "cronSpec": "0 20 * * *",
   "fileUploadDir": "./",
