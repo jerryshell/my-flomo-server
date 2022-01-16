@@ -66,16 +66,6 @@ func MemoDelete(id string) {
 	_ = db.DB.Delete(&memo)
 }
 
-func MemoGetRandom() (*model.Memo, error) {
-	memoList := MemoList()
-	if len(memoList) == 0 {
-		return nil, errors.New("memo 数据为空")
-	}
-	rand.Seed(time.Now().UnixNano())
-	index := rand.Intn(len(memoList))
-	return &memoList[index], nil
-}
-
 func MemoGetRandomByUserId(userId string) (*model.Memo, error) {
 	memoList := MemoListByUserId(userId)
 	if len(memoList) == 0 {

@@ -9,18 +9,6 @@ import (
 	"net/http"
 )
 
-func VerifyToken2(c *gin.Context) {
-	tokenString := c.Param("token")
-	mapClaims, err := service.VerifyToken(tokenString)
-	if err != nil {
-		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
-		return
-	}
-	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
-		"username": (*mapClaims)["sub"],
-	}))
-}
-
 func UpdateUserEmail(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 
