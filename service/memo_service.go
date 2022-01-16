@@ -38,7 +38,7 @@ func MemoUpdate(id string, content string) (*model.Memo, error) {
 	return &memo, err
 }
 
-func MemoDelete(id string) error {
+func MemoDeleteByID(id string) error {
 	return store.MemoDeleteByID(id)
 }
 
@@ -76,19 +76,19 @@ func MemoDailyReview() error {
 			continue
 		}
 
-		m := gomail.NewMessage()
-		m.SetHeader("From", config.Data.SmtpUsername)
-		m.SetHeader("To", user.Email)
-		m.SetHeader("Subject", config.Data.SmtpSubject)
-		m.SetBody("text/plain", memo.Content)
+		message := gomail.NewMessage()
+		message.SetHeader("From", config.Data.SmtpUsername)
+		message.SetHeader("To", user.Email)
+		message.SetHeader("Subject", config.Data.SmtpSubject)
+		message.SetBody("text/plain", memo.Content)
 
-		d := gomail.NewDialer(
+		dialer := gomail.NewDialer(
 			config.Data.SmtpHost,
 			config.Data.SmtpPort,
 			config.Data.SmtpUsername,
 			config.Data.SMTPPassword,
 		)
-		if err = d.DialAndSend(m); err != nil {
+		if err = dialer.DialAndSend(message); err != nil {
 			log.Println("发送失败", err)
 			continue
 		}

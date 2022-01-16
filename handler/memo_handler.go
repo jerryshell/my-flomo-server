@@ -62,7 +62,7 @@ func MemoUpdate(c *gin.Context) {
 
 func MemoDeleteByID(c *gin.Context) {
 	id := c.Param("id")
-	err := service.MemoDelete(id)
+	err := service.MemoDeleteByID(id)
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return

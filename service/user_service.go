@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
-	"github.com/jerryshell/my-flomo-server/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -22,20 +21,7 @@ func UserCreate(username string, password string) (*model.User, error) {
 		return nil, errors.New("密码加密失败")
 	}
 
-	id, err := util.NextIDStr()
-	if err != nil {
-		return nil, err
-	}
-
-	user := &model.User{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Username: username,
-		Password: string(passwordBcrypt),
-	}
-
-	err = store.UserCreate(user)
+	user, err := store.UserCreate(username, string(passwordBcrypt))
 	if err != nil {
 		return nil, err
 	}

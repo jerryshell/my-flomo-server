@@ -3,6 +3,8 @@ package store
 import (
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/satori/go.uuid"
 )
 
 func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {
@@ -22,6 +24,20 @@ func PluginTokenDeleteByID(id string) error {
 	return db.DB.Delete(pluginToken, id).Error
 }
 
-func PluginTokenCreate(token *model.PluginToken) error {
-	return db.DB.Create(token).Error
+func PluginTokenCreate(userID string) (*model.PluginToken, error) {
+	id, err := util.NextIDStr()
+	if err != nil {
+		return nil, err
+	}
+
+	pluginToken := &model.PluginToken{
+		BaseModel: model.BaseModel{
+			ID: id,
+		},
+		UserID: userID,
+		Token:  uuid.NewV4().String(),
+	}
+	err = db.DB.Create(pluginToken).Error
+
+	return pluginToken, err
 }
