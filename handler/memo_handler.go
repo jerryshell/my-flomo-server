@@ -13,7 +13,6 @@ import (
 func MemoList(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 	memoList := service.MemoListByUserID(user.ID)
-
 	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
 
@@ -57,20 +56,17 @@ func MemoUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 }
 
-func MemoDelete(c *gin.Context) {
+func MemoDeleteByID(c *gin.Context) {
 	id := c.Param("id")
-
 	service.MemoDelete(id)
-
 	c.JSON(http.StatusOK, result.Success())
 }
 
-func SendRandomMemo(c *gin.Context) {
-	err := service.MemoSendRandom()
+func MemoDailyReview(c *gin.Context) {
+	err := service.MemoDailyReview()
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
-
 	c.JSON(http.StatusOK, result.Success())
 }

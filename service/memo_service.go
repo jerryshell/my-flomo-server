@@ -70,7 +70,7 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 	return &memoList[index], nil
 }
 
-func MemoSendRandom() error {
+func MemoDailyReview() error {
 	userList, err := UserListByEmailIsNotNull()
 	if err != nil {
 		return err
@@ -81,12 +81,12 @@ func MemoSendRandom() error {
 	}
 
 	for _, user := range userList {
-		log.Println("MemoSendRandom() user", user)
+		log.Println("MemoDailyReview() user", user)
 
 		memo, err := MemoGetRandomByUserID(user.ID)
-		log.Println("MemoSendRandom() memo", memo)
+		log.Println("MemoDailyReview() memo", memo)
 		if err != nil {
-			log.Println("MemoSendRandom() err", err)
+			log.Println("MemoDailyReview() err", err)
 			continue
 		}
 
