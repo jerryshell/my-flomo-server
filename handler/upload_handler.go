@@ -7,7 +7,6 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
-	"github.com/jerryshell/my-flomo-server/util"
 	"log"
 	"net/http"
 	"os"
@@ -40,12 +39,12 @@ func Upload(c *gin.Context) {
 		log.Println("handle filePath: ", filePath)
 		file, err := os.Open(filePath)
 		if err != nil {
-			log.Println("open file"+filePath+" :: ", err)
+			log.Println("open file"+filePath+" :: error", err)
 			continue
 		}
 		doc, err := goquery.NewDocumentFromReader(file)
 		if err != nil {
-			log.Println("NewDocumentFromReader file"+filePath+" :: ", err)
+			log.Println("NewDocumentFromReader file"+filePath+" :: error", err)
 			continue
 		}
 		doc.Find(".memo").Each(func(i int, memoElement *goquery.Selection) {
@@ -64,25 +63,9 @@ func Upload(c *gin.Context) {
 			})
 			memoContent = strings.TrimSpace(memoContent)
 
-			id, err := util.NextIDStr()
+			_, err = service.MemoCreate(memoContent, user.ID)
 			if err != nil {
-				log.Println("NextIDStr :: ", err)
-				return
-			}
-
-			var memo = model.Memo{
-				BaseModel: model.BaseModel{
-					ID:        id,
-					CreatedAt: memoTime,
-					UpdatedAt: memoTime,
-				},
-				UserID:  user.ID,
-				Content: memoContent,
-			}
-			log.Println(memo)
-			err = service.MemoSave(&memo)
-			if err != nil {
-				log.Println("MemoSave :: ", err)
+				log.Println("MemoSave :: error", err)
 				return
 			}
 		})
@@ -97,7 +80,7 @@ func removeFileList(filePathList []string) {
 	for _, filePath := range filePathList {
 		err := os.Remove(filePath)
 		if err != nil {
-			log.Println("remove " + filePath + " :: " + err.Error())
+			log.Println("remove "+filePath+" :: error", err)
 			continue
 		}
 	}

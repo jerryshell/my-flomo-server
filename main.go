@@ -37,8 +37,7 @@ func initCron() {
 	c := cron.New()
 	_, err := c.AddFunc(config.Data.CronSpec, func() {
 		log.Println("cron job: " + config.Data.CronSpec)
-		memo, err := service.MemoSendRandom()
-		log.Println(memo)
+		err := service.MemoDailyReview()
 		if err != nil {
 			log.Println(err)
 			return

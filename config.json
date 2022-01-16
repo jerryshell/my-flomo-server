@@ -8,6 +8,5 @@
   "smtpPort": 587,
   "smtpSubject": "My Flomo 每日回顾",
   "smtpUsername": "",
-  "smtpPassword": "",
-  "smtpTo": ""
+  "smtpPassword": ""
 }

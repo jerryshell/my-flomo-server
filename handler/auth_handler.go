@@ -19,7 +19,7 @@ func LoginOrRegister(c *gin.Context) {
 		return
 	}
 
-	user := service.UserGetByUsername(formData.Username)
+	user, _ := service.UserGetByUsername(formData.Username)
 	if user.ID == "" {
 		userByRegister, err := service.Register(formData.Username, formData.Password)
 		if err != nil {

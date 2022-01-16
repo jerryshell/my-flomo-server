@@ -7,17 +7,29 @@ import (
 )
 
 func Setup(app *gin.Engine) {
-	app.POST("/auth/login", handler.LoginOrRegister)
-	app.POST("/auth/verifyToken/token/:token", handler.VerifyToken)
-	app.POST("/auth/register/", handler.Register)
-	app.POST("/user/updateEmail", middleware.JwtMiddleware(), handler.UpdateUserEmail)
-	app.GET("/memo/list", middleware.JwtMiddleware(), handler.MemoList)
-	app.POST("/memo/create", middleware.JwtMiddleware(), handler.MemoCreate)
-	app.POST("/memo/update", middleware.JwtMiddleware(), handler.MemoUpdate)
-	app.POST("/memo/delete/id/:id", middleware.JwtMiddleware(), handler.MemoDelete)
-	app.GET("/memo/sendRandomMemo", handler.SendRandomMemo)
-	app.POST("/upload", middleware.JwtMiddleware(), handler.Upload)
-	app.POST("/plugin/createMemo/:pluginToken", handler.CreateMemoByPluginToken)
-	app.POST("/plugin/createToken", middleware.JwtMiddleware(), handler.CreatePluginToken)
-	app.GET("/plugin/getToken", middleware.JwtMiddleware(), handler.GetPluginToken)
+	authGroup := app.Group("/auth")
+	{
+		authGroup.POST("/login", handler.LoginOrRegister)
+		authGroup.POST("/verifyToken/token/:token", handler.VerifyToken)
+		authGroup.POST("/register/", handler.Register)
+	}
+
+	memoGroup := app.Group("/memo")
+	{
+		memoGroup.GET("/list", middleware.JWTMiddleware(), handler.MemoList)
+		memoGroup.POST("/create", middleware.JWTMiddleware(), handler.MemoCreate)
+		memoGroup.POST("/update", middleware.JWTMiddleware(), handler.MemoUpdate)
+		memoGroup.POST("/delete/id/:id", middleware.JWTMiddleware(), handler.MemoDeleteByID)
+		memoGroup.GET("/dailyReview", handler.MemoDailyReview)
+	}
+
+	pluginGroup := app.Group("/plugin")
+	{
+		pluginGroup.GET("/getToken", middleware.JWTMiddleware(), handler.PluginTokenGet)
+		pluginGroup.POST("/createToken", middleware.JWTMiddleware(), handler.PluginTokenCreate)
+		pluginGroup.POST("/createMemo/:pluginToken", handler.PluginTokenCreateMemo)
+	}
+
+	app.POST("/user/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
+	app.POST("/upload", middleware.JWTMiddleware(), handler.Upload)
 }

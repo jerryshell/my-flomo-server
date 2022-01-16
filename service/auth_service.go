@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
@@ -28,18 +26,12 @@ func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
 }
 
 func Register(username, password string) (*model.User, error) {
-	user := &model.User{}
-	db.DB.Where("username = ?", username).First(user)
+	user, _ := UserGetByUsername(username)
 	if user.ID != "" {
 		return nil, errors.New("用户已存在")
 	}
 
-	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, errors.New("密码加密失败")
-	}
-
-	user, err = UserCreate(username, string(passwordBcrypt))
+	user, err := UserCreate(username, password)
 	if err != nil {
 		return nil, errors.New("创建用户失败")
 	}

@@ -12,8 +12,11 @@ import (
 
 func MemoList(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
-	memoList := service.MemoListByUserId(user.ID)
-
+	memoList, err := service.MemoListByUserID(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, result.ErrorWithMessage(err.Error()))
+		return
+	}
 	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
 
@@ -57,20 +60,21 @@ func MemoUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, result.SuccessWithData(memo))
 }
 
-func MemoDelete(c *gin.Context) {
+func MemoDeleteByID(c *gin.Context) {
 	id := c.Param("id")
-
-	service.MemoDelete(id)
-
-	c.JSON(http.StatusOK, result.Success())
-}
-
-func SendRandomMemo(c *gin.Context) {
-	memo, err := service.MemoSendRandom()
+	err := service.MemoDeleteByID(id)
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
+	c.JSON(http.StatusOK, result.Success())
+}
 
-	c.JSON(http.StatusOK, result.SuccessWithData(memo))
+func MemoDailyReview(c *gin.Context) {
+	err := service.MemoDailyReview()
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, result.Success())
 }

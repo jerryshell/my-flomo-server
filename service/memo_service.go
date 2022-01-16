@@ -3,102 +3,98 @@ package service
 import (
 	"errors"
 	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo-server/store"
 	"gopkg.in/gomail.v2"
 	"log"
 	"math/rand"
 	"time"
 )
 
-func MemoList() []model.Memo {
-	var memoList []model.Memo
-	db.DB.Find(&memoList)
-	return memoList
+func MemoListByUserID(userID string) ([]model.Memo, error) {
+	return store.MemoListByUserID(userID)
 }
 
-func MemoListByUserId(userID string) []model.Memo {
-	var memoList []model.Memo
-	_ = db.DB.Order("created_at desc").Where("user_id = ?", userID).Find(&memoList)
-	return memoList
+func MemoCreate(content string, userID string) (*model.Memo, error) {
+	return store.MemoCreate(content, userID)
 }
 
 func MemoSave(memo *model.Memo) error {
-	db.DB.Save(memo)
-	return nil
-}
-
-func MemoCreate(content string, userId string) (*model.Memo, error) {
-	id, err := util.NextIDStr()
-	if err != nil {
-		return nil, err
-	}
-	memo := &model.Memo{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Content: content,
-		UserID:  userId,
-	}
-	log.Println("memo", memo)
-	_ = db.DB.Create(memo)
-
-	return memo, nil
+	return store.MemoSave(memo)
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, id)
+	memo, err := store.MemoGetByID(id)
+	if err != nil {
+		return nil, err
+	}
 	if memo.ID == "" {
 		return nil, errors.New("找不到 memo，id: " + id)
 	}
 
 	memo.Content = content
-	_ = db.DB.Save(&memo)
+	err = store.MemoSave(&memo)
 
-	return &memo, nil
+	return &memo, err
 }
 
-func MemoDelete(id string) {
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, id)
-	_ = db.DB.Delete(&memo)
+func MemoDeleteByID(id string) error {
+	return store.MemoDeleteByID(id)
 }
 
-func MemoGetRandom() (*model.Memo, error) {
-	memoList := MemoList()
-	if len(memoList) == 0 {
-		return nil, errors.New("memo 数据为空")
-	}
-	rand.Seed(time.Now().UnixNano())
-	index := rand.Intn(len(memoList))
-	return &memoList[index], nil
-}
-
-func MemoSendRandom() (*model.Memo, error) {
-	memo, err := MemoGetRandom()
+func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
+	memoList, err := MemoListByUserID(userID)
 	if err != nil {
 		return nil, err
 	}
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", config.Data.SmtpUsername)
-	m.SetHeader("To", config.Data.SmtpTo)
-	m.SetHeader("Subject", config.Data.SmtpSubject)
-	m.SetBody("text/plain", memo.Content)
-
-	d := gomail.NewDialer(
-		config.Data.SmtpHost,
-		config.Data.SmtpPort,
-		config.Data.SmtpUsername,
-		config.Data.SMTPPassword,
-	)
-	if err = d.DialAndSend(m); err != nil {
-		return nil, err
+	if len(memoList) == 0 {
+		return nil, errors.New("memo 数据为空")
 	}
 
-	return memo, nil
+	rand.Seed(time.Now().UnixNano())
+	index := rand.Intn(len(memoList))
+
+	return &memoList[index], nil
+}
+
+func MemoDailyReview() error {
+	userList, err := UserListByEmailIsNotNull()
+	if err != nil {
+		return err
+	}
+	if len(userList) == 0 {
+		return errors.New("用户数据为空")
+	}
+
+	for _, user := range userList {
+		log.Println("MemoDailyReview() user", user)
+
+		memo, err := MemoGetRandomByUserID(user.ID)
+		log.Println("MemoDailyReview() memo", memo)
+		if err != nil {
+			log.Println("MemoDailyReview() err", err)
+			continue
+		}
+
+		message := gomail.NewMessage()
+		message.SetHeader("From", config.Data.SmtpUsername)
+		message.SetHeader("To", user.Email)
+		message.SetHeader("Subject", config.Data.SmtpSubject)
+		message.SetBody("text/plain", memo.Content)
+
+		dialer := gomail.NewDialer(
+			config.Data.SmtpHost,
+			config.Data.SmtpPort,
+			config.Data.SmtpUsername,
+			config.Data.SMTPPassword,
+		)
+		if err = dialer.DialAndSend(message); err != nil {
+			log.Println("发送失败", err)
+			continue
+		}
+	}
+
+	return nil
 }
 
 type SeedService struct{}

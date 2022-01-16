@@ -2,87 +2,49 @@ package service
 
 import (
 	"errors"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo-server/store"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
-func UserList() []model.User {
-	var userList []model.User
-	_ = db.DB.Order("created_at desc").Find(&userList)
-	return userList
+func UserListByEmailIsNotNull() ([]model.User, error) {
+	return store.UserListByEmailIsNotNull()
 }
 
-func UserGetByUsername(username string) *model.User {
-	user := &model.User{}
-	db.DB.Where("username = ?", username).First(user)
-	return user
-}
-
-func UserSave(user *model.User) error {
-	db.DB.Save(user)
-	return nil
+func UserGetByUsername(username string) (*model.User, error) {
+	return store.UserGetByUsername(username)
 }
 
 func UserCreate(username string, password string) (*model.User, error) {
-	id, err := util.NextIDStr()
+	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, errors.New("密码加密失败")
+	}
+
+	user, err := store.UserCreate(username, string(passwordBcrypt))
 	if err != nil {
 		return nil, err
 	}
-
-	user := &model.User{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Username: username,
-		Password: password,
-	}
-	log.Println("user", user)
-	_ = db.DB.Create(user)
 
 	return user, nil
 }
 
-func UserUpdate(userID string, password string) (*model.User, error) {
-	user := model.User{}
-	_ = db.DB.First(&user, userID)
-	if user.ID == "" {
-		return nil, errors.New("找不到 user，id: " + userID)
-	}
-
-	passwordByte, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+func UserUpdateEmail(userID string, email string) (*model.User, error) {
+	user, err := store.UserGetByID(userID)
 	if err != nil {
 		return nil, err
 	}
-
-	user.Password = string(passwordByte)
-	_ = db.DB.Save(&user)
-
-	return &user, nil
-}
-
-func UserUpdateEmail(userID string, email string) (*model.User, error) {
-	user := model.User{}
-	_ = db.DB.First(&user, userID)
 	if user.ID == "" {
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
 	user.Email = email
-	_ = db.DB.Save(&user)
-
-	return &user, nil
-}
-
-func UserDeleteById(id string) {
-	user := model.User{}
-	_ = db.DB.First(&user, id)
-	if user.ID == "" {
-		return
+	err = store.UserSave(user)
+	if err != nil {
+		return nil, err
 	}
-	_ = db.DB.Delete(&user)
+
+	return user, nil
 }
 
 type UserService struct{}

@@ -35,8 +35,7 @@ https://github.com/jerryshell/my-flomo-server/releases
   "smtpPort": 587,
   "smtpSubject": "My Flomo 每日回顾",
   "smtpUsername": "",
-  "smtpPassword": "",
-  "smtpTo": ""
+  "smtpPassword": ""
 }
 ```
 
@@ -50,11 +49,6 @@ https://github.com/jerryshell/my-flomo-server/releases
 
 * [Web 端](https://github.com/jerryshell/my-flomo-web)
 * [服务端](https://github.com/jerryshell/my-flomo-server)
-
-## 感谢
-
-* [Flomo](https://flomoapp.com/) （灵感来源）
-* [Water.css](https://watercss.kognise.dev/) （让后端工程师脱离 CSS 苦海）
 
 ## 开源许可证
 
