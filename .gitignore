@@ -2,7 +2,4 @@
 .idea
 config.prod.json
 config.json
-my-flomo-server-amd64-darwin
-my-flomo-server-amd64-linux
-my-flomo-server-amd64-windows
-my-flomo-server-arm-linux
+my-flomo-server-*
