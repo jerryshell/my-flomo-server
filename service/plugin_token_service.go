@@ -1,29 +1,50 @@
 package service
 
 import (
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo-server/store"
+	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/satori/go.uuid"
+	"log"
 )
 
-func PluginTokenGetByUserId(userId string) *model.PluginToken {
-	token := &model.PluginToken{}
-	db.DB.Where("user_id = ?", userId).First(token)
-	return token
+func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {
+	return store.PluginTokenGetByUserId(userID)
 }
 
 func PluginTokenGetByToken(token string) (*model.PluginToken, error) {
-	var tokenModel model.PluginToken
-	if err := db.DB.Where("token = ?", token).First(&tokenModel).Error; err != nil {
-		return nil, err
-	}
-	return &tokenModel, nil
+	return store.PluginTokenGetByToken(token)
 }
 
-func PluginTokenDeleteById(id string) {
-	pluginToken := model.PluginToken{}
-	_ = db.DB.First(&pluginToken, id)
-	if pluginToken.ID == "" {
-		return
+func PluginTokenCreateByUserID(userID string) (*model.PluginToken, error) {
+	// 获取旧令牌
+	pluginTokenGetByUserID, _ := PluginTokenGetByUserID(userID)
+
+	// 删除旧插件令牌
+	if pluginTokenGetByUserID != nil {
+		err := PluginTokenDeleteById(pluginTokenGetByUserID.ID)
+		if err != nil {
+			log.Println("删除旧插件令牌失败", err)
+		}
 	}
-	_ = db.DB.Delete(&pluginToken)
+
+	// 创建新插件令牌
+	id, err := util.NextIDStr()
+	if err != nil {
+		return nil, err
+	}
+	pluginToken := &model.PluginToken{
+		BaseModel: model.BaseModel{
+			ID: id,
+		},
+		UserID: userID,
+		Token:  uuid.NewV4().String(),
+	}
+	err = store.PluginTokenCreate(pluginToken)
+
+	return pluginToken, err
+}
+
+func PluginTokenDeleteById(id string) error {
+	return store.PluginTokenDeleteById(id)
 }
