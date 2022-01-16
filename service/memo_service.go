@@ -3,70 +3,57 @@ package service
 import (
 	"errors"
 	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo-server/store"
 	"gopkg.in/gomail.v2"
 	"log"
 	"math/rand"
 	"time"
 )
 
-func MemoListByUserID(userID string) []model.Memo {
-	var memoList []model.Memo
-	_ = db.DB.Order("created_at desc").Where("user_id = ?", userID).Find(&memoList)
-	return memoList
+func MemoListByUserID(userID string) ([]model.Memo, error) {
+	return store.MemoListByUserID(userID)
 }
 
 func MemoCreate(content string, userID string) (*model.Memo, error) {
-	id, err := util.NextIDStr()
-	if err != nil {
-		return nil, err
-	}
-	memo := &model.Memo{
-		BaseModel: model.BaseModel{
-			ID: id,
-		},
-		Content: content,
-		UserID:  userID,
-	}
-	log.Println("memo", memo)
-	_ = db.DB.Create(memo)
-
-	return memo, nil
+	return store.MemoCreate(content, userID)
 }
 
 func MemoSave(memo *model.Memo) error {
-	db.DB.Save(memo)
-	return nil
+	return store.MemoSave(memo)
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, id)
+	memo, err := store.MemoGetByID(id)
+	if err != nil {
+		return nil, err
+	}
 	if memo.ID == "" {
 		return nil, errors.New("找不到 memo，id: " + id)
 	}
 
 	memo.Content = content
-	_ = db.DB.Save(&memo)
+	err = store.MemoSave(&memo)
 
-	return &memo, nil
+	return &memo, err
 }
 
-func MemoDelete(id string) {
-	memo := model.Memo{}
-	_ = db.DB.First(&memo, id)
-	_ = db.DB.Delete(&memo)
+func MemoDelete(id string) error {
+	return store.MemoDeleteByID(id)
 }
 
 func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
-	memoList := MemoListByUserID(userID)
+	memoList, err := MemoListByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
 	if len(memoList) == 0 {
 		return nil, errors.New("memo 数据为空")
 	}
+
 	rand.Seed(time.Now().UnixNano())
 	index := rand.Intn(len(memoList))
+
 	return &memoList[index], nil
 }
 
@@ -75,7 +62,6 @@ func MemoDailyReview() error {
 	if err != nil {
 		return err
 	}
-
 	if len(userList) == 0 {
 		return errors.New("用户数据为空")
 	}
