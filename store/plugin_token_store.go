@@ -5,9 +5,9 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 )
 
-func PluginTokenGetByUserId(userId string) (*model.PluginToken, error) {
+func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {
 	token := &model.PluginToken{}
-	err := db.DB.Where("user_id = ?", userId).First(token).Error
+	err := db.DB.Where("user_id = ?", userID).First(token).Error
 	return token, err
 }
 
@@ -17,7 +17,7 @@ func PluginTokenGetByToken(token string) (*model.PluginToken, error) {
 	return tokenModel, err
 }
 
-func PluginTokenDeleteById(id string) error {
+func PluginTokenDeleteByID(id string) error {
 	pluginToken := &model.PluginToken{}
 	return db.DB.Delete(pluginToken, id).Error
 }

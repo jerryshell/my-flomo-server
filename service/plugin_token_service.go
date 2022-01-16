@@ -9,7 +9,7 @@ import (
 )
 
 func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {
-	return store.PluginTokenGetByUserId(userID)
+	return store.PluginTokenGetByUserID(userID)
 }
 
 func PluginTokenGetByToken(token string) (*model.PluginToken, error) {
@@ -22,7 +22,7 @@ func PluginTokenCreateByUserID(userID string) (*model.PluginToken, error) {
 
 	// 删除旧插件令牌
 	if pluginTokenGetByUserID != nil {
-		err := PluginTokenDeleteById(pluginTokenGetByUserID.ID)
+		err := PluginTokenDeleteByID(pluginTokenGetByUserID.ID)
 		if err != nil {
 			log.Println("删除旧插件令牌失败", err)
 		}
@@ -45,6 +45,6 @@ func PluginTokenCreateByUserID(userID string) (*model.PluginToken, error) {
 	return pluginToken, err
 }
 
-func PluginTokenDeleteById(id string) error {
-	return store.PluginTokenDeleteById(id)
+func PluginTokenDeleteByID(id string) error {
+	return store.PluginTokenDeleteByID(id)
 }

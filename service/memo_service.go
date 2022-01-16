@@ -12,24 +12,13 @@ import (
 	"time"
 )
 
-func MemoList() []model.Memo {
-	var memoList []model.Memo
-	db.DB.Find(&memoList)
-	return memoList
-}
-
-func MemoListByUserId(userID string) []model.Memo {
+func MemoListByUserID(userID string) []model.Memo {
 	var memoList []model.Memo
 	_ = db.DB.Order("created_at desc").Where("user_id = ?", userID).Find(&memoList)
 	return memoList
 }
 
-func MemoSave(memo *model.Memo) error {
-	db.DB.Save(memo)
-	return nil
-}
-
-func MemoCreate(content string, userId string) (*model.Memo, error) {
+func MemoCreate(content string, userID string) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
 		return nil, err
@@ -39,12 +28,17 @@ func MemoCreate(content string, userId string) (*model.Memo, error) {
 			ID: id,
 		},
 		Content: content,
-		UserID:  userId,
+		UserID:  userID,
 	}
 	log.Println("memo", memo)
 	_ = db.DB.Create(memo)
 
 	return memo, nil
+}
+
+func MemoSave(memo *model.Memo) error {
+	db.DB.Save(memo)
+	return nil
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
@@ -66,8 +60,8 @@ func MemoDelete(id string) {
 	_ = db.DB.Delete(&memo)
 }
 
-func MemoGetRandomByUserId(userId string) (*model.Memo, error) {
-	memoList := MemoListByUserId(userId)
+func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
+	memoList := MemoListByUserID(userID)
 	if len(memoList) == 0 {
 		return nil, errors.New("memo 数据为空")
 	}
@@ -89,7 +83,7 @@ func MemoSendRandom() error {
 	for _, user := range userList {
 		log.Println("MemoSendRandom() user", user)
 
-		memo, err := MemoGetRandomByUserId(user.ID)
+		memo, err := MemoGetRandomByUserID(user.ID)
 		log.Println("MemoSendRandom() memo", memo)
 		if err != nil {
 			log.Println("MemoSendRandom() err", err)

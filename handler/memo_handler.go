@@ -12,7 +12,7 @@ import (
 
 func MemoList(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
-	memoList := service.MemoListByUserId(user.ID)
+	memoList := service.MemoListByUserID(user.ID)
 
 	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
