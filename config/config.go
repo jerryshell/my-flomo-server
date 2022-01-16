@@ -17,7 +17,6 @@ type Config struct {
 	SmtpPort      int    `json:"smtpPort"`
 	SmtpUsername  string `json:"smtpUsername"`
 	SMTPPassword  string `json:"smtpPassword"`
-	SmtpTo        string `json:"smtpTo"`
 	SmtpSubject   string `json:"smtpSubject"`
 }
 
@@ -31,7 +30,6 @@ var defaultConfig = Config{
 	SmtpPort:      587,
 	SmtpUsername:  "",
 	SMTPPassword:  "",
-	SmtpTo:        "",
 }
 
 var Data *Config
