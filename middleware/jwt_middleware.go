@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func JwtMiddleware() gin.HandlerFunc {
+func JWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("token")
 		if tokenString == "" {
