@@ -66,11 +66,11 @@ func MemoDelete(c *gin.Context) {
 }
 
 func SendRandomMemo(c *gin.Context) {
-	memo, err := service.MemoSendRandom()
+	err := service.MemoSendRandom()
 	if err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, result.SuccessWithData(memo))
+	c.JSON(http.StatusOK, result.Success())
 }

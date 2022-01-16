@@ -15,6 +15,12 @@ func UserList() []model.User {
 	return userList
 }
 
+func UserListByEmailIsNotNull() []model.User {
+	var userList []model.User
+	_ = db.DB.Where("email is not null").Order("created_at desc").Find(&userList)
+	return userList
+}
+
 func UserGetByUsername(username string) *model.User {
 	user := &model.User{}
 	db.DB.Where("username = ?", username).First(user)

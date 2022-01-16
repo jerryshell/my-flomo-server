@@ -76,27 +76,49 @@ func MemoGetRandom() (*model.Memo, error) {
 	return &memoList[index], nil
 }
 
-func MemoSendRandom() (*model.Memo, error) {
-	memo, err := MemoGetRandom()
-	if err != nil {
-		return nil, err
+func MemoGetRandomByUserId(userId string) (*model.Memo, error) {
+	memoList := MemoListByUserId(userId)
+	if len(memoList) == 0 {
+		return nil, errors.New("memo 数据为空")
+	}
+	rand.Seed(time.Now().UnixNano())
+	index := rand.Intn(len(memoList))
+	return &memoList[index], nil
+}
+
+func MemoSendRandom() error {
+	userList := UserListByEmailIsNotNull()
+	if len(userList) == 0 {
+		return errors.New("用户数据为空")
 	}
 
-	m := gomail.NewMessage()
-	m.SetHeader("From", config.Data.SmtpUsername)
-	m.SetHeader("To", config.Data.SmtpTo)
-	m.SetHeader("Subject", config.Data.SmtpSubject)
-	m.SetBody("text/plain", memo.Content)
+	for _, user := range userList {
+		log.Println("MemoSendRandom() user", user)
 
-	d := gomail.NewDialer(
-		config.Data.SmtpHost,
-		config.Data.SmtpPort,
-		config.Data.SmtpUsername,
-		config.Data.SMTPPassword,
-	)
-	if err = d.DialAndSend(m); err != nil {
-		return nil, err
+		memo, err := MemoGetRandomByUserId(user.ID)
+		log.Println("MemoSendRandom() memo", memo)
+		if err != nil {
+			log.Println("MemoSendRandom() err", err)
+			continue
+		}
+
+		m := gomail.NewMessage()
+		m.SetHeader("From", config.Data.SmtpUsername)
+		m.SetHeader("To", user.Email)
+		m.SetHeader("Subject", config.Data.SmtpSubject)
+		m.SetBody("text/plain", memo.Content)
+
+		d := gomail.NewDialer(
+			config.Data.SmtpHost,
+			config.Data.SmtpPort,
+			config.Data.SmtpUsername,
+			config.Data.SMTPPassword,
+		)
+		if err = d.DialAndSend(m); err != nil {
+			log.Println("发送失败", err)
+			continue
+		}
 	}
 
-	return memo, nil
+	return nil
 }
