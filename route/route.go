@@ -7,17 +7,29 @@ import (
 )
 
 func Setup(app *gin.Engine) {
-	app.POST("/auth/login", handler.LoginOrRegister)
-	app.POST("/auth/verifyToken/token/:token", handler.VerifyToken)
-	app.POST("/auth/register/", handler.Register)
+	authGroup := app.Group("/auth")
+	{
+		authGroup.POST("/login", handler.LoginOrRegister)
+		authGroup.POST("/verifyToken/token/:token", handler.VerifyToken)
+		authGroup.POST("/register/", handler.Register)
+	}
+
+	memoGroup := app.Group("/memo")
+	{
+		memoGroup.GET("/list", middleware.JWTMiddleware(), handler.MemoList)
+		memoGroup.POST("/create", middleware.JWTMiddleware(), handler.MemoCreate)
+		memoGroup.POST("/update", middleware.JWTMiddleware(), handler.MemoUpdate)
+		memoGroup.POST("/delete/id/:id", middleware.JWTMiddleware(), handler.MemoDeleteByID)
+		memoGroup.GET("/dailyReview", handler.MemoDailyReview)
+	}
+
+	pluginGroup := app.Group("/plugin")
+	{
+		pluginGroup.GET("/getToken", middleware.JWTMiddleware(), handler.PluginTokenGet)
+		pluginGroup.POST("/createToken", middleware.JWTMiddleware(), handler.PluginTokenCreate)
+		pluginGroup.POST("/createMemo/:pluginToken", handler.PluginTokenCreateMemo)
+	}
+
 	app.POST("/user/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
-	app.GET("/memo/list", middleware.JWTMiddleware(), handler.MemoList)
-	app.POST("/memo/create", middleware.JWTMiddleware(), handler.MemoCreate)
-	app.POST("/memo/update", middleware.JWTMiddleware(), handler.MemoUpdate)
-	app.POST("/memo/delete/id/:id", middleware.JWTMiddleware(), handler.MemoDeleteByID)
-	app.GET("/memo/dailyReview", handler.MemoDailyReview)
 	app.POST("/upload", middleware.JWTMiddleware(), handler.Upload)
-	app.POST("/plugin/createMemo/:pluginToken", handler.PluginTokenCreateMemo)
-	app.POST("/plugin/createToken", middleware.JWTMiddleware(), handler.PluginTokenCreate)
-	app.GET("/plugin/getToken", middleware.JWTMiddleware(), handler.PluginTokenGet)
 }
