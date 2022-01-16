@@ -26,7 +26,12 @@ func JwtMiddleware() gin.HandlerFunc {
 		username := (*mapClaims)["sub"].(string)
 		c.Set("username", username)
 
-		user := service.UserGetByUsername(username)
+		user, err := service.UserGetByUsername(username)
+		if err != nil {
+			c.Abort()
+			c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
+			return
+		}
 		if user.ID == "" {
 			c.Abort()
 			c.JSON(http.StatusOK, result.TokenErrorWithMessage("用户不存在"))

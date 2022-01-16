@@ -77,7 +77,11 @@ func MemoGetRandomByUserId(userId string) (*model.Memo, error) {
 }
 
 func MemoSendRandom() error {
-	userList := UserListByEmailIsNotNull()
+	userList, err := UserListByEmailIsNotNull()
+	if err != nil {
+		return err
+	}
+
 	if len(userList) == 0 {
 		return errors.New("用户数据为空")
 	}

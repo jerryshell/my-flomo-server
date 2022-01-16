@@ -2,25 +2,26 @@ package service
 
 import (
 	"errors"
-	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo-server/store"
 	"github.com/jerryshell/my-flomo-server/util"
-	"log"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func UserListByEmailIsNotNull() []model.User {
-	var userList []model.User
-	_ = db.DB.Where("email is not null").Order("created_at desc").Find(&userList)
-	return userList
+func UserListByEmailIsNotNull() ([]model.User, error) {
+	return store.UserListByEmailIsNotNull()
 }
 
-func UserGetByUsername(username string) *model.User {
-	user := &model.User{}
-	db.DB.Where("username = ?", username).First(user)
-	return user
+func UserGetByUsername(username string) (*model.User, error) {
+	return store.UserGetByUsername(username)
 }
 
 func UserCreate(username string, password string) (*model.User, error) {
+	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, errors.New("密码加密失败")
+	}
+
 	id, err := util.NextIDStr()
 	if err != nil {
 		return nil, err
@@ -31,23 +32,31 @@ func UserCreate(username string, password string) (*model.User, error) {
 			ID: id,
 		},
 		Username: username,
-		Password: password,
+		Password: string(passwordBcrypt),
 	}
-	log.Println("user", user)
-	_ = db.DB.Create(user)
+
+	err = store.UserCreate(user)
+	if err != nil {
+		return nil, err
+	}
 
 	return user, nil
 }
 
 func UserUpdateEmail(userID string, email string) (*model.User, error) {
-	user := model.User{}
-	_ = db.DB.First(&user, userID)
+	user, err := store.UserGetByID(userID)
+	if err != nil {
+		return nil, err
+	}
 	if user.ID == "" {
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
 	user.Email = email
-	_ = db.DB.Save(&user)
+	err = store.UserSave(user)
+	if err != nil {
+		return nil, err
+	}
 
-	return &user, nil
+	return user, nil
 }
