@@ -19,6 +19,7 @@ func Upload(c *gin.Context) {
 
 	form, err := c.MultipartForm()
 	if err != nil {
+		log.Println("c.MultipartForm :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -26,13 +27,13 @@ func Upload(c *gin.Context) {
 	for _, file := range form.File["uploadFileList[]"] {
 		fileSrc, err := file.Open()
 		if err != nil {
-			log.Println("Upload() file.Open :: error", err)
+			log.Println("file.Open :: err", err)
 			continue
 		}
 
 		doc, err := goquery.NewDocumentFromReader(fileSrc)
 		if err != nil {
-			log.Println("Upload() goquery.NewDocumentFromReader :: error", err)
+			log.Println("goquery.NewDocumentFromReader :: err", err)
 			continue
 		}
 
@@ -41,7 +42,7 @@ func Upload(c *gin.Context) {
 			timeStr := strings.TrimSpace(timeElement.Text())
 			memoTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc)
 			if err != nil {
-				log.Println("Upload() time.ParseInLocation :: error", err)
+				log.Println("time.ParseInLocation :: err", err)
 				return
 			}
 
@@ -53,7 +54,7 @@ func Upload(c *gin.Context) {
 
 			_, err = service.MemoCreateByTime(memoContent, user.ID, memoTime)
 			if err != nil {
-				log.Println("Upload() service.MemoCreate :: error", err)
+				log.Println("service.MemoCreate :: err", err)
 			}
 		})
 	}

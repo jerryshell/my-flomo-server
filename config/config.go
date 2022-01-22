@@ -35,8 +35,8 @@ var Data *Config
 func init() {
 	config, err := readConfig()
 	if err != nil {
-		log.Println("read config error:", err)
-		log.Println("use default config", defaultConfig)
+		log.Println("readConfig :: err", err)
+		log.Println("use default config ::", defaultConfig)
 		config = &defaultConfig
 	}
 	Data = config
@@ -45,6 +45,7 @@ func init() {
 func readConfig() (*Config, error) {
 	jsonFile, err := os.Open("config.json")
 	if err != nil {
+		log.Println("os.Open :: err", err)
 		_ = jsonFile.Close()
 		return &Config{}, err
 	}
@@ -55,6 +56,7 @@ func readConfig() (*Config, error) {
 	var config Config
 	err = json.Unmarshal(jsonFileByte, &config)
 	if err != nil {
+		log.Println("json.Unmarshal :: err", err)
 		return &Config{}, err
 	}
 

@@ -5,6 +5,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
 	"github.com/satori/go.uuid"
+	"log"
 )
 
 func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {
@@ -27,6 +28,7 @@ func PluginTokenDeleteByID(id string) error {
 func PluginTokenCreate(userID string) (*model.PluginToken, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
+		log.Println("util.NextIDStr :: err", err)
 		return nil, err
 	}
 

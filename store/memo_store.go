@@ -4,6 +4,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
+	"log"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func MemoGetByID(id string) (model.Memo, error) {
 func MemoCreate(content string, userID string) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
+		log.Println("util.NextIDStr :: err", err)
 		return nil, err
 	}
 
@@ -40,6 +42,7 @@ func MemoCreate(content string, userID string) (*model.Memo, error) {
 func MemoCreateByTime(content string, userID string, createdAt time.Time) (*model.Memo, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
+		log.Println("util.NextIDStr :: err", err)
 		return nil, err
 	}
 

@@ -4,6 +4,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
+	"log"
 )
 
 func UserListByEmailIsNotNull() ([]model.User, error) {
@@ -16,6 +17,7 @@ func UserGetByID(id string) (*model.User, error) {
 	user := &model.User{}
 	err := db.DB.First(user, id).Error
 	if err != nil {
+		log.Println("db.DB.First :: err", err)
 		return nil, err
 	}
 	return user, nil
@@ -30,6 +32,7 @@ func UserGetByUsername(username string) (*model.User, error) {
 func UserCreate(username string, password string) (*model.User, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
+		log.Println("util.NextIDStr :: err", err)
 		return nil, err
 	}
 
