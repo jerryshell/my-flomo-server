@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
@@ -17,36 +16,29 @@ import (
 var loc, _ = time.LoadLocation("Asia/Shanghai")
 
 func Upload(c *gin.Context) {
-	form, _ := c.MultipartForm()
+	user := c.MustGet("user").(*model.User)
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
 	uploadFileList := form.File["uploadFileList[]"]
 	successSaveFilePathList := make([]string, 0)
 	for _, file := range uploadFileList {
-		filename := file.Filename
-		filePath := config.Data.FileUploadDir + filename
-
-		err := c.SaveUploadedFile(file, filePath)
+		src, err := file.Open()
 		if err != nil {
-			removeFileList(successSaveFilePathList)
-			c.JSON(500, result.ErrorWithMessage("file: ["+filename+"] :: "+err.Error()))
-			return
-		}
-		successSaveFilePathList = append(successSaveFilePathList, filePath)
-	}
-
-	user := c.MustGet("user").(*model.User)
-
-	for _, filePath := range successSaveFilePathList {
-		log.Println("handle filePath: ", filePath)
-		file, err := os.Open(filePath)
-		if err != nil {
-			log.Println("open file"+filePath+" :: error", err)
+			log.Println(err)
 			continue
 		}
-		doc, err := goquery.NewDocumentFromReader(file)
+
+		doc, err := goquery.NewDocumentFromReader(src)
 		if err != nil {
-			log.Println("NewDocumentFromReader file"+filePath+" :: error", err)
+			log.Println(err)
 			continue
 		}
+
 		doc.Find(".memo").Each(func(i int, memoElement *goquery.Selection) {
 			var memoTime time.Time
 			memoElement.Find(".time").Each(func(i int, timeElement *goquery.Selection) {
@@ -69,7 +61,6 @@ func Upload(c *gin.Context) {
 				return
 			}
 		})
-		_ = file.Close()
 	}
 
 	removeFileList(successSaveFilePathList)
