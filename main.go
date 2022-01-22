@@ -39,12 +39,12 @@ func initCron() {
 		log.Println("cron job: " + config.Data.CronSpec)
 		err := service.MemoDailyReview()
 		if err != nil {
-			log.Println(err)
+			log.Println("service.MemoDailyReview :: err", err)
 			return
 		}
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("c.AddFunc :: err", err)
 	}
 	c.Start()
 }

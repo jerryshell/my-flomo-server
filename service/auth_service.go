@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
+	"log"
 )
 
 func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
@@ -16,6 +17,7 @@ func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
 		return []byte(config.Data.JwtKey), nil
 	})
 	if err != nil {
+		log.Println("jwt.Parse :: err", err)
 		return nil, err
 	}
 	if !token.Valid {
@@ -26,13 +28,15 @@ func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
 }
 
 func Register(username, password string) (*model.User, error) {
-	user, _ := UserGetByUsername(username)
+	user, err := UserGetByUsername(username)
 	if user.ID != "" {
+		log.Println("UserGetByUsername :: err", err)
 		return nil, errors.New("用户已存在")
 	}
 
-	user, err := UserCreate(username, password)
+	user, err = UserCreate(username, password)
 	if err != nil {
+		log.Println("UserCreate :: err", err)
 		return nil, errors.New("创建用户失败")
 	}
 

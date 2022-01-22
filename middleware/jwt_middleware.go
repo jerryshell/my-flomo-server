@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
+	"log"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		mapClaims, err := service.VerifyToken(tokenString)
 		if err != nil {
+			log.Println("service.VerifyToken :: err", err)
 			c.Abort()
 			c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 			return
@@ -28,6 +30,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		user, err := service.UserGetByUsername(username)
 		if err != nil {
+			log.Println("service.UserGetByUsername :: err", err)
 			c.Abort()
 			c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 			return

@@ -19,6 +19,10 @@ func MemoCreate(content string, userID string) (*model.Memo, error) {
 	return store.MemoCreate(content, userID)
 }
 
+func MemoCreateByTime(content string, userID string, createdAt time.Time) (*model.Memo, error) {
+	return store.MemoCreateByTime(content, userID, createdAt)
+}
+
 func MemoSave(memo *model.Memo) error {
 	return store.MemoSave(memo)
 }
@@ -26,6 +30,7 @@ func MemoSave(memo *model.Memo) error {
 func MemoUpdate(id string, content string) (*model.Memo, error) {
 	memo, err := store.MemoGetByID(id)
 	if err != nil {
+		log.Println("store.MemoGetByID :: err", err)
 		return nil, err
 	}
 	if memo.ID == "" {
@@ -45,6 +50,7 @@ func MemoDeleteByID(id string) error {
 func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 	memoList, err := MemoListByUserID(userID)
 	if err != nil {
+		log.Println("MemoListByUserID :: err", err)
 		return nil, err
 	}
 	if len(memoList) == 0 {
@@ -60,6 +66,7 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 func MemoDailyReview() error {
 	userList, err := UserListByEmailIsNotNull()
 	if err != nil {
+		log.Println("UserListByEmailIsNotNull :: err", err)
 		return err
 	}
 	if len(userList) == 0 {
@@ -72,7 +79,7 @@ func MemoDailyReview() error {
 		memo, err := MemoGetRandomByUserID(user.ID)
 		log.Println("MemoDailyReview() memo", memo)
 		if err != nil {
-			log.Println("MemoDailyReview() err", err)
+			log.Println("MemoGetRandomByUserID :: err", err)
 			continue
 		}
 
@@ -89,7 +96,7 @@ func MemoDailyReview() error {
 			config.Data.SMTPPassword,
 		)
 		if err = dialer.DialAndSend(message); err != nil {
-			log.Println("发送失败", err)
+			log.Println("dialer.DialAndSend :: err", err)
 			continue
 		}
 	}

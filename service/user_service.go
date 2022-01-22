@@ -5,6 +5,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 func UserListByEmailIsNotNull() ([]model.User, error) {
@@ -18,11 +19,13 @@ func UserGetByUsername(username string) (*model.User, error) {
 func UserCreate(username string, password string) (*model.User, error) {
 	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		log.Println("bcrypt.GenerateFromPassword :: err", err)
 		return nil, errors.New("密码加密失败")
 	}
 
 	user, err := store.UserCreate(username, string(passwordBcrypt))
 	if err != nil {
+		log.Println("store.UserCreate :: err", err)
 		return nil, err
 	}
 
@@ -32,6 +35,7 @@ func UserCreate(username string, password string) (*model.User, error) {
 func UserUpdateEmail(userID string, email string) (*model.User, error) {
 	user, err := store.UserGetByID(userID)
 	if err != nil {
+		log.Println("store.UserGetByID :: err", err)
 		return nil, err
 	}
 	if user.ID == "" {
@@ -41,6 +45,7 @@ func UserUpdateEmail(userID string, email string) (*model.User, error) {
 	user.Email = email
 	err = store.UserSave(user)
 	if err != nil {
+		log.Println("store.UserSave :: err", err)
 		return nil, err
 	}
 

@@ -8,6 +8,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -15,6 +16,7 @@ import (
 func LoginOrRegister(c *gin.Context) {
 	var formData = form.UserLoginOrRegisterForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Println("c.ShouldBindJSON :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -23,6 +25,7 @@ func LoginOrRegister(c *gin.Context) {
 	if user.ID == "" {
 		userByRegister, err := service.Register(formData.Username, formData.Password)
 		if err != nil {
+			log.Println("service.Register :: err", err)
 			c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 			return
 		}
@@ -31,6 +34,7 @@ func LoginOrRegister(c *gin.Context) {
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
 	if err != nil {
+		log.Println("bcrypt.CompareHashAndPassword :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage("用户名或密码错误"))
 		return
 	}
@@ -44,6 +48,7 @@ func LoginOrRegister(c *gin.Context) {
 		Subject:   user.Username,
 	}).SignedString([]byte(config.Data.JwtKey))
 	if err != nil {
+		log.Println("jwt.NewWithClaims :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -59,12 +64,14 @@ func LoginOrRegister(c *gin.Context) {
 func Register(c *gin.Context) {
 	formData := &form.UserLoginOrRegisterForm{}
 	if err := c.ShouldBindJSON(formData); err != nil {
+		log.Println("c.ShouldBindJSON :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
 	_, err := service.Register(formData.Username, formData.Password)
 	if err != nil {
+		log.Println("service.Register :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -76,6 +83,7 @@ func VerifyToken(c *gin.Context) {
 	tokenString := c.Param("token")
 	mapClaims, err := service.VerifyToken(tokenString)
 	if err != nil {
+		log.Println("service.VerifyToken :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}

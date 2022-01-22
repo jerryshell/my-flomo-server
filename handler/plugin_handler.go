@@ -6,6 +6,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -13,8 +14,9 @@ import (
 func PluginTokenGet(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 
-	pluginToken, _ := service.PluginTokenGetByUserID(user.ID)
+	pluginToken, err := service.PluginTokenGetByUserID(user.ID)
 	if pluginToken.ID == "" {
+		log.Println("service.PluginTokenGetByUserID :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage("当前没有插件令牌，请重新生成"))
 		return
 	}
@@ -28,6 +30,7 @@ func PluginTokenCreate(c *gin.Context) {
 
 	pluginToken, err := service.PluginTokenCreateByUserID(user.ID)
 	if err != nil {
+		log.Println("service.PluginTokenCreateByUserID :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
@@ -49,6 +52,7 @@ func PluginTokenCreateMemo(c *gin.Context) {
 
 	pluginToken, err := service.PluginTokenGetByToken(token)
 	if err != nil {
+		log.Println("service.PluginTokenGetByToken :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,
 			Success: false,
@@ -59,6 +63,7 @@ func PluginTokenCreateMemo(c *gin.Context) {
 
 	formData := &form.MemoCreateForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Println("c.ShouldBindJSON :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,
 			Success: false,
@@ -79,6 +84,7 @@ func PluginTokenCreateMemo(c *gin.Context) {
 
 	memo, err := service.MemoCreate(content, pluginToken.UserID)
 	if err != nil {
+		log.Println("service.MemoCreate :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,
 			Success: false,

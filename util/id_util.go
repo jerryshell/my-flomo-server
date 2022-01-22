@@ -2,6 +2,7 @@ package util
 
 import (
 	"github.com/sony/sonyflake"
+	"log"
 	"strconv"
 )
 
@@ -27,6 +28,7 @@ func NextID() (uint64, error) {
 func NextIDStr() (string, error) {
 	id, err := NextID()
 	if err != nil {
+		log.Println("NextID :: err", err)
 		return "", err
 	}
 	return strconv.FormatUint(id, 10), nil

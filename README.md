@@ -5,6 +5,7 @@
 * Flomo 数据导入
 * Flomo API 兼容
 * 邮件每日回顾
+* 注销账号，永久抹除数据
 * Memo 增删改查
 * 用户登录注册
 
@@ -30,7 +31,6 @@ https://github.com/jerryshell/my-flomo-server/releases
   "dsn": "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
   "jwtKey": "jwT_p@sSw0rd",
   "cronSpec": "0 20 * * *",
-  "fileUploadDir": "./",
   "smtpHost": "smtp-mail.outlook.com",
   "smtpPort": 587,
   "smtpSubject": "My Flomo 每日回顾",

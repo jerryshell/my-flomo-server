@@ -3,13 +3,11 @@ package handler
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 )
@@ -17,45 +15,36 @@ import (
 var loc, _ = time.LoadLocation("Asia/Shanghai")
 
 func Upload(c *gin.Context) {
-	form, _ := c.MultipartForm()
-	uploadFileList := form.File["uploadFileList[]"]
-	successSaveFilePathList := make([]string, 0)
-	for _, file := range uploadFileList {
-		filename := file.Filename
-		filePath := config.Data.FileUploadDir + filename
-
-		err := c.SaveUploadedFile(file, filePath)
-		if err != nil {
-			removeFileList(successSaveFilePathList)
-			c.JSON(500, result.ErrorWithMessage("file: ["+filename+"] :: "+err.Error()))
-			return
-		}
-		successSaveFilePathList = append(successSaveFilePathList, filePath)
-	}
-
 	user := c.MustGet("user").(*model.User)
 
-	for _, filePath := range successSaveFilePathList {
-		log.Println("handle filePath: ", filePath)
-		file, err := os.Open(filePath)
+	form, err := c.MultipartForm()
+	if err != nil {
+		log.Println("c.MultipartForm :: err", err)
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	for _, file := range form.File["uploadFileList[]"] {
+		fileSrc, err := file.Open()
 		if err != nil {
-			log.Println("open file"+filePath+" :: error", err)
+			log.Println("file.Open :: err", err)
 			continue
 		}
-		doc, err := goquery.NewDocumentFromReader(file)
+
+		doc, err := goquery.NewDocumentFromReader(fileSrc)
 		if err != nil {
-			log.Println("NewDocumentFromReader file"+filePath+" :: error", err)
+			log.Println("goquery.NewDocumentFromReader :: err", err)
 			continue
 		}
+
 		doc.Find(".memo").Each(func(i int, memoElement *goquery.Selection) {
-			var memoTime time.Time
-			memoElement.Find(".time").Each(func(i int, timeElement *goquery.Selection) {
-				timeStr := strings.TrimSpace(timeElement.Text())
-				memoTime, err = time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc)
-				if err != nil {
-					return
-				}
-			})
+			timeElement := memoElement.Find(".time").First()
+			timeStr := strings.TrimSpace(timeElement.Text())
+			memoTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc)
+			if err != nil {
+				log.Println("time.ParseInLocation :: err", err)
+				return
+			}
 
 			var memoContent string
 			memoElement.Find(".content p").Each(func(i int, p *goquery.Selection) {
@@ -63,25 +52,12 @@ func Upload(c *gin.Context) {
 			})
 			memoContent = strings.TrimSpace(memoContent)
 
-			_, err = service.MemoCreate(memoContent, user.ID)
+			_, err = service.MemoCreateByTime(memoContent, user.ID, memoTime)
 			if err != nil {
-				log.Println("MemoSave :: error", err)
-				return
+				log.Println("service.MemoCreate :: err", err)
 			}
 		})
-		_ = file.Close()
 	}
 
-	removeFileList(successSaveFilePathList)
 	c.JSON(http.StatusOK, result.Success())
-}
-
-func removeFileList(filePathList []string) {
-	for _, filePath := range filePathList {
-		err := os.Remove(filePath)
-		if err != nil {
-			log.Println("remove "+filePath+" :: error", err)
-			continue
-		}
-	}
 }
