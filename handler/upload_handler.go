@@ -8,7 +8,6 @@ import (
 	"github.com/jerryshell/my-flomo-server/service"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 )
@@ -24,30 +23,27 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	uploadFileList := form.File["uploadFileList[]"]
-	successSaveFilePathList := make([]string, 0)
-	for _, file := range uploadFileList {
-		src, err := file.Open()
+	for _, file := range form.File["uploadFileList[]"] {
+		fileSrc, err := file.Open()
 		if err != nil {
-			log.Println(err)
+			log.Println("Upload() file.Open :: error", err)
 			continue
 		}
 
-		doc, err := goquery.NewDocumentFromReader(src)
+		doc, err := goquery.NewDocumentFromReader(fileSrc)
 		if err != nil {
-			log.Println(err)
+			log.Println("Upload() goquery.NewDocumentFromReader :: error", err)
 			continue
 		}
 
 		doc.Find(".memo").Each(func(i int, memoElement *goquery.Selection) {
-			var memoTime time.Time
-			memoElement.Find(".time").Each(func(i int, timeElement *goquery.Selection) {
-				timeStr := strings.TrimSpace(timeElement.Text())
-				memoTime, err = time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc)
-				if err != nil {
-					return
-				}
-			})
+			timeElement := memoElement.Find(".time").First()
+			timeStr := strings.TrimSpace(timeElement.Text())
+			memoTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeStr, loc)
+			if err != nil {
+				log.Println("Upload() time.ParseInLocation :: error", err)
+				return
+			}
 
 			var memoContent string
 			memoElement.Find(".content p").Each(func(i int, p *goquery.Selection) {
@@ -55,24 +51,12 @@ func Upload(c *gin.Context) {
 			})
 			memoContent = strings.TrimSpace(memoContent)
 
-			_, err = service.MemoCreate(memoContent, user.ID)
+			_, err = service.MemoCreateByTime(memoContent, user.ID, memoTime)
 			if err != nil {
-				log.Println("MemoSave :: error", err)
-				return
+				log.Println("Upload() service.MemoCreate :: error", err)
 			}
 		})
 	}
 
-	removeFileList(successSaveFilePathList)
 	c.JSON(http.StatusOK, result.Success())
-}
-
-func removeFileList(filePathList []string) {
-	for _, filePath := range filePathList {
-		err := os.Remove(filePath)
-		if err != nil {
-			log.Println("remove "+filePath+" :: error", err)
-			continue
-		}
-	}
 }

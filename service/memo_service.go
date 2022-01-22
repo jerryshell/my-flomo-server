@@ -19,6 +19,10 @@ func MemoCreate(content string, userID string) (*model.Memo, error) {
 	return store.MemoCreate(content, userID)
 }
 
+func MemoCreateByTime(content string, userID string, createdAt time.Time) (*model.Memo, error) {
+	return store.MemoCreateByTime(content, userID, createdAt)
+}
+
 func MemoSave(memo *model.Memo) error {
 	return store.MemoSave(memo)
 }
