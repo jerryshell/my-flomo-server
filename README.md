@@ -30,7 +30,6 @@ https://github.com/jerryshell/my-flomo-server/releases
   "dsn": "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
   "jwtKey": "jwT_p@sSw0rd",
   "cronSpec": "0 20 * * *",
-  "fileUploadDir": "./",
   "smtpHost": "smtp-mail.outlook.com",
   "smtpPort": 587,
   "smtpSubject": "My Flomo 每日回顾",
