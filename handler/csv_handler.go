@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/csv"
 	"github.com/gin-gonic/gin"
+	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
 	"log"
 	"net/http"
+	"time"
 )
 
 func CsvExport(c *gin.Context) {
@@ -79,4 +81,68 @@ func CsvExport(c *gin.Context) {
 
 	c.Writer.Header().Set("Content-Disposition", "attachment; filename=memo.csv")
 	c.Data(http.StatusOK, "text/csv", bytesBuffer.Bytes())
+}
+
+func CsvImport(c *gin.Context) {
+	user := c.MustGet("user").(*model.User)
+
+	csvFile, err := c.FormFile("csvFile")
+	if err != nil {
+		log.Println("c.FormFile :: err", err)
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	fileSrc, err := csvFile.Open()
+	if err != nil {
+		log.Println("csvFile.Open :: err", err)
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	csvReader := csv.NewReader(fileSrc)
+	csvReader.Comma = ','
+	csvReader.LazyQuotes = true
+	csvReader.TrimLeadingSpace = true
+	recordList, err := csvReader.ReadAll()
+	_ = fileSrc.Close()
+	if err != nil {
+		log.Println("csvReader.ReadAll :: err", err)
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	// remove header
+	recordList = recordList[1:]
+
+	for _, record := range recordList {
+		id := record[0]
+		createdAt, err := time.ParseInLocation("2006-01-02 15:04:05", record[1], loc)
+		if err != nil {
+			log.Println("time.ParseInLocation :: err", err)
+			continue
+		}
+		updatedAt, err := time.ParseInLocation("2006-01-02 15:04:05", record[2], loc)
+		if err != nil {
+			log.Println("time.ParseInLocation :: err", err)
+			continue
+		}
+		content := record[3]
+		memo := &model.Memo{
+			BaseModel: model.BaseModel{
+				ID:        id,
+				CreatedAt: createdAt,
+				UpdatedAt: updatedAt,
+			},
+			UserID:  user.ID,
+			Content: content,
+		}
+		err = service.MemoSave(memo)
+		if err != nil {
+			log.Println("service.MemoSave :: err", err)
+			continue
+		}
+	}
+
+	c.JSON(http.StatusOK, result.Success())
 }
