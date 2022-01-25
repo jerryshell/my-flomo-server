@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/csv"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
@@ -47,7 +47,13 @@ func CsvExport(c *gin.Context) {
 		return
 	}
 
-	csvWriter := csv.NewWriter(c.Writer)
+	// csv buffer
+	bytesBuffer := &bytes.Buffer{}
+
+	// csv writer
+	csvWriter := csv.NewWriter(bytesBuffer)
+
+	// csv header
 	err = csvWriter.Write([]string{"ID", "CreatedAt", "UpdatedAt", "Content"})
 	if err != nil {
 		log.Println("csvWriter.Write :: err", err)
@@ -55,9 +61,7 @@ func CsvExport(c *gin.Context) {
 		return
 	}
 
-	c.Writer.Header().Set("Content-type", "text/csv")
-	c.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s", "memo.csv"))
-
+	// csv data
 	for _, memo := range memoList {
 		err = csvWriter.Write([]string{
 			memo.ID,
@@ -70,4 +74,9 @@ func CsvExport(c *gin.Context) {
 			continue
 		}
 	}
+
+	csvWriter.Flush()
+
+	c.Writer.Header().Set("Content-Disposition", "attachment; filename=memo.csv")
+	c.Data(http.StatusOK, "text/csv", bytesBuffer.Bytes())
 }
