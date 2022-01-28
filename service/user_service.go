@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
 	"golang.org/x/crypto/bcrypt"

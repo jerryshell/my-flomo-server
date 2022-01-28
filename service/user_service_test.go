@@ -5,7 +5,7 @@ import (
 )
 
 func TestUserListByEmailIsNotNull(t *testing.T) {
-	userListByEmailIsNotNull := UserListByEmailIsNotNull()
+	userListByEmailIsNotNull, _ := UserListByEmailIsNotNull()
 	t.Logf("len(userListByEmailIsNotNull): %v", len(userListByEmailIsNotNull))
 	if userListByEmailIsNotNull == nil {
 		t.Error("UserListByEmailIsNotNull() is nil")
