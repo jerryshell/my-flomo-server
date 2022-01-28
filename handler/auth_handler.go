@@ -7,6 +7,7 @@ import (
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
+	"github.com/jerryshell/my-flomo-server/util"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -81,7 +82,7 @@ func Register(c *gin.Context) {
 
 func VerifyToken(c *gin.Context) {
 	tokenString := c.Param("token")
-	mapClaims, err := service.VerifyToken(tokenString)
+	mapClaims, err := util.VerifyToken(tokenString)
 	if err != nil {
 		log.Println("service.VerifyToken :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))

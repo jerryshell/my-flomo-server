@@ -33,4 +33,6 @@ func Setup(app *gin.Engine) {
 	app.POST("/user/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
 	app.POST("/upload", middleware.JWTMiddleware(), handler.Upload)
 	app.POST("/deleteMyAccount", middleware.JWTMiddleware(), handler.DeleteMyAccount)
+	app.GET("/csvExport/token/:token", handler.CsvExport)
+	app.POST("/csvImport", middleware.JWTMiddleware(), handler.CsvImport)
 }

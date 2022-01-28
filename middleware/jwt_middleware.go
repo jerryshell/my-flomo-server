@@ -4,28 +4,27 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
+	"github.com/jerryshell/my-flomo-server/util"
 	"log"
 	"net/http"
 )
 
 func JWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("token")
-		if tokenString == "" {
+		token := c.GetHeader("token")
+		if token == "" {
 			c.Abort()
 			c.JSON(http.StatusOK, result.TokenError())
 			return
 		}
 
-		mapClaims, err := service.VerifyToken(tokenString)
+		username, err := util.GetUsernameFromJWT(token)
 		if err != nil {
-			log.Println("service.VerifyToken :: err", err)
+			log.Println("util.GetUsernameFromJWT :: err", err)
 			c.Abort()
 			c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 			return
 		}
-
-		username := (*mapClaims)["sub"].(string)
 		c.Set("username", username)
 
 		user, err := service.UserGetByUsername(username)
