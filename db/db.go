@@ -15,25 +15,19 @@ func init() {
 	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	DB = db
 
-	modelList := []interface{}{
-		&model.Block{},
-		&model.BlockSubscriber{},
-		&model.Hashtag{},
-		&model.HashtagGroup{},
-		&model.Memo{},
-		&model.Mention{},
-		&model.PluginToken{},
-		&model.SeedHashtag{},
-		&model.SeedMention{},
-		&model.SeedUrl{},
-		&model.Url{},
-		&model.User{},
-		&model.UserBlock{},
+	// 迁移 schema
+	err := db.AutoMigrate(&model.Memo{})
+	if err != nil {
+		panic("Memo autoMigrate failed")
 	}
-	for _, newModel := range modelList {
-		err := db.AutoMigrate(newModel)
-		if err != nil {
-			panic("Memo autoMigrate failed")
-		}
+
+	err = db.AutoMigrate(&model.User{})
+	if err != nil {
+		panic("User autoMigrate failed")
+	}
+
+	err = db.AutoMigrate(&model.PluginToken{})
+	if err != nil {
+		panic("PluginToken autoMigrate failed")
 	}
 }
