@@ -103,3 +103,39 @@ func MemoDailyReview() error {
 
 	return nil
 }
+
+type SeedService struct{}
+
+func (SeedService) Page(page uint, size uint) interface{} {
+	var m []model.Memo
+	db.DB.Offset(int((page - 1) * size)).Limit(int(size)).Find(&m)
+	return m
+}
+
+func (SeedService) List() interface{} {
+	var m []model.Memo
+	db.DB.Find(&m)
+	return m
+}
+
+func (SeedService) Get(id string) (interface{}, error) {
+	var m model.Memo
+	err := db.DB.First(&m, id).Error
+	return m, err
+}
+
+func (SeedService) Create(i interface{}) {
+	db.DB.Create(i)
+}
+
+func (SeedService) DeleteByID(id string) {
+	db.DB.Delete(model.Memo{}, id)
+}
+
+func (SeedService) Delete(i interface{}) {
+	db.DB.Delete(i)
+}
+
+func (SeedService) Update(i interface{}) {
+	db.DB.Save(i)
+}

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
 	"golang.org/x/crypto/bcrypt"
@@ -50,4 +51,40 @@ func UserUpdateEmail(userID string, email string) (*model.User, error) {
 	}
 
 	return user, nil
+}
+
+type UserService struct{}
+
+func (UserService) Page(page uint, size uint) interface{} {
+	var m []model.User
+	db.DB.Offset(int((page - 1) * size)).Limit(int(size)).Find(&m)
+	return m
+}
+
+func (UserService) List() interface{} {
+	var m []model.User
+	db.DB.Find(&m)
+	return m
+}
+
+func (UserService) Get(id string) (interface{}, error) {
+	var m model.User
+	err := db.DB.First(&m, id).Error
+	return m, err
+}
+
+func (UserService) Create(i interface{}) {
+	db.DB.Create(i)
+}
+
+func (UserService) DeleteByID(id string) {
+	db.DB.Delete(model.User{}, id)
+}
+
+func (UserService) Delete(i interface{}) {
+	db.DB.Delete(i)
+}
+
+func (UserService) Update(i interface{}) {
+	db.DB.Save(i)
 }
