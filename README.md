@@ -21,9 +21,17 @@
 ```bash
 mkdir my-flomo-server && cd my-flomo-server
 
+# 下载 config.json
+# 国际网络连接顺畅
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/config.json
+# 否则
+wget https://download.fastgit.org/jerryshell/my-flomo-server/master/config.json
 
+# 下载 docker-compose.yaml
+# 国际网络连接顺畅
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
+# 否则
+wget https://download.fastgit.org/jerryshell/my-flomo-server/master/docker-compose.yaml
 
 # 根据自己的环境修改配置
 vim config.json
