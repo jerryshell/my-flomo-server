@@ -8,7 +8,9 @@ ARG TARGETOS
 
 ARG TARGETARCH
 
-COPY ./my-flomo-server-${TARGETARCH}-${TARGETOS} /my-flomo-server/my-flomo-server-${TARGETARCH}-${TARGETOS}
+ENV BINARY_NAME=my-flomo-server-${TARGETARCH}-${TARGETOS}
+
+COPY ./${BINARY_NAME} /my-flomo-server/${BINARY_NAME}
 
 COPY ./config.json /my-flomo-server/config.json
 
@@ -18,4 +20,4 @@ ENV GIN_MODE=release
 
 WORKDIR /my-flomo-server
 
-CMD ["./my-flomo-server-amd64-linux"]
+CMD ["sh", "-c", "./${BINARY_NAME}"]
