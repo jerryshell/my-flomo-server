@@ -16,33 +16,20 @@
 
 ## 如何运行
 
-### 1 下载可执行文件
+首先提前准备好 PostgreSQL
 
-https://github.com/jerryshell/my-flomo-server/releases
+```bash
+mkdir my-flomo-server && cd my-flomo-server
 
-### 2 在可执行文件同目录下创建 config.json（可选）
+wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/config.json
 
-#### 2.1 如果没有 config.json，则使用以下默认配置
+wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
 
-```json
-{
-  "port": 8060,
-  "dsn": "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
-  "jwtKey": "jwT_p@sSw0rd",
-  "cronSpec": "0 20 * * *",
-  "smtpHost": "smtp-mail.outlook.com",
-  "smtpPort": 587,
-  "smtpSubject": "My Flomo 每日回顾",
-  "smtpUsername": "",
-  "smtpPassword": ""
-}
+# 根据自己的环境修改配置
+vim config.json
+
+docker-compose up -d
 ```
-
-#### 2.2 根据你的 PostgreSQL 数据库配置 dsn（可选）
-
-#### 2.3 根据你的邮箱配置 smtp（可选）
-
-### 3 运行可执行文件
 
 ## 相关项目
 
