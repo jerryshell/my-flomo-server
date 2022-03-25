@@ -6,4 +6,4 @@ services:
     ports:
       - "8060:8060"
     volumes:
-      - ./config.json:/config.json
+      - ./config.json:/my-flomo-server/config.json
