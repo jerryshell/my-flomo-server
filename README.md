@@ -16,26 +16,28 @@
 
 ## 如何运行
 
-首先提前准备好 PostgreSQL
+0. 首先提前准备好 PostgreSQL
 
 ```bash
+# 1. 创建并进入 my-flomo-server 目录
 mkdir my-flomo-server && cd my-flomo-server
 
-# 下载 config.json
+# 2. 下载 config.json
 # 国际网络连接顺畅
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/config.json
 # 否则
-wget https://download.fastgit.org/jerryshell/my-flomo-server/master/config.json
+wget https://raw.fastgit.org/jerryshell/my-flomo-server/master/config.json
 
-# 下载 docker-compose.yaml
+# 3. 下载 docker-compose.yaml
 # 国际网络连接顺畅
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
 # 否则
-wget https://download.fastgit.org/jerryshell/my-flomo-server/master/docker-compose.yaml
+wget https://raw.fastgit.org/jerryshell/my-flomo-server/master/docker-compose.yaml
 
-# 根据自己的环境修改配置
+# 4. 根据自己的环境修改配置
 vim config.json
 
+# 5. 启动服务
 docker-compose up -d
 ```
 
