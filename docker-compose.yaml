@@ -3,6 +3,8 @@ version: "3"
 services:
   my-flomo-server:
     image: jerryshell/my-flomo-server:latest
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - "8060:8060"
     volumes:
