@@ -17,9 +17,8 @@
 
 ## 如何运行
 
-0. 首先提前准备好 PostgreSQL
-
 ```bash
+# 0. 首先提前准备好 PostgreSQL
 # 1. 创建并进入 my-flomo-server 目录
 mkdir my-flomo-server && cd my-flomo-server
 
