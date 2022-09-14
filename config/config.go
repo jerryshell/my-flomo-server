@@ -54,8 +54,7 @@ func readConfig() (*Config, error) {
 	_ = jsonFile.Close()
 
 	var config Config
-	err = json.Unmarshal(jsonFileByte, &config)
-	if err != nil {
+	if err := json.Unmarshal(jsonFileByte, &config); err != nil {
 		log.Println("json.Unmarshal :: err", err)
 		return &Config{}, err
 	}

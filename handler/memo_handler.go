@@ -68,8 +68,7 @@ func MemoUpdate(c *gin.Context) {
 
 func MemoDeleteByID(c *gin.Context) {
 	id := c.Param("id")
-	err := service.MemoDeleteByID(id)
-	if err != nil {
+	if err := service.MemoDeleteByID(id); err != nil {
 		log.Println("service.MemoDeleteByID :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -78,8 +77,7 @@ func MemoDeleteByID(c *gin.Context) {
 }
 
 func MemoDailyReview(c *gin.Context) {
-	err := service.MemoDailyReview()
-	if err != nil {
+	if err := service.MemoDailyReview(); err != nil {
 		log.Println("service.MemoDailyReview :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return

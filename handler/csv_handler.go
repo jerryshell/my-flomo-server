@@ -56,8 +56,7 @@ func CsvExport(c *gin.Context) {
 	csvWriter := csv.NewWriter(bytesBuffer)
 
 	// csv header
-	err = csvWriter.Write([]string{"ID", "CreatedAt", "UpdatedAt", "Content"})
-	if err != nil {
+	if err := csvWriter.Write([]string{"ID", "CreatedAt", "UpdatedAt", "Content"}); err != nil {
 		log.Println("csvWriter.Write :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -65,13 +64,12 @@ func CsvExport(c *gin.Context) {
 
 	// csv data
 	for _, memo := range memoList {
-		err = csvWriter.Write([]string{
+		if err := csvWriter.Write([]string{
 			memo.ID,
 			memo.CreatedAt.Format("2006-01-02 15:04:05"),
 			memo.UpdatedAt.Format("2006-01-02 15:04:05"),
 			memo.Content,
-		})
-		if err != nil {
+		}); err != nil {
 			log.Println("csvWriter.Write :: err", err)
 			continue
 		}
@@ -94,6 +92,8 @@ func CsvImport(c *gin.Context) {
 	}
 
 	fileSrc, err := csvFile.Open()
+	defer fileSrc.Close()
+
 	if err != nil {
 		log.Println("csvFile.Open :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
@@ -105,7 +105,6 @@ func CsvImport(c *gin.Context) {
 	csvReader.LazyQuotes = true
 	csvReader.TrimLeadingSpace = true
 	recordList, err := csvReader.ReadAll()
-	_ = fileSrc.Close()
 	if err != nil {
 		log.Println("csvReader.ReadAll :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
@@ -137,8 +136,7 @@ func CsvImport(c *gin.Context) {
 			UserID:  user.ID,
 			Content: content,
 		}
-		err = service.MemoSave(memo)
-		if err != nil {
+		if err := service.MemoSave(memo); err != nil {
 			log.Println("service.MemoSave :: err", err)
 			continue
 		}

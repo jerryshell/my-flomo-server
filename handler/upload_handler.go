@@ -52,8 +52,7 @@ func Upload(c *gin.Context) {
 			})
 			memoContent = strings.TrimSpace(memoContent)
 
-			_, err = service.MemoCreateByTime(memoContent, user.ID, memoTime)
-			if err != nil {
+			if _, err := service.MemoCreateByTime(memoContent, user.ID, memoTime); err != nil {
 				log.Println("service.MemoCreate :: err", err)
 			}
 		})

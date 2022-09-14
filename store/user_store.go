@@ -15,8 +15,7 @@ func UserListByEmailIsNotNull() ([]model.User, error) {
 
 func UserGetByID(id string) (*model.User, error) {
 	user := &model.User{}
-	err := db.DB.First(user, id).Error
-	if err != nil {
+	if err := db.DB.First(user, id).Error; err != nil {
 		log.Println("db.DB.First :: err", err)
 		return nil, err
 	}

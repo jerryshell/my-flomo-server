@@ -1,10 +1,10 @@
 package store
 
 import (
+	"encoding/base64"
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
-	"github.com/satori/go.uuid"
 	"log"
 )
 
@@ -37,7 +37,7 @@ func PluginTokenCreate(userID string) (*model.PluginToken, error) {
 			ID: id,
 		},
 		UserID: userID,
-		Token:  uuid.NewV4().String(),
+		Token:  base64.RawStdEncoding.EncodeToString([]byte(id)),
 	}
 	err = db.DB.Create(pluginToken).Error
 

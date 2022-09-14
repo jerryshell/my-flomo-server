@@ -16,18 +16,15 @@ func init() {
 	DB = db
 
 	// 迁移 schema
-	err := db.AutoMigrate(&model.Memo{})
-	if err != nil {
+	if err := db.AutoMigrate(&model.Memo{}); err != nil {
 		panic("Memo autoMigrate failed")
 	}
 
-	err = db.AutoMigrate(&model.User{})
-	if err != nil {
+	if err := db.AutoMigrate(&model.User{}); err != nil {
 		panic("User autoMigrate failed")
 	}
 
-	err = db.AutoMigrate(&model.PluginToken{})
-	if err != nil {
+	if err := db.AutoMigrate(&model.PluginToken{}); err != nil {
 		panic("PluginToken autoMigrate failed")
 	}
 }

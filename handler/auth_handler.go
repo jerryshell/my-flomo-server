@@ -33,8 +33,7 @@ func LoginOrRegister(c *gin.Context) {
 		user = userByRegister
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
-	if err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password)); err != nil {
 		log.Println("bcrypt.CompareHashAndPassword :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage("用户名或密码错误"))
 		return
@@ -70,8 +69,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	_, err := service.Register(formData.Username, formData.Password)
-	if err != nil {
+	if _, err := service.Register(formData.Username, formData.Password); err != nil {
 		log.Println("service.Register :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return

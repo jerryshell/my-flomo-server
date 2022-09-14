@@ -43,8 +43,7 @@ func UserUpdateEmail(userID string, email string) (*model.User, error) {
 	}
 
 	user.Email = email
-	err = store.UserSave(user)
-	if err != nil {
+	if err = store.UserSave(user); err != nil {
 		log.Println("store.UserSave :: err", err)
 		return nil, err
 	}
