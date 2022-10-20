@@ -1,14 +1,15 @@
 package handler
 
 import (
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
-	"log"
-	"net/http"
-	"strings"
 )
 
 func PluginTokenGet(c *gin.Context) {
@@ -97,6 +98,48 @@ func PluginTokenCreateMemo(c *gin.Context) {
 		Code:    0,
 		Success: true,
 		Message: "已记录",
+		Data:    memo,
+	})
+}
+
+// PluginTokenRandomMemo 这里是 my-flomo 随机一条接口
+func PluginTokenRandomMemo(c *gin.Context) {
+	token := c.Param("pluginToken")
+	if token == "" {
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "pluginToken 为空",
+		})
+		return
+	}
+
+	pluginToken, err := service.PluginTokenGetByToken(token)
+	if err != nil {
+		log.Println("service.PluginTokenGetByToken :: err", err)
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "token 无效",
+		})
+		return
+	}
+
+	memo, err := service.MemoGetRandomByUserID(pluginToken.UserID)
+	if err != nil {
+		log.Println("service.MemoGetRandomByUserID :: err", err)
+		c.JSON(http.StatusOK, result.BaseResult{
+			Code:    -1,
+			Success: false,
+			Message: "获取失败",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, result.BaseResult{
+		Code:    0,
+		Success: true,
+		Message: "获取成功",
 		Data:    memo,
 	})
 }

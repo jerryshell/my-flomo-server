@@ -3,9 +3,10 @@ package util
 import (
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
-	"log"
 )
 
 func VerifyToken(tokenString string) (*jwt.MapClaims, error) {

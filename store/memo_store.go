@@ -1,11 +1,12 @@
 package store
 
 import (
+	"log"
+	"time"
+
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
-	"log"
-	"time"
 )
 
 func MemoListByUserID(userID string) ([]model.Memo, error) {

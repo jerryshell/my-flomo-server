@@ -2,10 +2,11 @@ package store
 
 import (
 	"encoding/base64"
+	"log"
+
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
-	"log"
 )
 
 func PluginTokenGetByUserID(userID string) (*model.PluginToken, error) {

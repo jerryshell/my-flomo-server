@@ -1,9 +1,10 @@
 package util
 
 import (
-	"github.com/sony/sonyflake"
 	"log"
 	"strconv"
+
+	"github.com/sony/sonyflake"
 )
 
 var sf *sonyflake.Sonyflake

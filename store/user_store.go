@@ -1,10 +1,11 @@
 package store
 
 import (
+	"log"
+
 	"github.com/jerryshell/my-flomo-server/db"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/util"
-	"log"
 )
 
 func UserListByEmailIsNotNull() ([]model.User, error) {

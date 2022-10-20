@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/jerryshell/my-flomo-server/config"
@@ -9,9 +13,6 @@ import (
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
 	"golang.org/x/crypto/bcrypt"
-	"log"
-	"net/http"
-	"time"
 )
 
 func LoginOrRegister(c *gin.Context) {

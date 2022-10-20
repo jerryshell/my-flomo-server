@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 )
@@ -50,7 +50,7 @@ func readConfig() (*Config, error) {
 		return &Config{}, err
 	}
 
-	jsonFileByte, _ := ioutil.ReadAll(jsonFile)
+	jsonFileByte, _ := io.ReadAll(jsonFile)
 	_ = jsonFile.Close()
 
 	var config Config

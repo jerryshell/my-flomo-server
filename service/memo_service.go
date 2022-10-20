@@ -2,13 +2,14 @@ package service
 
 import (
 	"errors"
+	"log"
+	"math/rand"
+	"time"
+
 	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
 	"gopkg.in/gomail.v2"
-	"log"
-	"math/rand"
-	"time"
 )
 
 func MemoListByUserID(userID string) ([]model.Memo, error) {

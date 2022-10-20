@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/jerryshell/my-flomo-server/model"
 	"log"
+
+	"github.com/jerryshell/my-flomo-server/model"
 )
 
 func Register(username, password string) (*model.User, error) {

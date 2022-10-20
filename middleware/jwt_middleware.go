@@ -1,12 +1,13 @@
 package middleware
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/jerryshell/my-flomo-server/util"
-	"log"
-	"net/http"
 )
 
 func JWTMiddleware() gin.HandlerFunc {

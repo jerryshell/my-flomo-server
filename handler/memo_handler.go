@@ -1,14 +1,15 @@
 package handler
 
 import (
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/form"
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/result"
 	"github.com/jerryshell/my-flomo-server/service"
-	"log"
-	"net/http"
-	"strings"
 )
 
 func MemoList(c *gin.Context) {

@@ -28,6 +28,7 @@ func Setup(app *gin.Engine) {
 		pluginGroup.GET("/getToken", middleware.JWTMiddleware(), handler.PluginTokenGet)
 		pluginGroup.POST("/createToken", middleware.JWTMiddleware(), handler.PluginTokenCreate)
 		pluginGroup.POST("/createMemo/:pluginToken", handler.PluginTokenCreateMemo)
+		pluginGroup.GET("/randomMemo/:pluginToken", handler.PluginTokenRandomMemo)
 	}
 
 	app.POST("/user/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
