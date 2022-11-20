@@ -7,6 +7,8 @@ import (
 )
 
 func Setup(app *gin.Engine) {
+	app.GET("/health", handler.Health)
+
 	authGroup := app.Group("/auth")
 	{
 		authGroup.POST("/login", handler.LoginOrRegister)
