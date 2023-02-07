@@ -33,7 +33,12 @@ func Setup(app *gin.Engine) {
 		pluginGroup.GET("/randomMemo/:pluginToken", handler.PluginTokenRandomMemo)
 	}
 
-	app.POST("/user/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
+	userGroup := app.Group("/user")
+	{
+		userGroup.POST("/updateEmail", middleware.JWTMiddleware(), handler.UpdateUserEmail)
+		userGroup.POST("/updatePassword", middleware.JWTMiddleware(), handler.UpdateUserPassword)
+	}
+
 	app.POST("/upload", middleware.JWTMiddleware(), handler.Upload)
 	app.POST("/deleteMyAccount", middleware.JWTMiddleware(), handler.DeleteMyAccount)
 	app.GET("/csvExport/token/:token", handler.CsvExport)
