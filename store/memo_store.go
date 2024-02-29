@@ -65,5 +65,5 @@ func MemoSave(memo *model.Memo) error {
 }
 
 func MemoDeleteByID(id string) error {
-	return db.DB.Delete(&model.Memo{}, id).Error
+	return db.DB.Delete(&model.Memo{BaseModel: model.BaseModel{ID: id}}).Error
 }
