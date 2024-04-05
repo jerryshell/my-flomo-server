@@ -74,6 +74,13 @@ func MemoDailyReview() error {
 		return errors.New("用户数据为空")
 	}
 
+	dialer := gomail.NewDialer(
+		config.Data.SmtpHost,
+		config.Data.SmtpPort,
+		config.Data.SmtpUsername,
+		config.Data.SMTPPassword,
+	)
+
 	for _, user := range userList {
 		log.Println("MemoDailyReview() user", user)
 
@@ -90,12 +97,6 @@ func MemoDailyReview() error {
 		message.SetHeader("Subject", config.Data.SmtpSubject)
 		message.SetBody("text/plain", memo.Content)
 
-		dialer := gomail.NewDialer(
-			config.Data.SmtpHost,
-			config.Data.SmtpPort,
-			config.Data.SmtpUsername,
-			config.Data.SMTPPassword,
-		)
 		if err = dialer.DialAndSend(message); err != nil {
 			log.Println("dialer.DialAndSend :: err", err)
 			continue
