@@ -1,10 +1,9 @@
 package config
 
 import (
-	"encoding/json"
-	"io"
 	"log"
 	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -19,7 +18,7 @@ type Config struct {
 	SmtpSubject  string `json:"smtpSubject"`
 }
 
-var defaultConfig = Config{
+var Data *Config = &Config{
 	Port:         8060,
 	DSN:          "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
 	JwtKey:       "jwT_p@sSw0rd",
@@ -28,36 +27,71 @@ var defaultConfig = Config{
 	SmtpPort:     587,
 	SmtpUsername: "",
 	SMTPPassword: "",
+	SmtpSubject:  "My Flomo 每日回顾",
 }
-
-var Data *Config
 
 func init() {
-	config, err := readConfig()
-	if err != nil {
-		log.Println("readConfig :: err", err)
-		log.Println("use default config ::", defaultConfig)
-		config = &defaultConfig
-	}
-	Data = config
-}
-
-func readConfig() (*Config, error) {
-	jsonFile, err := os.Open("config.json")
-	if err != nil {
-		log.Println("os.Open :: err", err)
-		_ = jsonFile.Close()
-		return &Config{}, err
+	// Port
+	port := os.Getenv("PORT")
+	if port != "" {
+		portInt, err := strconv.Atoi(port)
+		if err != nil {
+			log.Println("port strconv.Atoi :: err", err)
+		} else {
+			Data.Port = portInt
+		}
 	}
 
-	jsonFileByte, _ := io.ReadAll(jsonFile)
-	_ = jsonFile.Close()
-
-	var config Config
-	if err := json.Unmarshal(jsonFileByte, &config); err != nil {
-		log.Println("json.Unmarshal :: err", err)
-		return &Config{}, err
+	// DSN
+	dsn := os.Getenv("DSN")
+	if dsn != "" {
+		Data.DSN = dsn
 	}
 
-	return &config, nil
+	// JwtKey
+	jwtKey := os.Getenv("JWT_KEY")
+	if jwtKey != "" {
+		Data.JwtKey = jwtKey
+	}
+
+	// CronSpec
+	cronSpec := os.Getenv("CRON_SPEC")
+	if cronSpec != "" {
+		Data.CronSpec = cronSpec
+	}
+
+	// SmtpHost
+	smtpHost := os.Getenv("SMTP_HOST")
+	if smtpHost != "" {
+		Data.SmtpHost = smtpHost
+	}
+
+	// SmtpPort
+	smtpPort := os.Getenv("SMTP_PORT")
+	if smtpPort != "" {
+		smtpPortInt, err := strconv.Atoi(smtpPort)
+		if err != nil {
+			log.Println("smtpPort strconv.Atoi :: err", err, "use default smtpPort ::", Data.SmtpPort)
+		} else {
+			Data.SmtpPort = smtpPortInt
+		}
+	}
+
+	// SmtpUsername
+	smtpUsername := os.Getenv("SMTP_USERNAME")
+	if smtpUsername != "" {
+		Data.SmtpUsername = smtpUsername
+	}
+
+	// SMTPPassword
+	smtpPassword := os.Getenv("SMTP_PASSWORD")
+	if smtpPassword != "" {
+		Data.SMTPPassword = smtpPassword
+	}
+
+	// SmtpSubject
+	smtpSubject := os.Getenv("SMTP_SUBJECT")
+	if smtpSubject != "" {
+		Data.SmtpSubject = smtpSubject
+	}
 }

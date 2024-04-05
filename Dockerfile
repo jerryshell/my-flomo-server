@@ -12,8 +12,6 @@ ENV BINARY_NAME=my-flomo-server-${TARGETARCH}-${TARGETOS}
 
 COPY ./${BINARY_NAME} /my-flomo-server/${BINARY_NAME}
 
-COPY ./config.json /my-flomo-server/config.json
-
 EXPOSE 8060
 
 ENV GIN_MODE=release

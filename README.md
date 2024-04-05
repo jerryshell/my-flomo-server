@@ -7,38 +7,29 @@
 * 邮件每日回顾
 * 注销账号，永久抹除数据
 * CSV 数据导入导出
-* 服务端支持 ARMv7 部署
+* 服务端支持 ARMv7 部署（树莓派）
 
 ## 体验 Demo
 
-**⚠ 注意 ⚠ 推荐每个用户单独搭建自己的服务，体验 Demo 不保证数据安全性，所以请勿在体验 Demo 中使用真实用户名密码注册！请勿在体验
-Demo 中录入敏感数据！**
+~~[https://my-flomo.d8s.fun](https://my-flomo.d8s.fun)~~
 
-~~[https://my-flomo.pages.dev](https://my-flomo.pages.dev/)~~ **服务器到期，体验 Demo 已经关闭**
+**服务器到期，体验 Demo 的后端已经关闭**
 
 ## 如何运行
 
 ```bash
 # 0. 首先提前准备好 PostgreSQL
+
 # 1. 创建并进入 my-flomo-server 目录
 mkdir my-flomo-server && cd my-flomo-server
 
-# 2. 下载 config.json
-# 国际网络连接顺畅
-wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/config.json
-# 否则
-wget https://raw.fastgit.org/jerryshell/my-flomo-server/master/config.json
-
-# 3. 下载 docker-compose.yaml
-# 国际网络连接顺畅
+# 2. 下载 docker-compose.yaml
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
-# 否则
-wget https://raw.fastgit.org/jerryshell/my-flomo-server/master/docker-compose.yaml
 
-# 4. 根据自己的环境修改配置
-vim config.json
+# 3. 根据自己的环境修改配置
+vim docker-compose.yaml
 
-# 5. 启动服务
+# 4. 启动服务
 docker-compose up -d
 ```
 
@@ -47,6 +38,6 @@ docker-compose up -d
 * [Web 端](https://github.com/jerryshell/my-flomo-web)
 * [服务端](https://github.com/jerryshell/my-flomo-server)
 
-## 开源许可证
+## 开源协议
 
 [GNU Affero General Public License v3.0](https://choosealicense.com/licenses/agpl-3.0/)

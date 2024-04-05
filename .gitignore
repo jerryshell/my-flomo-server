@@ -1,5 +1,4 @@
 .DS_Store
 .idea
-config.prod.json
-config.json
 my-flomo-server-*
+docker-compose-pi.yaml
