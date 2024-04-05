@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: my-flomo-server
-          image: jerryshell/my-flomo-server
+          image: jerryshell/my-flomo-server:latest
           env:
             - name: CRON_SPEC
               value: 0 20 * * *

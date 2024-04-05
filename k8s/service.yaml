@@ -8,6 +8,5 @@ spec:
     - name: http
       port: 8060
       targetPort: http
-
   selector:
     app: my-flomo-server
