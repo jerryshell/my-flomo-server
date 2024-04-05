@@ -1,0 +1,44 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: my-flomo-server
+  labels:
+    app: my-flomo-server
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-flomo-server
+  template:
+    metadata:
+      labels:
+        app: my-flomo-server
+    spec:
+      containers:
+        - name: my-flomo-server
+          image: jerryshell/my-flomo-server
+          env:
+            - name: CRON_SPEC
+              value: 0 20 * * *
+            - name: DSN
+              value: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
+            - name: JWT_KEY
+              value: jwT_p@sSw0rd
+            - name: PORT
+              value: "8060"
+            - name: SMTP_HOST
+              value: smtp-mail.outlook.com
+            - name: SMTP_PASSWORD
+              value: YOUR_PASSWORD
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_SUBJECT
+              value: My Flomo 每日回顾
+            - name: SMTP_USERNAME
+              value: YOUR_EMAIL
+            - name: TZ
+              value: Asia/Shanghai
+          ports:
+            - name: http
+              containerPort: 8060

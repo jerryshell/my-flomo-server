@@ -7,7 +7,7 @@
 * 邮件每日回顾
 * 注销账号，永久抹除数据
 * CSV 数据导入导出
-* 服务端支持 ARMv7 部署（树莓派）
+* Docker 镜像支持 ARMv7（树莓派）
 
 ## 体验 Demo
 
@@ -16,6 +16,8 @@
 **服务器到期，体验 Demo 的后端已经关闭**
 
 ## 如何运行
+
+### Docker
 
 ```bash
 # 0. 首先提前准备好 PostgreSQL
@@ -32,6 +34,10 @@ vim docker-compose.yaml
 # 4. 启动服务
 docker-compose up -d
 ```
+
+### K8s
+
+具体请参考 [k8s/*.yaml](k8s)，同样也要注意修改 `deployment.yaml` 的环境配置
 
 ## 相关项目
 

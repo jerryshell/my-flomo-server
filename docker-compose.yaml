@@ -1,19 +1,17 @@
-version: "3"
-
 services:
   my-flomo-server:
     image: jerryshell/my-flomo-server:latest
     restart: unless-stopped
     environment:
-      - TZ=Asia/Shanghai
-      - PORT=8060
-      - DSN=host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
-      - JWT_KEY=jwT_p@sSw0rd
-      - CRON_SPEC=0 20 * * *
-      - SMTP_HOST=smtp-mail.outlook.com
-      - SMTP_PORT=587
-      - SMTP_USERNAME=
-      - SMTP_PASSWORD=
-      - SMTP_SUBJECT=My Flomo 每日回顾
+      TZ: Asia/Shanghai
+      PORT: 8060
+      DSN: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
+      JWT_KEY: jwT_p@sSw0rd
+      CRON_SPEC: 0 20 * * *
+      SMTP_HOST: smtp-mail.outlook.com
+      SMTP_PORT: 587
+      SMTP_USERNAME: YOUR_EMAIL
+      SMTP_PASSWORD: YOUR_PASSWORD
+      SMTP_SUBJECT: My Flomo 每日回顾
     ports:
-      - "8060:8060"
+      - 8060:8060
