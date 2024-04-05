@@ -1,97 +1,25 @@
 package config
 
-import (
-	"log"
-	"os"
-	"strconv"
-)
+import "github.com/caarlos0/env/v10"
 
 type Config struct {
-	Port         int    `json:"port"`
-	DSN          string `json:"dsn"`
-	JwtKey       string `json:"jwtKey"`
-	CronSpec     string `json:"cronSpec"`
-	SmtpHost     string `json:"smtpHost"`
-	SmtpPort     int    `json:"smtpPort"`
-	SmtpUsername string `json:"smtpUsername"`
-	SMTPPassword string `json:"smtpPassword"`
-	SmtpSubject  string `json:"smtpSubject"`
+	Port         int    `json:"port" env:"PORT" envDefault:"8060"`
+	DSN          string `json:"dsn" env:"DSN" envDefault:"host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai"`
+	JwtKey       string `json:"jwtKey" env:"JWT_KEY" envDefault:"YOUR_JWT_KEY"`
+	CronSpec     string `json:"cronSpec" env:"CRON_SPEC" envDefault:"0 20 * * *"`
+	SmtpHost     string `json:"smtpHost" env:"SMTP_HOST" envDefault:"smtp-mail.outlook.com"`
+	SmtpPort     int    `json:"smtpPort" env:"SMTP_PORT" envDefault:"587"`
+	SmtpUsername string `json:"smtpUsername" env:"SMTP_USERNAME" envDefault:"YOUR_EMAIL"`
+	SMTPPassword string `json:"smtpPassword" env:"SMTP_PASSWORD" envDefault:"YOUR_PASSWORD"`
+	SmtpSubject  string `json:"smtpSubject" env:"SMTP_SUBJECT" envDefault:"My Flomo 每日回顾"`
 }
 
-var Data *Config = &Config{
-	Port:         8060,
-	DSN:          "host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai",
-	JwtKey:       "jwT_p@sSw0rd",
-	CronSpec:     "0 20 * * *",
-	SmtpHost:     "smtp-mail.outlook.com",
-	SmtpPort:     587,
-	SmtpUsername: "",
-	SMTPPassword: "",
-	SmtpSubject:  "My Flomo 每日回顾",
-}
+var Data *Config = &Config{}
 
 func init() {
-	// Port
-	port := os.Getenv("PORT")
-	if port != "" {
-		portInt, err := strconv.Atoi(port)
-		if err != nil {
-			log.Println("port strconv.Atoi :: err", err)
-		} else {
-			Data.Port = portInt
-		}
+	cfg := Config{}
+	if err := env.Parse(&cfg); err != nil {
+		panic(err)
 	}
-
-	// DSN
-	dsn := os.Getenv("DSN")
-	if dsn != "" {
-		Data.DSN = dsn
-	}
-
-	// JwtKey
-	jwtKey := os.Getenv("JWT_KEY")
-	if jwtKey != "" {
-		Data.JwtKey = jwtKey
-	}
-
-	// CronSpec
-	cronSpec := os.Getenv("CRON_SPEC")
-	if cronSpec != "" {
-		Data.CronSpec = cronSpec
-	}
-
-	// SmtpHost
-	smtpHost := os.Getenv("SMTP_HOST")
-	if smtpHost != "" {
-		Data.SmtpHost = smtpHost
-	}
-
-	// SmtpPort
-	smtpPort := os.Getenv("SMTP_PORT")
-	if smtpPort != "" {
-		smtpPortInt, err := strconv.Atoi(smtpPort)
-		if err != nil {
-			log.Println("smtpPort strconv.Atoi :: err", err, "use default smtpPort ::", Data.SmtpPort)
-		} else {
-			Data.SmtpPort = smtpPortInt
-		}
-	}
-
-	// SmtpUsername
-	smtpUsername := os.Getenv("SMTP_USERNAME")
-	if smtpUsername != "" {
-		Data.SmtpUsername = smtpUsername
-	}
-
-	// SMTPPassword
-	smtpPassword := os.Getenv("SMTP_PASSWORD")
-	if smtpPassword != "" {
-		Data.SMTPPassword = smtpPassword
-	}
-
-	// SmtpSubject
-	smtpSubject := os.Getenv("SMTP_SUBJECT")
-	if smtpSubject != "" {
-		Data.SmtpSubject = smtpSubject
-	}
+	Data = &cfg
 }

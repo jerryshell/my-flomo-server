@@ -24,7 +24,7 @@ spec:
             - name: DSN
               value: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
             - name: JWT_KEY
-              value: jwT_p@sSw0rd
+              value: YOUR_JWT_KEY
             - name: PORT
               value: "8060"
             - name: SMTP_HOST
