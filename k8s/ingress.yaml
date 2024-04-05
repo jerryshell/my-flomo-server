@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-flomo-server-ingress
+spec:
+  rules:
+  - host: flomo-api.jerryshell.eu.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-flomo-server
+            port:
+              name: http

@@ -37,7 +37,7 @@ docker-compose up -d
 
 ### K8s
 
-具体请参考 [k8s/*.yaml](k8s)，同样也要注意修改 `deployment.yaml` 的环境配置
+具体请参考 [k8s/*.yaml](k8s)，同样也要注意修改 `deployment.yaml` 的环境配置、`ingress.yaml` 的域名
 
 ## 相关项目
 
