@@ -19,9 +19,11 @@
 
 ### Docker
 
-```bash
-# 0. 首先提前准备好 PostgreSQL
+首先提前准备好 PostgreSQL，并建立一个数据库即可
 
+无需建表，my-flomo-server 第一次启动会自动建表
+
+```bash
 # 1. 创建并进入 my-flomo-server 目录
 mkdir my-flomo-server && cd my-flomo-server
 
