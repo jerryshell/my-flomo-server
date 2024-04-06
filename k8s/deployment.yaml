@@ -24,7 +24,7 @@ spec:
             - name: CRON_SPEC
               value: 0 20 * * *
             - name: PORT
-              value: 8060
+              value: "8060"
             - name: TZ
               value: Asia/Shanghai
           ports:
