@@ -19,9 +19,7 @@
 
 ### Docker
 
-首先提前准备好 PostgreSQL，并建立一个数据库即可
-
-无需建表，my-flomo-server 第一次启动会自动建表
+首先提前准备好 PostgreSQL，并建立一个数据库即可，无需建表，my-flomo-server 第一次启动会自动建表
 
 ```bash
 # 1. 创建并进入 my-flomo-server 目录
@@ -39,11 +37,11 @@ docker-compose up -d
 
 ### K8s
 
-**my-flomo-server** 的部署请参考 [k8s/\*.yaml](k8s)，要注意修改 `deployment.yaml` 的环境配置、`ingress.yaml` 的域名
+请参考 [k8s/\*.yaml](k8s)，要注意修改 `configmap.yaml` 的环境配置以及 `ingress.yaml` 的域名
 
-局域网的 TLS Ingress 可以参考 [K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
+HomeLab 局域网环境下的 TLS Ingress 可以参考 [K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
 
-K8s PostgreSQL 的部署可以参考 [K8s PostgreSQL Longhorn](https://github.com/jerryshell/k8s-postgres-longhorn)
+K8s PostgreSQL 可以参考 [K8s PostgreSQL Longhorn](https://github.com/jerryshell/k8s-postgres-longhorn)
 
 ## 相关项目
 

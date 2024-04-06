@@ -17,25 +17,14 @@ spec:
       containers:
         - name: my-flomo-server
           image: jerryshell/my-flomo-server:latest
+          envFrom:
+            - configMapRef:
+                name: my-flomo-server-secret
           env:
             - name: CRON_SPEC
               value: 0 20 * * *
-            - name: DSN
-              value: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
-            - name: JWT_KEY
-              value: YOUR_JWT_KEY
             - name: PORT
-              value: "8060"
-            - name: SMTP_HOST
-              value: smtp-mail.outlook.com
-            - name: SMTP_PASSWORD
-              value: YOUR_PASSWORD
-            - name: SMTP_PORT
-              value: "587"
-            - name: SMTP_SUBJECT
-              value: My Flomo 每日回顾
-            - name: SMTP_USERNAME
-              value: YOUR_EMAIL
+              value: 8060
             - name: TZ
               value: Asia/Shanghai
           ports:
