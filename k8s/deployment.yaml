@@ -1,10 +1,9 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: my-flomo-server
   labels:
     app: my-flomo-server
-
 spec:
   replicas: 1
   selector:
