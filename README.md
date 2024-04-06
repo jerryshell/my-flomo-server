@@ -2,12 +2,12 @@
 
 ## 功能清单
 
-* Flomo 数据导入
-* Flomo API 兼容
-* 邮件每日回顾
-* 注销账号，永久抹除数据
-* CSV 数据导入导出
-* Docker 镜像支持 ARMv7（树莓派）
+- Flomo 数据导入
+- Flomo API 兼容
+- 邮件每日回顾
+- 注销账号，永久抹除数据
+- CSV 数据导入导出
+- Docker 镜像支持 ARMv7（树莓派）
 
 ## 体验 Demo
 
@@ -37,14 +37,16 @@ docker-compose up -d
 
 ### K8s
 
-具体请参考 [k8s/*.yaml](k8s)，同样也要注意修改 `deployment.yaml` 的环境配置、`ingress.yaml` 的域名
+**my-flomo-server** 的部署请参考 [k8s/\*.yaml](k8s)，要注意修改 `deployment.yaml` 的环境配置、`ingress.yaml` 的域名
 
 局域网的 TLS Ingress 可以参考 [K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
 
+K8s PostgreSQL 的部署可以参考 [K8s PostgreSQL Longhorn](https://github.com/jerryshell/k8s-postgres-longhorn)
+
 ## 相关项目
 
-* [Web 端](https://github.com/jerryshell/my-flomo-web)
-* [服务端](https://github.com/jerryshell/my-flomo-server)
+- [Web 端](https://github.com/jerryshell/my-flomo-web)
+- [服务端](https://github.com/jerryshell/my-flomo-server)
 
 ## 开源协议
 
