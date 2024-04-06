@@ -39,6 +39,8 @@ docker-compose up -d
 
 具体请参考 [k8s/*.yaml](k8s)，同样也要注意修改 `deployment.yaml` 的环境配置、`ingress.yaml` 的域名
 
+局域网的 TLS Ingress 可以参考 [K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
+
 ## 相关项目
 
 * [Web 端](https://github.com/jerryshell/my-flomo-web)
