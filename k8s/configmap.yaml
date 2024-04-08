@@ -8,7 +8,7 @@ data:
   DSN: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
   JWT_KEY: YOUR_JWT_KEY
   SMTP_HOST: smtp-mail.outlook.com
-  SMTP_PORT: 587
+  SMTP_PORT: "587"
   SMTP_USERNAME: YOUR_EMAIL
   SMTP_PASSWORD: YOUR_PASSWORD
   SMTP_SUBJECT: My Flomo 每日回顾
