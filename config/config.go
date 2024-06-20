@@ -17,9 +17,8 @@ type Config struct {
 var Data *Config = &Config{}
 
 func init() {
-	cfg := Config{}
-	if err := env.Parse(&cfg); err != nil {
+	var err = env.Parse(Data)
+	if err != nil {
 		panic(err)
 	}
-	Data = &cfg
 }
