@@ -1,6 +1,6 @@
 module github.com/jerryshell/my-flomo-server
 
-go 1.17
+go 1.22.4
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2
