@@ -67,8 +67,8 @@ func CsvExport(c *gin.Context) {
 	for _, memo := range memoList {
 		if err := csvWriter.Write([]string{
 			memo.ID,
-			memo.CreatedAt.Format("2006-01-02 15:04:05"),
-			memo.UpdatedAt.Format("2006-01-02 15:04:05"),
+			memo.CreatedAt.Format(time.DateTime),
+			memo.UpdatedAt.Format(time.DateTime),
 			memo.Content,
 		}); err != nil {
 			log.Println("csvWriter.Write :: err", err)
@@ -93,7 +93,9 @@ func CsvImport(c *gin.Context) {
 	}
 
 	fileSrc, err := csvFile.Open()
-	defer fileSrc.Close()
+	defer func() {
+		_ = fileSrc.Close()
+	}()
 
 	if err != nil {
 		log.Println("csvFile.Open :: err", err)
