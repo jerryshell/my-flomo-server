@@ -58,8 +58,8 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 		return nil, errors.New("memo 数据为空")
 	}
 
-	rand.Seed(time.Now().UnixNano())
-	index := rand.Intn(len(memoList))
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	index := r.Intn(len(memoList))
 
 	return &memoList[index], nil
 }
