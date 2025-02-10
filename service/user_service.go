@@ -2,10 +2,11 @@ package service
 
 import (
 	"errors"
+	"log"
+
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 func UserListByEmailIsNotNull() ([]model.User, error) {

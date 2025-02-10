@@ -1,14 +1,15 @@
 package main
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/route"
 	"github.com/jerryshell/my-flomo-server/service"
 	"github.com/robfig/cron/v3"
-	"log"
-	"strconv"
 )
 
 func main() {
