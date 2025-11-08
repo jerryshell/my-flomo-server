@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-base-200">
-      <Header />
+      {token && <Header />}
       
       <main className="flex-1">
         <Routes>
@@ -64,7 +64,7 @@ function App() {
         </Routes>
       </main>
 
-      <Footer />
+      {token && <Footer />}
     </div>
   );
 }

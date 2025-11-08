@@ -3,10 +3,7 @@ import authApi from "../api/authApi";
 import LoginResponse from "../interfaces/LoginResponse";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
-import {
-  validateEmail,
-  getEmailValidationMessage,
-} from "../utils/emailValidator";
+import { getEmailValidationMessage } from "../utils/emailValidator";
 
 const Logging = () => (
   <button className="btn btn-primary w-full" disabled>
@@ -24,7 +21,6 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState("");
 
   const handleLoginClick = () => {
-    // 验证email格式
     const emailValidationMessage = getEmailValidationMessage(email);
     if (emailValidationMessage) {
       setEmailError(emailValidationMessage);
@@ -44,7 +40,6 @@ const LoginPage = () => {
     authApi
       .login(postData)
       .then((response) => {
-        console.log("login response", response);
         const success = response.data.success;
         if (!success) {
           alert(response.data.message);
@@ -72,7 +67,6 @@ const LoginPage = () => {
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    // 实时验证email格式
     if (value.trim().length > 0) {
       const validationMessage = getEmailValidationMessage(value);
       setEmailError(validationMessage);
@@ -88,13 +82,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content flex-col lg:flex-row-reverse">
+    <div className="hero h-screen bg-base-200 overflow-hidden">
+      <div className="hero-content flex-col lg:flex-row-reverse h-full">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">My Flomo</h1>
-          <p className="py-6">
-            一个简洁的个人备忘录应用，随时随地记录你的想法和灵感
-          </p>
+          <p className="py-6">随时随地记录想法和灵感</p>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <div className="card-body">
