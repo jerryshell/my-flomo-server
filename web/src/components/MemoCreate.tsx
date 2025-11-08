@@ -40,7 +40,7 @@ const MemoCreate = (props: { fetchMemoList(): void }) => {
 
       <div className="form-control">
         <button
-          className={`btn btn-primary ${isLoading ? "loading" : ""}`}
+          className={`btn btn-primary w-full ${isLoading ? "loading" : ""}`}
           onClick={handleSaveBtnClick}
           disabled={!newMemo.trim() || isLoading}
         >
