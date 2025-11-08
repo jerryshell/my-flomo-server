@@ -42,7 +42,7 @@ const MemoListItem = (props: { memo: Memo }) => {
   const handleMemoDeleteBtnClick = (id: string) => {
     showModal({
       title: "确认删除",
-      message: "确定要删除这条备忘录吗？",
+      message: "确定要删除这条想法吗？",
       type: "warning",
       confirmText: "删除",
       cancelText: "取消",
@@ -68,68 +68,129 @@ const MemoListItem = (props: { memo: Memo }) => {
 
   return (
     <>
-      <div className="card bg-base-100 shadow-md mb-4">
-        <div className="card-body p-4">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="card-title text-sm font-normal text-base-content/60">
-              {dayjs(memo.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-            </h3>
+      <div className="card bg-base-100 shadow-lg border border-base-300/50">
+        <div className="card-body p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <h3 className="text-sm font-medium text-base-content/70">
+                {dayjs(memo.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+              </h3>
+            </div>
 
             <div className="flex space-x-2">
               {editModeFlag ? (
                 <>
                   <button
-                    className="btn btn-sm btn-success"
+                    className="btn btn-sm btn-success btn-outline gap-2"
                     onClick={handleUpdateBtnClick}
                     disabled={isLoading}
                   >
                     {isLoading ? (
-                      <span className="loading loading-spinner"></span>
+                      <span className="loading loading-spinner loading-xs"></span>
                     ) : (
-                      "更新"
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </>
                     )}
+                    更新
                   </button>
                   <button
-                    className="btn btn-sm btn-outline"
+                    className="btn btn-sm btn-outline gap-2"
                     onClick={handleCancelBtnClick}
                     disabled={isLoading}
                   >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                     取消
                   </button>
                 </>
               ) : (
                 <button
-                  className="btn btn-sm btn-outline"
+                  className="btn btn-sm btn-outline gap-2"
                   onClick={() => setEditModeFlag(true)}
                 >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
                   编辑
                 </button>
               )}
 
               <button
-                className="btn btn-sm btn-error"
+                className="btn btn-sm btn-error btn-outline gap-2"
                 onClick={() => handleMemoDeleteBtnClick(memo.id)}
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="loading loading-spinner"></span>
+                  <span className="loading loading-spinner loading-xs"></span>
                 ) : (
-                  "删除"
+                  <>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </>
                 )}
+                删除
               </button>
             </div>
           </div>
 
-          <div className="mt-2">
+          <div className="mt-4">
             {editModeFlag ? (
               <textarea
-                className="textarea textarea-bordered w-full h-32"
+                className="textarea textarea-bordered w-full h-32 text-base leading-relaxed resize-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 value={memo.content}
                 onChange={handleTextareaChange}
-                placeholder="编辑备忘录内容..."
+                placeholder="编辑想法内容..."
               />
             ) : (
-              <p className="whitespace-pre-wrap text-base">{memo.content}</p>
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-base-content/90 bg-base-200/50 rounded-lg p-4">
+                {memo.content}
+              </p>
             )}
           </div>
         </div>

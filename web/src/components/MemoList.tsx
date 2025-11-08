@@ -23,13 +23,47 @@ const MemoList = () => {
     });
   }, [memoList, memoKeyword]);
 
+  if (memoList.length === 0) {
+    return (
+      <div className="space-y-6">
+        <MemoKeywordFilter />
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body text-center py-12">
+            <div className="text-6xl mb-4">📝</div>
+            <h3 className="text-xl font-semibold mb-2">还没有想法</h3>
+            <p className="text-base-content/70">
+              创建你的第一条想法开始记录吧！
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (memoShowList.length === 0) {
+    return (
+      <div className="space-y-6">
+        <MemoKeywordFilter />
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold mb-2">没有找到匹配的想法</h3>
+            <p className="text-base-content/70">尝试使用不同的关键词进行搜索</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="space-y-6">
       <MemoKeywordFilter />
-      {memoShowList.map((memo) => (
-        <MemoListItem memo={memo} key={memo.id} />
-      ))}
-    </>
+      <div className="grid gap-4">
+        {memoShowList.map((memo) => (
+          <MemoListItem memo={memo} key={memo.id} />
+        ))}
+      </div>
+    </div>
   );
 };
 

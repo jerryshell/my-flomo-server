@@ -62,9 +62,7 @@ const CsvImport = (props: { fetchMemoList: () => void }) => {
     <>
       <div className="space-y-2">
         <h4 className="font-semibold">CSV 导入</h4>
-        <p className="text-sm text-base-content/70">
-          从 CSV 文件导入备忘录数据
-        </p>
+        <p className="text-sm text-base-content/70">从 CSV 文件导入想法数据</p>
 
         <div className="form-control">
           <input
