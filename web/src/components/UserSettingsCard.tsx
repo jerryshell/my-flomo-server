@@ -306,7 +306,17 @@ const UserSettingsCard = () => {
                   disabled={!dailyReviewEnabled}
                 />
                 <div className="text-xs text-base-content/50 mt-1">
-                  获取方法：向 @userinfobot 发送消息获取您的 Chat ID
+                  获取方法：向{" "}
+                  <a
+                    href="https://t.me/userinfobot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    @userinfobot
+                  </a>{" "}
+                  发送消息获取您的 Chat ID
                 </div>
               </div>
 
@@ -325,7 +335,17 @@ const UserSettingsCard = () => {
                   disabled={!dailyReviewEnabled}
                 />
                 <div className="text-xs text-base-content/50 mt-1">
-                  获取方法：通过 @BotFather 创建 Bot 获取 Token
+                  获取方法：通过{" "}
+                  <a
+                    href="https://t.me/BotFather"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    @BotFather
+                  </a>{" "}
+                  创建 Bot 获取 Token
                 </div>
               </div>
             </div>
