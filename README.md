@@ -7,7 +7,6 @@
 - 邮件每日回顾
 - 注销账号，永久抹除数据
 - CSV 数据导入导出
-- Docker 镜像支持 ARMv7（树莓派）
 
 ## 体验 Demo
 
@@ -17,40 +16,25 @@
 
 ## 如何运行
 
-### Docker
+### 本地运行
 
 my-flomo-server 使用 SQLite 数据库，无需额外准备数据库
 
 无需建表，my-flomo-server 第一次启动会自动创建 SQLite 数据库文件
 
 ```bash
-# 1. 创建并进入 my-flomo-server 目录
-mkdir my-flomo-server && cd my-flomo-server
+# 1. 克隆项目
+git clone https://github.com/jerryshell/my-flomo-server.git
+cd my-flomo-server
 
-# 2. 下载 docker-compose.yaml
-wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
+# 2. 安装依赖
+go mod download
 
-# 3. 根据自己的环境修改配置
-# 注意：需要添加 HOST 配置项，设置为 localhost 或你的域名
-vim docker-compose.yaml
-
-# 4. 启动服务
-docker-compose up -d
+# 3. 运行服务
+go run main.go
 ```
 
-### K8s
-
-请参考 [k8s/\*.yaml](k8s)
-
-要注意修改：
-
-- `configmap.yaml` 的 `data` 部分
-  - 添加 `HOST: localhost` 或你的域名
-- `ingress/ingress.yaml` 的 `host`
-- `ingress/tls-ingress.yaml` 的 `host`
-  - 这里的 TLS 需要前置条件，具体请看：[K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
-- `pvc.yaml` 的存储大小（默认为 1Gi）
-  - SQLite 数据库文件将存储在此持久卷中，确保数据不会在容器重启时丢失
+服务默认运行在 8080 端口，你可以通过修改配置文件来更改端口和其他设置。
 
 ## 相关项目
 
