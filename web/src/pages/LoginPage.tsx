@@ -152,7 +152,7 @@ const LoginPage = () => {
                   <Logging />
                 ) : (
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary w-full"
                     onClick={handleLoginClick}
                   >
                     登录/注册
