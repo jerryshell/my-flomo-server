@@ -13,6 +13,9 @@ type Config struct {
 	SmtpUsername string `json:"smtpUsername" env:"SMTP_USERNAME" envDefault:"YOUR_EMAIL"`
 	SMTPPassword string `json:"smtpPassword" env:"SMTP_PASSWORD" envDefault:"YOUR_PASSWORD"`
 	SmtpSubject  string `json:"smtpSubject" env:"SMTP_SUBJECT" envDefault:"My Flomo 每日回顾"`
+	Debug        bool   `json:"debug" env:"DEBUG" envDefault:"false"`
+	LogPath      string `json:"logPath" env:"LOG_PATH" envDefault:""`
+	LogLevel     string `json:"logLevel" env:"LOG_LEVEL" envDefault:"info"`
 }
 
 var Data *Config = &Config{}

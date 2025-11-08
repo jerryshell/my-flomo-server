@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/gin-contrib/cors"
@@ -9,6 +8,7 @@ import (
 	"github.com/jerryshell/my-flomo/api/config"
 	"github.com/jerryshell/my-flomo/api/route"
 	"github.com/jerryshell/my-flomo/api/service"
+	"github.com/jerryshell/my-flomo/api/util"
 	"github.com/robfig/cron/v3"
 )
 
@@ -35,17 +35,22 @@ func main() {
 }
 
 func initCron() {
+	logger := util.NewLogger("cron")
+	
 	c := cron.New()
 	_, err := c.AddFunc(config.Data.CronSpec, func() {
-		log.Println("cron job: " + config.Data.CronSpec)
+		logger.Info("cron job started", util.StringField("cron_spec", config.Data.CronSpec))
 		err := service.MemoDailyReview()
 		if err != nil {
-			log.Println("service.MemoDailyReview :: err", err)
+			logger.Error("memo daily review failed", util.ErrorField(err))
 			return
 		}
+		logger.Info("cron job completed successfully")
 	})
 	if err != nil {
-		log.Fatal("c.AddFunc :: err", err)
+		logger.Fatal("failed to add cron function", util.ErrorField(err))
 	}
 	c.Start()
+	
+	logger.Info("cron scheduler started")
 }

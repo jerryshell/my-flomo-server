@@ -1,8 +1,6 @@
 package store
 
 import (
-	"log"
-
 	"github.com/jerryshell/my-flomo/api/db"
 	"github.com/jerryshell/my-flomo/api/model"
 	"github.com/jerryshell/my-flomo/api/util"
@@ -15,11 +13,15 @@ func UserListByEmailIsNotNull() ([]model.User, error) {
 }
 
 func UserGetByID(id string) (*model.User, error) {
+	logger := util.NewLogger("user_store")
+	
 	user := &model.User{}
 	if err := db.DB.First(user, id).Error; err != nil {
-		log.Println("db.DB.First :: err", err)
+		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", id))
 		return nil, err
 	}
+	
+	logger.Debug("user retrieved by id", util.StringField("user_id", id))
 	return user, nil
 }
 
@@ -36,9 +38,11 @@ func UserGetByPluginToken(token string) (*model.User, error) {
 }
 
 func UserCreate(email string, password string) (*model.User, error) {
+	logger := util.NewLogger("user_store")
+	
 	id, err := util.NextIDStr()
 	if err != nil {
-		log.Println("util.NextIDStr :: err", err)
+		logger.Error("failed to generate next id", util.ErrorField(err))
 		return nil, err
 	}
 
@@ -50,6 +54,12 @@ func UserCreate(email string, password string) (*model.User, error) {
 		Password: password,
 	}
 	err = db.DB.Create(user).Error
+
+	if err != nil {
+		logger.Error("failed to create user", util.ErrorField(err), util.StringField("user_id", id), util.StringField("email", email))
+	} else {
+		logger.Info("user created successfully", util.StringField("user_id", id), util.StringField("email", email))
+	}
 
 	return user, err
 }

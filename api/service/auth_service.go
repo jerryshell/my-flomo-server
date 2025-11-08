@@ -2,23 +2,26 @@ package service
 
 import (
 	"errors"
-	"log"
 
 	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/util"
 )
 
 func Register(email, password string) (*model.User, error) {
+	logger := util.NewLogger("auth_service")
+	
 	user, err := UserGetByEmail(email)
 	if user.ID != "" {
-		log.Println("UserGetByEmail :: err", err)
+		logger.Warn("user already exists", util.StringField("email", email))
 		return nil, errors.New("用户已存在")
 	}
 
 	user, err = UserCreate(email, password)
 	if err != nil {
-		log.Println("UserCreate :: err", err)
+		logger.Error("failed to create user", util.ErrorField(err), util.StringField("email", email))
 		return nil, errors.New("创建用户失败")
 	}
 
+	logger.Info("user registered successfully", util.StringField("user_id", user.ID), util.StringField("email", email))
 	return user, nil
 }

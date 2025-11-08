@@ -1,7 +1,6 @@
 package store
 
 import (
-	"log"
 	"time"
 
 	"github.com/jerryshell/my-flomo/api/db"
@@ -22,9 +21,11 @@ func MemoGetByID(id string) (model.Memo, error) {
 }
 
 func MemoCreate(content string, userID string) (*model.Memo, error) {
+	logger := util.NewLogger("memo_store")
+	
 	id, err := util.NextIDStr()
 	if err != nil {
-		log.Println("util.NextIDStr :: err", err)
+		logger.Error("failed to generate next id", util.ErrorField(err))
 		return nil, err
 	}
 
@@ -37,13 +38,21 @@ func MemoCreate(content string, userID string) (*model.Memo, error) {
 	}
 	err = db.DB.Create(memo).Error
 
+	if err != nil {
+		logger.Error("failed to create memo", util.ErrorField(err), util.StringField("memo_id", id), util.StringField("user_id", userID))
+	} else {
+		logger.Info("memo created successfully", util.StringField("memo_id", id), util.StringField("user_id", userID))
+	}
+
 	return memo, err
 }
 
 func MemoCreateByTime(content string, userID string, createdAt time.Time) (*model.Memo, error) {
+	logger := util.NewLogger("memo_store")
+	
 	id, err := util.NextIDStr()
 	if err != nil {
-		log.Println("util.NextIDStr :: err", err)
+		logger.Error("failed to generate next id", util.ErrorField(err))
 		return nil, err
 	}
 
@@ -56,6 +65,12 @@ func MemoCreateByTime(content string, userID string, createdAt time.Time) (*mode
 		UserID:  userID,
 	}
 	err = db.DB.Create(memo).Error
+
+	if err != nil {
+		logger.Error("failed to create memo with custom time", util.ErrorField(err), util.StringField("memo_id", id), util.StringField("user_id", userID), util.TimeField("created_at", createdAt))
+	} else {
+		logger.Info("memo created successfully with custom time", util.StringField("memo_id", id), util.StringField("user_id", userID), util.TimeField("created_at", createdAt))
+	}
 
 	return memo, err
 }

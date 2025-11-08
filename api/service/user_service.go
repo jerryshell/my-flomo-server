@@ -3,11 +3,11 @@ package service
 import (
 	"crypto/rand"
 	"errors"
-	"log"
 	"math/big"
 
 	"github.com/jerryshell/my-flomo/api/model"
 	"github.com/jerryshell/my-flomo/api/store"
+	"github.com/jerryshell/my-flomo/api/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,43 +20,51 @@ func UserGetByEmail(email string) (*model.User, error) {
 }
 
 func UserCreate(email string, password string) (*model.User, error) {
+	logger := util.NewLogger("user_service")
+	
 	// 对密码进行bcrypt加密
 	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Println("bcrypt.GenerateFromPassword :: err", err)
+		logger.Error("failed to generate password hash", util.ErrorField(err))
 		return nil, errors.New("密码加密失败")
 	}
 
 	user, err := store.UserCreate(email, string(passwordBcrypt))
 	if err != nil {
-		log.Println("store.UserCreate :: err", err)
+		logger.Error("failed to create user in store", util.ErrorField(err), util.StringField("email", email))
 		return nil, err
 	}
+	
+	logger.Info("user created successfully", util.StringField("user_id", user.ID), util.StringField("email", email))
 	return user, nil
 }
 
 func UserUpdatePassword(userID string, password string) (*model.User, error) {
+	logger := util.NewLogger("user_service")
+	
 	user, err := store.UserGetByID(userID)
 	if err != nil {
-		log.Println("store.UserGetByID :: err", err)
+		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err
 	}
 	if user.ID == "" {
+		logger.Warn("user not found", util.StringField("user_id", userID))
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
 	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Println("bcrypt.GenerateFromPassword :: err", err)
+		logger.Error("failed to generate password hash", util.ErrorField(err))
 		return nil, errors.New("密码加密失败")
 	}
 
 	user.Password = string(passwordBcrypt)
 	if err = store.UserSave(user); err != nil {
-		log.Println("store.UserSave :: err", err)
+		logger.Error("failed to save user", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err
 	}
 
+	logger.Info("user password updated successfully", util.StringField("user_id", userID))
 	return user, nil
 }
 
@@ -65,12 +73,15 @@ func UserGetByPluginToken(token string) (*model.User, error) {
 }
 
 func UserUpdatePluginToken(userID string) (*model.User, error) {
+	logger := util.NewLogger("user_service")
+	
 	user, err := store.UserGetByID(userID)
 	if err != nil {
-		log.Println("store.UserGetByID :: err", err)
+		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err
 	}
 	if user.ID == "" {
+		logger.Warn("user not found", util.StringField("user_id", userID))
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
@@ -83,7 +94,7 @@ func UserUpdatePluginToken(userID string) (*model.User, error) {
 	for i := range token {
 		randomIndex, gen_err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
 		if gen_err != nil {
-			log.Println("rand.Int :: err", gen_err)
+			logger.Error("failed to generate random token", util.ErrorField(gen_err))
 			return nil, errors.New("生成随机令牌失败")
 		}
 		token[i] = charset[randomIndex.Int64()]
@@ -92,9 +103,10 @@ func UserUpdatePluginToken(userID string) (*model.User, error) {
 	user.PluginToken = string(token)
 
 	if err = store.UserSave(user); err != nil {
-		log.Println("store.UserSave :: err", err)
+		logger.Error("failed to save user with new plugin token", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err
 	}
 
+	logger.Info("user plugin token updated successfully", util.StringField("user_id", userID))
 	return user, nil
 }

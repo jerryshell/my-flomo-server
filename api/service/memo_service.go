@@ -2,13 +2,13 @@ package service
 
 import (
 	"errors"
-	"log"
 	"math/rand"
 	"time"
 
 	"github.com/jerryshell/my-flomo/api/config"
 	"github.com/jerryshell/my-flomo/api/model"
 	"github.com/jerryshell/my-flomo/api/store"
+	"github.com/jerryshell/my-flomo/api/util"
 	"gopkg.in/gomail.v2"
 )
 
@@ -29,17 +29,26 @@ func MemoSave(memo *model.Memo) error {
 }
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
+	logger := util.NewLogger("memo_service")
+	
 	memo, err := store.MemoGetByID(id)
 	if err != nil {
-		log.Println("store.MemoGetByID :: err", err)
+		logger.Error("failed to get memo by id", util.ErrorField(err), util.StringField("memo_id", id))
 		return nil, err
 	}
 	if memo.ID == "" {
+		logger.Warn("memo not found", util.StringField("memo_id", id))
 		return nil, errors.New("找不到 memo，id: " + id)
 	}
 
 	memo.Content = content
 	err = store.MemoSave(&memo)
+
+	if err != nil {
+		logger.Error("failed to save memo", util.ErrorField(err), util.StringField("memo_id", id))
+	} else {
+		logger.Info("memo updated successfully", util.StringField("memo_id", id))
+	}
 
 	return &memo, err
 }
@@ -49,30 +58,40 @@ func MemoDeleteByID(id string) error {
 }
 
 func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
+	logger := util.NewLogger("memo_service")
+	
 	memoList, err := MemoListByUserID(userID)
 	if err != nil {
-		log.Println("MemoListByUserID :: err", err)
+		logger.Error("failed to get memo list by user id", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err
 	}
 	if len(memoList) == 0 {
+		logger.Warn("memo list is empty", util.StringField("user_id", userID))
 		return nil, errors.New("memo 数据为空")
 	}
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	index := r.Intn(len(memoList))
+	
+	logger.Debug("random memo selected", util.StringField("user_id", userID), util.IntField("memo_count", len(memoList)), util.IntField("selected_index", index))
 
 	return &memoList[index], nil
 }
 
 func MemoDailyReview() error {
+	logger := util.NewLogger("memo_service")
+	
 	userList, err := UserListByEmailIsNotNull()
 	if err != nil {
-		log.Println("UserListByEmailIsNotNull :: err", err)
+		logger.Error("failed to get user list with email", util.ErrorField(err))
 		return err
 	}
 	if len(userList) == 0 {
+		logger.Warn("user list with email is empty")
 		return errors.New("用户数据为空")
 	}
+
+	logger.Info("starting daily review for users", util.IntField("user_count", len(userList)))
 
 	dialer := gomail.NewDialer(
 		config.Data.SmtpHost,
@@ -81,15 +100,20 @@ func MemoDailyReview() error {
 		config.Data.SMTPPassword,
 	)
 
+	successCount := 0
+	failCount := 0
+
 	for _, user := range userList {
-		log.Println("MemoDailyReview() user", user)
+		logger.Debug("processing user for daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
 
 		memo, err := MemoGetRandomByUserID(user.ID)
-		log.Println("MemoDailyReview() memo", memo)
 		if err != nil {
-			log.Println("MemoGetRandomByUserID :: err", err)
+			logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))
+			failCount++
 			continue
 		}
+
+		logger.Debug("selected memo for user", util.StringField("user_id", user.ID), util.StringField("memo_id", memo.ID))
 
 		message := gomail.NewMessage()
 		message.SetHeader("From", config.Data.SmtpUsername)
@@ -98,10 +122,16 @@ func MemoDailyReview() error {
 		message.SetBody("text/plain", memo.Content)
 
 		if err = dialer.DialAndSend(message); err != nil {
-			log.Println("dialer.DialAndSend :: err", err)
+			logger.Error("failed to send email to user", util.ErrorField(err), util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+			failCount++
 			continue
 		}
+
+		logger.Info("daily review email sent successfully", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+		successCount++
 	}
+
+	logger.Info("daily review completed", util.IntField("success_count", successCount), util.IntField("fail_count", failCount))
 
 	return nil
 }

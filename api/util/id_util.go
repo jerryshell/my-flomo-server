@@ -1,7 +1,6 @@
 package util
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/sony/sonyflake"
@@ -27,10 +26,14 @@ func NextID() (uint64, error) {
 }
 
 func NextIDStr() (string, error) {
+	logger := NewLogger("id_util")
+	
 	id, err := NextID()
 	if err != nil {
-		log.Println("NextID :: err", err)
+		logger.Error("failed to generate next id", ErrorField(err))
 		return "", err
 	}
+	
+	logger.Debug("generated new id", StringField("id", strconv.FormatUint(id, 10)))
 	return strconv.FormatUint(id, 10), nil
 }
