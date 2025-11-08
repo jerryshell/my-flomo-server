@@ -6,9 +6,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/store"
+	"github.com/jerryshell/my-flomo/api/config"
+	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/store"
 	"gopkg.in/gomail.v2"
 )
 

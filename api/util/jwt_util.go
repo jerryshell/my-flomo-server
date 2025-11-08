@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/jerryshell/my-flomo-server/config"
+	"github.com/jerryshell/my-flomo/api/config"
 )
 
 func VerifyToken(tokenString string) (*jwt.MapClaims, error) {

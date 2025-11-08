@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/result"
-	"github.com/jerryshell/my-flomo-server/service"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo/api/result"
+	"github.com/jerryshell/my-flomo/api/service"
+	"github.com/jerryshell/my-flomo/api/util"
 )
 
 func JWTMiddleware() gin.HandlerFunc {

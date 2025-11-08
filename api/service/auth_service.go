@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo/api/model"
 )
 
 func Register(email, password string) (*model.User, error) {

@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/form"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/result"
-	"github.com/jerryshell/my-flomo-server/service"
+	"github.com/jerryshell/my-flomo/api/form"
+	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/result"
+	"github.com/jerryshell/my-flomo/api/service"
 )
 
 func UpdateUserPassword(c *gin.Context) {

@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/form"
-	"github.com/jerryshell/my-flomo-server/result"
-	"github.com/jerryshell/my-flomo-server/service"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo/api/config"
+	"github.com/jerryshell/my-flomo/api/form"
+	"github.com/jerryshell/my-flomo/api/result"
+	"github.com/jerryshell/my-flomo/api/service"
+	"github.com/jerryshell/my-flomo/api/util"
 	"golang.org/x/crypto/bcrypt"
 )
 

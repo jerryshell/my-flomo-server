@@ -1,4 +1,4 @@
-module github.com/jerryshell/my-flomo-server
+module github.com/jerryshell/my-flomo/api
 
 go 1.24.0
 

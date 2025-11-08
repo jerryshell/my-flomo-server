@@ -4,9 +4,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/jerryshell/my-flomo-server/db"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo/api/db"
+	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/util"
 )
 
 func MemoListByUserID(userID string) ([]model.Memo, error) {

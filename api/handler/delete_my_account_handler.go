@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/db"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/result"
+	"github.com/jerryshell/my-flomo/api/db"
+	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/result"
 )
 
 func DeleteMyAccount(c *gin.Context) {

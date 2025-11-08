@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/result"
+	"github.com/jerryshell/my-flomo/api/result"
 )
 
 var Commit = func() string {

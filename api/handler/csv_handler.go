@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/model"
-	"github.com/jerryshell/my-flomo-server/result"
-	"github.com/jerryshell/my-flomo-server/service"
-	"github.com/jerryshell/my-flomo-server/util"
+	"github.com/jerryshell/my-flomo/api/model"
+	"github.com/jerryshell/my-flomo/api/result"
+	"github.com/jerryshell/my-flomo/api/service"
+	"github.com/jerryshell/my-flomo/api/util"
 )
 
 func CsvExport(c *gin.Context) {

@@ -2,8 +2,8 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/handler"
-	"github.com/jerryshell/my-flomo-server/middleware"
+	"github.com/jerryshell/my-flomo/api/handler"
+	"github.com/jerryshell/my-flomo/api/middleware"
 )
 
 func Setup(app *gin.Engine) {

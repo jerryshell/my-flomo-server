@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/route"
-	"github.com/jerryshell/my-flomo-server/service"
+	"github.com/jerryshell/my-flomo/api/config"
+	"github.com/jerryshell/my-flomo/api/route"
+	"github.com/jerryshell/my-flomo/api/service"
 	"github.com/robfig/cron/v3"
 )
 

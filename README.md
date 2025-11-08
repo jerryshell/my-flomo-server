@@ -110,7 +110,8 @@ npm install
 ```
 
 3. 配置环境变量
-   编辑 `.env` 文件，配置后端 API 地址：
+
+编辑 `.env` 文件，配置后端 API 地址：
 
 ```
 VITE_API_BASE_URL=http://localhost:8060

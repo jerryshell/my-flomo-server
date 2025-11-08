@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/jerryshell/my-flomo-server/config"
-	"github.com/jerryshell/my-flomo-server/model"
+	"github.com/jerryshell/my-flomo/api/config"
+	"github.com/jerryshell/my-flomo/api/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
