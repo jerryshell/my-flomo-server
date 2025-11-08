@@ -3,6 +3,7 @@ import authApi from "../api/authApi";
 import LoginResponse from "../interfaces/LoginResponse";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
+import { validateEmail, getEmailValidationMessage } from "../utils/emailValidator";
 
 const Logging = () => (
   <button disabled>
@@ -35,12 +36,21 @@ const LoginPage = () => {
 
   const [password, setPassword] = useState("");
   const [logging, setLogging] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   const handleLoginClick = () => {
+    // 验证email格式
+    const emailValidationMessage = getEmailValidationMessage(email);
+    if (emailValidationMessage) {
+      setEmailError(emailValidationMessage);
+      return;
+    }
+    
     if (email.length <= 0 || password.length <= 0) {
       alert("邮箱和密码不能为空");
       return;
     }
+    
     const postData = {
       email,
       password,
@@ -75,6 +85,17 @@ const LoginPage = () => {
     localStorage.setItem("expiresAt", loginResponse.expiresAt);
   };
 
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    // 实时验证email格式
+    if (value.trim().length > 0) {
+      const validationMessage = getEmailValidationMessage(value);
+      setEmailError(validationMessage);
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       handleLoginClick();
@@ -88,8 +109,14 @@ const LoginPage = () => {
         type="email"
         placeholder="邮箱"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => handleEmailChange(e.target.value)}
+        style={emailError ? { borderColor: "red" } : {}}
       />
+      {emailError && (
+        <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+          {emailError}
+        </div>
+      )}
       <input
         type="password"
         placeholder="密码"

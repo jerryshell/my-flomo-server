@@ -23,6 +23,12 @@ func LoginOrRegister(c *gin.Context) {
 		return
 	}
 
+	// 验证email格式
+	if emailValidationMessage := util.GetEmailValidationMessage(formData.Email); emailValidationMessage != "" {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(emailValidationMessage))
+		return
+	}
+
 	user, _ := service.UserGetByEmail(formData.Email)
 	if user.ID == "" {
 		userByRegister, err := service.Register(formData.Email, formData.Password)
@@ -66,6 +72,12 @@ func Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(formData); err != nil {
 		log.Println("c.ShouldBindJSON :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	// 验证email格式
+	if emailValidationMessage := util.GetEmailValidationMessage(formData.Email); emailValidationMessage != "" {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(emailValidationMessage))
 		return
 	}
 
