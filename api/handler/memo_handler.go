@@ -14,7 +14,7 @@ import (
 
 func MemoList(c *gin.Context) {
 	logger := util.NewLogger("memo_handler")
-	
+
 	user := c.MustGet("user").(*model.User)
 	memoList, err := service.MemoListByUserID(user.ID)
 	if err != nil {
@@ -22,14 +22,14 @@ func MemoList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, result.ErrorWithMessage(err.Error()))
 		return
 	}
-	
+
 	logger.Debug("memo list retrieved successfully", util.StringField("user_id", user.ID), util.IntField("memo_count", len(memoList)))
 	c.JSON(http.StatusOK, result.SuccessWithData(memoList))
 }
 
 func MemoCreate(c *gin.Context) {
 	logger := util.NewLogger("memo_handler")
-	
+
 	formData := &form.MemoCreateForm{}
 	if err := c.ShouldBindJSON(formData); err != nil {
 		logger.Error("failed to bind JSON for memo create", util.ErrorField(err))
@@ -59,7 +59,7 @@ func MemoCreate(c *gin.Context) {
 
 func MemoUpdate(c *gin.Context) {
 	logger := util.NewLogger("memo_handler")
-	
+
 	formData := &form.MemoUpdateForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		logger.Error("failed to bind JSON for memo update", util.ErrorField(err))
@@ -80,27 +80,27 @@ func MemoUpdate(c *gin.Context) {
 
 func MemoDeleteByID(c *gin.Context) {
 	logger := util.NewLogger("memo_handler")
-	
+
 	id := c.Param("id")
 	if err := service.MemoDeleteByID(id); err != nil {
 		logger.Error("failed to delete memo by id", util.ErrorField(err), util.StringField("memo_id", id))
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
-	
+
 	logger.Info("memo deleted successfully", util.StringField("memo_id", id))
 	c.JSON(http.StatusOK, result.Success())
 }
 
 func MemoDailyReview(c *gin.Context) {
 	logger := util.NewLogger("memo_handler")
-	
+
 	if err := service.MemoDailyReview(); err != nil {
 		logger.Error("failed to execute memo daily review", util.ErrorField(err))
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
-	
+
 	logger.Info("memo daily review executed successfully")
 	c.JSON(http.StatusOK, result.Success())
 }

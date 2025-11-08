@@ -42,7 +42,7 @@ func getBuildMode() string {
 	if buildInfo.commit == "" {
 		return "development (go run)"
 	}
-	
+
 	// 检查是否是调试模式
 	if info, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range info.Settings {
@@ -52,7 +52,7 @@ func getBuildMode() string {
 			}
 		}
 	}
-	
+
 	return "unknown"
 }
 
@@ -64,9 +64,9 @@ func Health(c *gin.Context) {
 
 	// 构建响应数据
 	data := gin.H{
-		"status":     "healthy",
-		"timestamp":  time.Now().Unix(),
-		"uptime":     time.Since(buildInfo.initTime).String(),
+		"status":    "healthy",
+		"timestamp": time.Now().Unix(),
+		"uptime":    time.Since(buildInfo.initTime).String(),
 		"version": gin.H{
 			"commit":     buildInfo.commit,
 			"go_version": buildInfo.goVersion,
@@ -74,16 +74,16 @@ func Health(c *gin.Context) {
 			"build_mode": getBuildMode(),
 		},
 		"runtime": gin.H{
-			"go_os":      runtime.GOOS,
-			"go_arch":    runtime.GOARCH,
+			"go_os":         runtime.GOOS,
+			"go_arch":       runtime.GOARCH,
 			"num_goroutine": runtime.NumGoroutine(),
-			"num_cpu":    runtime.NumCPU(),
+			"num_cpu":       runtime.NumCPU(),
 		},
 		"memory": gin.H{
-			"alloc":      m.Alloc,
+			"alloc":       m.Alloc,
 			"total_alloc": m.TotalAlloc,
-			"sys":        m.Sys,
-			"num_gc":     m.NumGC,
+			"sys":         m.Sys,
+			"num_gc":      m.NumGC,
 		},
 	}
 

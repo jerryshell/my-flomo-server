@@ -10,7 +10,7 @@ import (
 
 func VerifyToken(tokenString string) (jwt.MapClaims, error) {
 	logger := NewLogger("jwt_util")
-	
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			logger.Warn("unsupported signing method", StringField("algorithm", fmt.Sprintf("%v", token.Header["alg"])))
@@ -26,13 +26,13 @@ func VerifyToken(tokenString string) (jwt.MapClaims, error) {
 		logger.Warn("invalid jwt token")
 		return nil, errors.New("token无效")
 	}
-	
+
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		logger.Warn("invalid token claims type")
 		return nil, errors.New("无效的token声明")
 	}
-	
+
 	logger.Debug("jwt token verified successfully")
 	return claims, nil
 }

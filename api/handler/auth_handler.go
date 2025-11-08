@@ -16,7 +16,7 @@ import (
 
 func LoginOrRegister(c *gin.Context) {
 	logger := util.NewLogger("auth_handler")
-	
+
 	var formData = form.UserLoginOrRegisterForm{}
 	if err := c.ShouldBindJSON(&formData); err != nil {
 		logger.Error("failed to bind JSON for login/register", util.ErrorField(err))
@@ -72,37 +72,9 @@ func LoginOrRegister(c *gin.Context) {
 	}))
 }
 
-func Register(c *gin.Context) {
-	logger := util.NewLogger("auth_handler")
-	
-	formData := &form.UserLoginOrRegisterForm{}
-	if err := c.ShouldBindJSON(formData); err != nil {
-		logger.Error("failed to bind JSON for register", util.ErrorField(err))
-		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
-		return
-	}
-
-	// 验证email格式
-	if emailValidationMessage := util.GetEmailValidationMessage(formData.Email); emailValidationMessage != "" {
-		logger.Warn("invalid email format provided for registration", util.StringField("email", formData.Email))
-		c.JSON(http.StatusOK, result.ErrorWithMessage(emailValidationMessage))
-		return
-	}
-
-	user, err := service.Register(formData.Email, formData.Password)
-	if err != nil {
-		logger.Error("failed to register user", util.ErrorField(err), util.StringField("email", formData.Email))
-		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
-		return
-	}
-
-	logger.Info("user registered successfully", util.StringField("user_id", user.ID), util.StringField("email", user.Email))
-	c.JSON(http.StatusOK, result.Success())
-}
-
 func VerifyToken(c *gin.Context) {
 	logger := util.NewLogger("auth_handler")
-	
+
 	tokenString := c.Param("token")
 	mapClaims, err := util.VerifyToken(tokenString)
 	if err != nil {
@@ -110,14 +82,14 @@ func VerifyToken(c *gin.Context) {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
-	
+
 	email, ok := mapClaims["sub"].(string)
 	if !ok {
 		logger.Warn("invalid subject claim in token")
 		c.JSON(http.StatusOK, result.ErrorWithMessage("无效的token声明"))
 		return
 	}
-	
+
 	logger.Debug("token verified successfully", util.StringField("email", email))
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
 		"email": email,

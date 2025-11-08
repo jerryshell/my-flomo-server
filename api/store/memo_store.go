@@ -22,7 +22,7 @@ func MemoGetByID(id string) (model.Memo, error) {
 
 func MemoCreate(content string, userID string) (*model.Memo, error) {
 	logger := util.NewLogger("memo_store")
-	
+
 	id, err := util.NextIDStr()
 	if err != nil {
 		logger.Error("failed to generate next id", util.ErrorField(err))
@@ -49,7 +49,7 @@ func MemoCreate(content string, userID string) (*model.Memo, error) {
 
 func MemoCreateByTime(content string, userID string, createdAt time.Time) (*model.Memo, error) {
 	logger := util.NewLogger("memo_store")
-	
+
 	id, err := util.NextIDStr()
 	if err != nil {
 		logger.Error("failed to generate next id", util.ErrorField(err))

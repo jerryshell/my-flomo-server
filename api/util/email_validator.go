@@ -17,10 +17,10 @@ func GetEmailValidationMessage(email string) string {
 	if email == "" {
 		return "邮箱不能为空"
 	}
-	
+
 	if !ValidateEmail(email) {
 		return "请输入有效的邮箱地址"
 	}
-	
+
 	return ""
 }

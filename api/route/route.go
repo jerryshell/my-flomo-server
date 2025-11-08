@@ -13,7 +13,6 @@ func Setup(app *gin.Engine) {
 	{
 		authGroup.POST("/login", handler.LoginOrRegister)
 		authGroup.POST("/verifyToken/token/:token", handler.VerifyToken)
-		authGroup.POST("/register/", handler.Register)
 	}
 
 	memoGroup := app.Group("/memo")

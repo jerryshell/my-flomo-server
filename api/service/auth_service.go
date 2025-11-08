@@ -9,14 +9,14 @@ import (
 
 func Register(email, password string) (*model.User, error) {
 	logger := util.NewLogger("auth_service")
-	
-	user, err := UserGetByEmail(email)
+
+	user, _ := UserGetByEmail(email)
 	if user.ID != "" {
 		logger.Warn("user already exists", util.StringField("email", email))
 		return nil, errors.New("用户已存在")
 	}
 
-	user, err = UserCreate(email, password)
+	user, err := UserCreate(email, password)
 	if err != nil {
 		logger.Error("failed to create user", util.ErrorField(err), util.StringField("email", email))
 		return nil, errors.New("创建用户失败")

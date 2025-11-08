@@ -30,7 +30,7 @@ func MemoSave(memo *model.Memo) error {
 
 func MemoUpdate(id string, content string) (*model.Memo, error) {
 	logger := util.NewLogger("memo_service")
-	
+
 	memo, err := store.MemoGetByID(id)
 	if err != nil {
 		logger.Error("failed to get memo by id", util.ErrorField(err), util.StringField("memo_id", id))
@@ -59,7 +59,7 @@ func MemoDeleteByID(id string) error {
 
 func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 	logger := util.NewLogger("memo_service")
-	
+
 	memoList, err := MemoListByUserID(userID)
 	if err != nil {
 		logger.Error("failed to get memo list by user id", util.ErrorField(err), util.StringField("user_id", userID))
@@ -72,7 +72,7 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	index := r.Intn(len(memoList))
-	
+
 	logger.Debug("random memo selected", util.StringField("user_id", userID), util.IntField("memo_count", len(memoList)), util.IntField("selected_index", index))
 
 	return &memoList[index], nil
@@ -80,7 +80,7 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 
 func MemoDailyReview() error {
 	logger := util.NewLogger("memo_service")
-	
+
 	userList, err := UserListByEmailIsNotNull()
 	if err != nil {
 		logger.Error("failed to get user list with email", util.ErrorField(err))
