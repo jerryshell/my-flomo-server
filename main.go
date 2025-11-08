@@ -31,7 +31,7 @@ func main() {
 	route.Setup(app)
 
 	// run
-	_ = app.Run("0.0.0.0:" + strconv.Itoa(config.Data.Port))
+	_ = app.Run(config.Data.Host + ":" + strconv.Itoa(config.Data.Port))
 }
 
 func initCron() {

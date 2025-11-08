@@ -31,6 +31,7 @@ mkdir my-flomo-server && cd my-flomo-server
 wget https://raw.githubusercontent.com/jerryshell/my-flomo-server/master/docker-compose.yaml
 
 # 3. 根据自己的环境修改配置
+# 注意：需要添加 HOST 配置项，设置为 localhost 或你的域名
 vim docker-compose.yaml
 
 # 4. 启动服务
@@ -44,6 +45,7 @@ docker-compose up -d
 要注意修改：
 
 - `configmap.yaml` 的 `data` 部分
+  - 添加 `HOST: localhost` 或你的域名
 - `ingress/ingress.yaml` 的 `host`
 - `ingress/tls-ingress.yaml` 的 `host`
   - 这里的 TLS 需要前置条件，具体请看：[K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)

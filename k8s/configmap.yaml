@@ -5,6 +5,7 @@ metadata:
   labels:
     app: my-flomo-server
 data:
+  HOST: localhost
   DSN: /app/data/my-flomo.db
   JWT_KEY: YOUR_JWT_KEY
   SMTP_HOST: smtp-mail.outlook.com

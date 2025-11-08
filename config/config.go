@@ -3,6 +3,7 @@ package config
 import "github.com/caarlos0/env/v10"
 
 type Config struct {
+	Host         string `json:"host" env:"HOST" envDefault:"localhost"`
 	Port         int    `json:"port" env:"PORT" envDefault:"8060"`
 	DSN          string `json:"dsn" env:"DSN" envDefault:"my-flomo.db"`
 	JwtKey       string `json:"jwtKey" env:"JWT_KEY" envDefault:"YOUR_JWT_KEY"`

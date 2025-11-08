@@ -25,6 +25,8 @@ spec:
               value: 0 20 * * *
             - name: PORT
               value: "8060"
+            - name: HOST
+              value: "localhost"
             - name: TZ
               value: Asia/Shanghai
           ports:

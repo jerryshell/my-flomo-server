@@ -1,9 +1,10 @@
 package service
 
 import (
-	"encoding/base64"
+	"crypto/rand"
 	"errors"
 	"log"
+	"math/big"
 
 	"github.com/jerryshell/my-flomo-server/model"
 	"github.com/jerryshell/my-flomo-server/store"
@@ -73,9 +74,23 @@ func UserUpdatePluginToken(userID string) (*model.User, error) {
 		return nil, errors.New("找不到 user，id: " + userID)
 	}
 
-	// 生成新的插件令牌
-	user.PluginToken = base64.RawStdEncoding.EncodeToString([]byte(userID))
-	
+	// 定义字符集：小写字母、大写字母和数字
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	tokenLength := 32
+	token := make([]byte, tokenLength)
+
+	// 生成只包含字母和数字的随机令牌
+	for i := range token {
+		randomIndex, gen_err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		if gen_err != nil {
+			log.Println("rand.Int :: err", gen_err)
+			return nil, errors.New("生成随机令牌失败")
+		}
+		token[i] = charset[randomIndex.Int64()]
+	}
+
+	user.PluginToken = string(token)
+
 	if err = store.UserSave(user); err != nil {
 		log.Println("store.UserSave :: err", err)
 		return nil, err
