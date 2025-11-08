@@ -84,7 +84,7 @@ const LoginPage = () => {
   return (
     <div className="hero h-screen bg-base-200 overflow-hidden">
       <div className="hero-content flex-col lg:flex-row-reverse h-full">
-        <div className="text-center lg:text-left">
+        <div className="text-center lg:text-left shrink-0">
           <h1 className="text-5xl font-bold">My Flomo</h1>
           <p className="py-6">随时随地记录想法和灵感</p>
         </div>
