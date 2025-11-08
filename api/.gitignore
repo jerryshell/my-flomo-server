@@ -1,4 +1,5 @@
 .DS_Store
 .idea
+*.exe
 my-flomo-server-*
 my-flomo.db
