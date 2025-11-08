@@ -7,8 +7,15 @@ const userApi = {
   updatePassword: (data: { password: string }) => {
     return api.post("/user/updatePassword", data);
   },
-  updateSettings: (data: { dailyReviewEnabled: boolean }) => {
+  updateSettings: (data: {
+    dailyReviewEnabled: boolean;
+    telegramChatId?: string;
+    telegramBotToken?: string;
+  }) => {
     return api.post("/user/updateSettings", data);
+  },
+  triggerDailyReview: () => {
+    return api.get("/memo/dailyReview");
   },
 };
 

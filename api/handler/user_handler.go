@@ -50,6 +50,8 @@ func GetUserSettings(c *gin.Context) {
 	// 返回用户设置信息，排除敏感字段
 	settings := map[string]interface{}{
 		"dailyReviewEnabled": userWithSettings.DailyReviewEnabled,
+		"telegramChatId":     userWithSettings.TelegramChatID,
+		"telegramBotToken":   userWithSettings.TelegramBotToken,
 	}
 
 	c.JSON(http.StatusOK, result.SuccessWithData(settings))
@@ -64,7 +66,7 @@ func UpdateUserSettings(c *gin.Context) {
 		return
 	}
 
-	if _, err := service.UserUpdateSettings(user.ID, formData.DailyReviewEnabled); err != nil {
+	if _, err := service.UserUpdateSettings(user.ID, formData.DailyReviewEnabled, formData.TelegramChatID, formData.TelegramBotToken); err != nil {
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}

@@ -3,8 +3,10 @@ package service
 import (
 	"errors"
 	"math/rand"
+	"strconv"
 	"time"
 
+	telegram "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jerryshell/my-flomo/api/config"
 	"github.com/jerryshell/my-flomo/api/model"
 	"github.com/jerryshell/my-flomo/api/store"
@@ -78,33 +80,75 @@ func MemoGetRandomByUserID(userID string) (*model.Memo, error) {
 	return &memoList[index], nil
 }
 
+// sendTelegramMessage 发送Telegram消息
+func sendTelegramMessage(botToken string, chatID string, message string) error {
+	logger := util.NewLogger("telegram_service")
+
+	bot, err := telegram.NewBotAPI(botToken)
+	if err != nil {
+		logger.Error("failed to create telegram bot", util.ErrorField(err))
+		return err
+	}
+
+	chatIDInt, err := strconv.ParseInt(chatID, 10, 64)
+	if err != nil {
+		logger.Error("failed to parse chat id", util.ErrorField(err), util.StringField("chat_id", chatID))
+		return err
+	}
+
+	msg := telegram.NewMessage(chatIDInt, message)
+	_, err = bot.Send(msg)
+	if err != nil {
+		logger.Error("failed to send telegram message", util.ErrorField(err), util.StringField("chat_id", chatID))
+		return err
+	}
+
+	logger.Info("telegram message sent successfully", util.StringField("chat_id", chatID))
+	return nil
+}
+
 func MemoDailyReview() error {
 	logger := util.NewLogger("memo_service")
 
-	userList, err := UserListByEmailIsNotNull()
+	// 处理邮件每日回顾
+	emailUserList, err := UserListByEmailIsNotNull()
 	if err != nil {
 		logger.Error("failed to get user list with email", util.ErrorField(err))
 		return err
 	}
-	if len(userList) == 0 {
-		logger.Warn("user list with email is empty")
+
+	// 处理Telegram每日回顾
+	telegramUserList, err := UserListWithTelegramConfig()
+	if err != nil {
+		logger.Error("failed to get user list with telegram config", util.ErrorField(err))
+		return err
+	}
+
+	if len(emailUserList) == 0 && len(telegramUserList) == 0 {
+		logger.Warn("both email and telegram user lists are empty")
 		return errors.New("用户数据为空")
 	}
 
-	logger.Info("starting daily review for users", util.IntField("user_count", len(userList)))
+	logger.Info("starting daily review for users",
+		util.IntField("email_user_count", len(emailUserList)),
+		util.IntField("telegram_user_count", len(telegramUserList)))
 
+	// 邮件发送配置
 	dialer := gomail.NewDialer(
 		config.Data.SmtpHost,
 		config.Data.SmtpPort,
 		config.Data.SmtpUsername,
-		config.Data.SMTPPassword,
+		config.Data.SmtpPassword,
 	)
 
-	successCount := 0
-	failCount := 0
+	emailSuccessCount := 0
+	emailFailCount := 0
+	telegramSuccessCount := 0
+	telegramFailCount := 0
 
-	for _, user := range userList {
-		logger.Debug("processing user for daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+	// 处理邮件用户
+	for _, user := range emailUserList {
+		logger.Debug("processing user for email daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
 
 		// 检查用户是否开启了每日回顾功能
 		if !user.DailyReviewEnabled {
@@ -115,7 +159,7 @@ func MemoDailyReview() error {
 		memo, err := MemoGetRandomByUserID(user.ID)
 		if err != nil {
 			logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))
-			failCount++
+			emailFailCount++
 			continue
 		}
 
@@ -129,15 +173,51 @@ func MemoDailyReview() error {
 
 		if err = dialer.DialAndSend(message); err != nil {
 			logger.Error("failed to send email to user", util.ErrorField(err), util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
-			failCount++
+			emailFailCount++
 			continue
 		}
 
 		logger.Info("daily review email sent successfully", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
-		successCount++
+		emailSuccessCount++
 	}
 
-	logger.Info("daily review completed", util.IntField("success_count", successCount), util.IntField("fail_count", failCount))
+	// 处理Telegram用户
+	for _, user := range telegramUserList {
+		logger.Debug("processing user for telegram daily review", util.StringField("user_id", user.ID), util.StringField("telegram_chat_id", user.TelegramChatID))
+
+		// 检查用户是否开启了每日回顾功能
+		if !user.DailyReviewEnabled {
+			logger.Debug("daily review disabled for user, skipping", util.StringField("user_id", user.ID), util.StringField("telegram_chat_id", user.TelegramChatID))
+			continue
+		}
+
+		memo, err := MemoGetRandomByUserID(user.ID)
+		if err != nil {
+			logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))
+			telegramFailCount++
+			continue
+		}
+
+		logger.Debug("selected memo for user", util.StringField("user_id", user.ID), util.StringField("memo_id", memo.ID))
+
+		// 构建Telegram消息
+		telegramMessage := "📝 My Flomo 每日回顾\n\n" + memo.Content
+
+		if err = sendTelegramMessage(user.TelegramBotToken, user.TelegramChatID, telegramMessage); err != nil {
+			logger.Error("failed to send telegram message to user", util.ErrorField(err), util.StringField("user_id", user.ID), util.StringField("telegram_chat_id", user.TelegramChatID))
+			telegramFailCount++
+			continue
+		}
+
+		logger.Info("daily review telegram message sent successfully", util.StringField("user_id", user.ID), util.StringField("telegram_chat_id", user.TelegramChatID))
+		telegramSuccessCount++
+	}
+
+	logger.Info("daily review completed",
+		util.IntField("email_success_count", emailSuccessCount),
+		util.IntField("email_fail_count", emailFailCount),
+		util.IntField("telegram_success_count", telegramSuccessCount),
+		util.IntField("telegram_fail_count", telegramFailCount))
 
 	return nil
 }

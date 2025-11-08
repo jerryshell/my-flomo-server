@@ -15,6 +15,11 @@ const UserSettingsCard = () => {
   const [dailyReviewEnabled, setDailyReviewEnabled] = useState(false);
   const [preferencesLoading, setPreferencesLoading] = useState(false);
 
+  // Telegram Bot 配置状态
+  const [telegramChatId, setTelegramChatId] = useState("");
+  const [telegramBotToken, setTelegramBotToken] = useState("");
+  const [testing, setTesting] = useState(false);
+
   // 插件令牌状态
   const [pluginToken, setPluginToken] = useState("");
   const [tokenLoading, setTokenLoading] = useState(false);
@@ -37,12 +42,16 @@ const UserSettingsCard = () => {
         if (response.data.success) {
           const settings = response.data.data;
           setDailyReviewEnabled(settings.dailyReviewEnabled || false);
+          setTelegramChatId(settings.telegramChatId || "");
+          setTelegramBotToken(settings.telegramBotToken || "");
         }
       })
       .catch((error) => {
         console.error("获取用户设置失败", error);
         // 如果获取失败，使用默认值
         setDailyReviewEnabled(false);
+        setTelegramChatId("");
+        setTelegramBotToken("");
       });
   }, []);
 
@@ -105,7 +114,11 @@ const UserSettingsCard = () => {
   const handleUpdatePreferences = () => {
     setPreferencesLoading(true);
     userApi
-      .updateSettings({ dailyReviewEnabled })
+      .updateSettings({
+        dailyReviewEnabled,
+        telegramChatId,
+        telegramBotToken,
+      })
       .then((response) => {
         if (response.data.success) {
           showAlert({
@@ -132,6 +145,37 @@ const UserSettingsCard = () => {
       .finally(() => {
         setPreferencesLoading(false);
       });
+  };
+
+  // 测试每日回顾
+  const handleTestDailyReview = async () => {
+    setTesting(true);
+    try {
+      const response = await userApi.triggerDailyReview();
+
+      if (response.data.success) {
+        showAlert({
+          message: "每日回顾测试已触发！请检查您的 Telegram 消息",
+          type: "success",
+          duration: 3000,
+        });
+      } else {
+        showAlert({
+          message: response.data.message,
+          type: "error",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("触发每日回顾失败", error);
+      showAlert({
+        message: "触发每日回顾失败，请检查配置后重试",
+        type: "error",
+        duration: 3000,
+      });
+    } finally {
+      setTesting(false);
+    }
   };
 
   // 生成插件令牌
@@ -220,7 +264,8 @@ const UserSettingsCard = () => {
           <h3 className="font-semibold text-lg mb-4 pb-2 border-b border-base-300">
             偏好设置
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
+            {/* 开启每日回顾开关 */}
             <div className="form-control">
               <label className="label cursor-pointer justify-start gap-3">
                 <input
@@ -229,12 +274,62 @@ const UserSettingsCard = () => {
                   checked={dailyReviewEnabled}
                   onChange={(e) => setDailyReviewEnabled(e.target.checked)}
                 />
-                <span className="label-text">开启每日回顾邮件</span>
+                <span className="label-text">开启每日回顾</span>
               </label>
-              <div className="text-xs text-base-content/50 mt-1 ml-9">
-                每日回顾功能会在指定时间随机发送一条 Memo 到邮箱
+              {dailyReviewEnabled && (
+                <div className="text-xs text-base-content/50 mt-1 ml-9">
+                  开启后会在指定时间随机发送一条 Memo 到邮箱
+                </div>
+              )}
+            </div>
+
+            {/* Telegram Bot 配置 */}
+            <div
+              className={`space-y-3 transition-all duration-300 ${
+                dailyReviewEnabled
+                  ? "opacity-100 max-h-96"
+                  : "opacity-50 max-h-0 overflow-hidden"
+              }`}
+            >
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">
+                    Telegram Chat ID
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  className="input input-bordered input-sm"
+                  value={telegramChatId}
+                  onChange={(e) => setTelegramChatId(e.target.value)}
+                  placeholder="请输入您的 Telegram Chat ID"
+                  disabled={!dailyReviewEnabled}
+                />
+                <div className="text-xs text-base-content/50 mt-1">
+                  获取方法：向 @userinfobot 发送消息获取您的 Chat ID
+                </div>
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">
+                    Telegram Bot Token
+                  </span>
+                </label>
+                <input
+                  type="password"
+                  className="input input-bordered input-sm"
+                  value={telegramBotToken}
+                  onChange={(e) => setTelegramBotToken(e.target.value)}
+                  placeholder="请输入您的 Telegram Bot Token"
+                  disabled={!dailyReviewEnabled}
+                />
+                <div className="text-xs text-base-content/50 mt-1">
+                  获取方法：通过 @BotFather 创建 Bot 获取 Token
+                </div>
               </div>
             </div>
+
             <button
               className="btn btn-primary btn-sm w-full"
               onClick={handleUpdatePreferences}
@@ -246,6 +341,32 @@ const UserSettingsCard = () => {
                 "保存偏好设置"
               )}
             </button>
+
+            {/* 测试按钮 */}
+            <div className="form-control">
+              <div className="text-xs text-base-content/50 mb-2 text-center">
+                💡 测试前请先保存设置以确保配置生效
+              </div>
+              <button
+                className="btn btn-outline btn-sm w-full"
+                onClick={handleTestDailyReview}
+                disabled={
+                  testing ||
+                  !dailyReviewEnabled ||
+                  !telegramChatId ||
+                  !telegramBotToken
+                }
+              >
+                {testing ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  "测试每日回顾"
+                )}
+              </button>
+              <div className="text-xs text-base-content/50 mt-1">
+                点击测试按钮立刻触发每日回顾
+              </div>
+            </div>
           </div>
         </section>
 

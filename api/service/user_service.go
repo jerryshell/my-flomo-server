@@ -15,6 +15,10 @@ func UserListByEmailIsNotNull() ([]model.User, error) {
 	return store.UserListByEmailIsNotNull()
 }
 
+func UserListWithTelegramConfig() ([]model.User, error) {
+	return store.UserListWithTelegramConfig()
+}
+
 func UserGetByEmail(email string) (*model.User, error) {
 	return store.UserGetByEmail(email)
 }
@@ -128,7 +132,7 @@ func UserGetSettings(userID string) (*model.User, error) {
 	return user, nil
 }
 
-func UserUpdateSettings(userID string, dailyReviewEnabled bool) (*model.User, error) {
+func UserUpdateSettings(userID string, dailyReviewEnabled bool, telegramChatID string, telegramBotToken string) (*model.User, error) {
 	logger := util.NewLogger("user_service")
 
 	user, err := store.UserGetByID(userID)
@@ -142,6 +146,8 @@ func UserUpdateSettings(userID string, dailyReviewEnabled bool) (*model.User, er
 	}
 
 	user.DailyReviewEnabled = dailyReviewEnabled
+	user.TelegramChatID = telegramChatID
+	user.TelegramBotToken = telegramBotToken
 	if err = store.UserSave(user); err != nil {
 		logger.Error("failed to save user settings", util.ErrorField(err), util.StringField("user_id", userID))
 		return nil, err

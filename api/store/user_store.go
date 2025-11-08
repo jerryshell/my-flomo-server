@@ -12,6 +12,12 @@ func UserListByEmailIsNotNull() ([]model.User, error) {
 	return userList, err
 }
 
+func UserListWithTelegramConfig() ([]model.User, error) {
+	var userList []model.User
+	err := db.DB.Where("telegram_chat_id != '' AND telegram_bot_token != ''").Order("created_at desc").Find(&userList).Error
+	return userList, err
+}
+
 func UserGetByID(id string) (*model.User, error) {
 	logger := util.NewLogger("user_store")
 
