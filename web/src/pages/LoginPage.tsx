@@ -3,30 +3,15 @@ import authApi from "../api/authApi";
 import LoginResponse from "../interfaces/LoginResponse";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
-import { validateEmail, getEmailValidationMessage } from "../utils/emailValidator";
+import {
+  validateEmail,
+  getEmailValidationMessage,
+} from "../utils/emailValidator";
 
 const Logging = () => (
-  <button disabled>
-    <svg width="1em" height="1em" viewBox="0 0 24 24">
-      <path
-        fill="currentColor"
-        d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8 8 0 0 1 12 20Z"
-        opacity=".5"
-      />
-      <path
-        fill="currentColor"
-        d="M20 12h2A10 10 0 0 0 12 2V4A8 8 0 0 1 20 12Z"
-      >
-        <animateTransform
-          attributeName="transform"
-          dur="1s"
-          from="0 12 12"
-          repeatCount="indefinite"
-          to="360 12 12"
-          type="rotate"
-        />
-      </path>
-    </svg>
+  <button className="btn btn-primary w-full" disabled>
+    <span className="loading loading-spinner"></span>
+    登录中...
   </button>
 );
 
@@ -45,12 +30,12 @@ const LoginPage = () => {
       setEmailError(emailValidationMessage);
       return;
     }
-    
+
     if (email.length <= 0 || password.length <= 0) {
       alert("邮箱和密码不能为空");
       return;
     }
-    
+
     const postData = {
       email,
       password,
@@ -103,28 +88,68 @@ const LoginPage = () => {
   };
 
   return (
-    <fieldset onKeyUp={handleKeyUp}>
-      <legend>不存在的账号将自动注册</legend>
-      <input
-        type="email"
-        placeholder="邮箱"
-        value={email}
-        onChange={(e) => handleEmailChange(e.target.value)}
-        style={emailError ? { borderColor: "red" } : {}}
-      />
-      {emailError && (
-        <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-          {emailError}
+    <div className="hero min-h-screen bg-base-200">
+      <div className="hero-content flex-col lg:flex-row-reverse">
+        <div className="text-center lg:text-left">
+          <h1 className="text-5xl font-bold">My Flomo</h1>
+          <p className="py-6">
+            一个简洁的个人备忘录应用，随时随地记录你的想法和灵感
+          </p>
         </div>
-      )}
-      <input
-        type="password"
-        placeholder="密码"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      {logging ? <Logging /> : <button onClick={handleLoginClick}>登录</button>}
-    </fieldset>
+        <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+          <div className="card-body">
+            <h2 className="card-title">登录/注册</h2>
+            <p className="text-sm text-gray-500 mb-4">不存在的账号将自动注册</p>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">邮箱</span>
+              </label>
+              <input
+                type="email"
+                placeholder="请输入邮箱"
+                className={`input input-bordered ${
+                  emailError ? "input-error" : ""
+                }`}
+                value={email}
+                onChange={(e) => handleEmailChange(e.target.value)}
+              />
+              {emailError && (
+                <label className="label">
+                  <span className="label-text-alt text-error">
+                    {emailError}
+                  </span>
+                </label>
+              )}
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">密码</span>
+              </label>
+              <input
+                type="password"
+                placeholder="请输入密码"
+                className="input input-bordered"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyUp={handleKeyUp}
+              />
+            </div>
+
+            <div className="form-control mt-6">
+              {logging ? (
+                <Logging />
+              ) : (
+                <button className="btn btn-primary" onClick={handleLoginClick}>
+                  登录/注册
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

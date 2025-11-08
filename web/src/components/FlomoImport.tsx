@@ -3,6 +3,7 @@ import uploadApi from "../api/uploadApi";
 
 const FlomoImport = (props: { fetchMemoList: () => void }) => {
   const [uploadFileList, setUploadFileList] = useState<FileList | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileInputChange = (fileList: FileList | null) => {
     setUploadFileList(fileList);
@@ -13,6 +14,7 @@ const FlomoImport = (props: { fetchMemoList: () => void }) => {
       return;
     }
 
+    setIsLoading(true);
     const formData = new FormData();
     for (let i = 0; i < uploadFileList.length; i++) {
       formData.append("uploadFileList[]", uploadFileList[i]);
@@ -22,33 +24,64 @@ const FlomoImport = (props: { fetchMemoList: () => void }) => {
       .upload(formData)
       .then(() => {
         props.fetchMemoList();
+        alert("导入成功！");
+      })
+      .catch(() => {
+        alert("导入失败，请检查文件格式");
       })
       .finally(() => {
         setUploadFileList(null);
+        setIsLoading(false);
       });
   };
 
   return (
-    <details>
-      <summary>从 Flomo 导入</summary>
-      <p>
+    <div className="space-y-2">
+      <h4 className="font-semibold">从 Flomo 导入</h4>
+      <p className="text-sm text-gray-600">
         请选择从{" "}
-        <a href="https://flomoapp.com/mine?source=account" target="_blank">
+        <a
+          href="https://flomoapp.com/mine?source=account"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link link-primary"
+        >
           Flomo
         </a>{" "}
         导出的 HTML 文件，可以一次性选择多个
       </p>
-      <input
-        type="file"
-        name="uploadFileList"
-        accept="text/html"
-        multiple
-        onChange={(e) => {
-          handleFileInputChange(e.target.files);
-        }}
-      />
-      <button onClick={handleImportDataBtnClick}>提交</button>
-    </details>
+
+      <div className="form-control">
+        <input
+          type="file"
+          name="uploadFileList"
+          accept="text/html"
+          multiple
+          className="file-input file-input-bordered w-full"
+          onChange={(e) => {
+            handleFileInputChange(e.target.files);
+          }}
+        />
+      </div>
+
+      {uploadFileList && uploadFileList.length > 0 && (
+        <div className="text-sm text-success">
+          已选择 {uploadFileList.length} 个文件
+        </div>
+      )}
+
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={handleImportDataBtnClick}
+        disabled={!uploadFileList || isLoading}
+      >
+        {isLoading ? (
+          <span className="loading loading-spinner"></span>
+        ) : (
+          "提交导入"
+        )}
+      </button>
+    </div>
   );
 };
 

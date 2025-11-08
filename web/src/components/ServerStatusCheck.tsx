@@ -24,19 +24,38 @@ const ServerStatusCheck = () => {
       });
   }, []);
 
+  const getStatusColor = () => {
+    switch (serverStatus) {
+      case "在线":
+        return "text-success";
+      case "离线":
+        return "text-error";
+      default:
+        return "text-warning";
+    }
+  };
+
   return (
-    <>
-      <p>服务器状态：{serverStatus}</p>
-      <p>
-        服务器版本：
+    <div className="flex flex-col gap-1 text-sm">
+      <div className="flex items-center gap-2">
+        <span className="font-medium">服务器状态:</span>
+        <span className={`badge badge-sm ${getStatusColor()}`}>
+          {serverStatus}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-medium">服务器版本:</span>
         <a
           target="_blank"
+          rel="noopener noreferrer"
           href={`https://github.com/jerryshell/my-flomo-server/tree/${serverVersion}`}
+          className="link link-primary text-xs"
         >
-          {serverVersion}
+          {serverVersion || "未知"}
         </a>
-      </p>
-    </>
+      </div>
+    </div>
   );
 };
 

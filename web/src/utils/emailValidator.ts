@@ -15,10 +15,10 @@ export const getEmailValidationMessage = (email: string): string => {
   if (!email || email.trim().length === 0) {
     return "邮箱不能为空";
   }
-  
+
   if (!validateEmail(email)) {
     return "请输入有效的邮箱地址";
   }
-  
+
   return "";
 };

@@ -23,29 +23,71 @@ const HomePage = (props: { fetchMemoList(): void }) => {
   };
 
   return (
-    <>
-      <MemoCreate fetchMemoList={props.fetchMemoList} />
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* 左侧功能区域 */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* 创建备忘录卡片 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">创建备忘录</h2>
+              <MemoCreate fetchMemoList={props.fetchMemoList} />
+            </div>
+          </div>
 
-      <button onClick={logout} style={{ color: "#9E3B37" }}>
-        登出
-      </button>
+          {/* 导入导出卡片 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">数据管理</h2>
+              <div className="space-y-4">
+                <FlomoImport fetchMemoList={props.fetchMemoList} />
+                <CsvExport />
+                <CsvImport fetchMemoList={props.fetchMemoList} />
+              </div>
+            </div>
+          </div>
 
-      <FlomoImport fetchMemoList={props.fetchMemoList} />
+          {/* 用户设置卡片 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">用户设置</h2>
+              <div className="space-y-4">
+                <UserPasswordUpdate />
+                <UserSettings />
+                <PluginToken />
 
-      <CsvExport />
+                <div className="divider"></div>
 
-      <CsvImport fetchMemoList={props.fetchMemoList} />
+                <button
+                  className="btn btn-outline btn-error w-full"
+                  onClick={logout}
+                >
+                  登出
+                </button>
+              </div>
+            </div>
+          </div>
 
-      <DangerousArea logout={logout} />
+          {/* 危险区域卡片 */}
+          <div className="card bg-base-100 shadow-xl border-2 border-error">
+            <div className="card-body">
+              <h2 className="card-title text-error">危险区域</h2>
+              <DangerousArea logout={logout} />
+            </div>
+          </div>
+        </div>
 
-      <PluginToken />
-
-      <UserPasswordUpdate />
-
-      <UserSettings />
-
-      <MemoList />
-    </>
+        {/* 右侧备忘录列表 */}
+        <div className="lg:col-span-2">
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">我的备忘录</h2>
+              <MemoList />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

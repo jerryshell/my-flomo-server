@@ -9,6 +9,7 @@ const MemoListItem = (props: { memo: Memo }) => {
   const [editModeFlag, setEditModeFlag] = useState(false);
   const [memo, setMemo] = useState({ ...props.memo });
   const [memoList, setMemoList] = useRecoilState(atoms.memoList);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTextareaChange = (e: { target: { value: string } }) => {
     const content = e.target.value;
@@ -17,23 +18,39 @@ const MemoListItem = (props: { memo: Memo }) => {
   };
 
   const handleUpdateBtnClick = () => {
+    setIsLoading(true);
     setEditModeFlag(false);
-    memoApi.update(memo).then((response) => {
-      const success = response.data.success;
-      if (success) {
-        const memo = response.data.data;
-        setMemoList(
-          memoList.map((item) => (item.id === memo.id ? memo : item))
-        );
-      }
-    });
+    memoApi
+      .update(memo)
+      .then((response) => {
+        const success = response.data.success;
+        if (success) {
+          const memo = response.data.data;
+          setMemoList(
+            memoList.map((item) => (item.id === memo.id ? memo : item))
+          );
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const handleMemoDeleteBtnClick = (id: string) => {
+    if (!window.confirm("确定要删除这条备忘录吗？")) {
+      return;
+    }
+
+    setIsLoading(true);
     setMemoList(memoList.filter((item) => item.id !== id));
-    memoApi.deleteById(id).then((response) => {
-      console.log("delete memo response", response);
-    });
+    memoApi
+      .deleteById(id)
+      .then((response) => {
+        console.log("delete memo response", response);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const handleCancelBtnClick = () => {
@@ -42,42 +59,72 @@ const MemoListItem = (props: { memo: Memo }) => {
   };
 
   return (
-    <details open key={memo.id}>
-      <summary>{dayjs(memo.createdAt).format("YYYY-MM-DD HH:mm:ss")}</summary>
-      <p style={{ whiteSpace: "pre-wrap" }}>
-        {editModeFlag ? (
-          <textarea value={memo.content} onChange={handleTextareaChange} />
-        ) : (
-          memo.content
-        )}
-      </p>
-      <p>
-        {editModeFlag ? (
-          <>
-            <button style={{ float: "right" }} onClick={handleUpdateBtnClick}>
-              更新
-            </button>
-            <button style={{ float: "right" }} onClick={handleCancelBtnClick}>
-              取消
-            </button>
-          </>
-        ) : (
-          <button
-            style={{ float: "right" }}
-            onClick={() => setEditModeFlag(true)}
-          >
-            编辑
-          </button>
-        )}
+    <div className="card bg-base-100 shadow-md mb-4">
+      <div className="card-body p-4">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="card-title text-sm font-normal text-gray-500">
+            {dayjs(memo.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+          </h3>
 
-        <button
-          style={{ color: "#9E3B37", float: "right" }}
-          onClick={() => handleMemoDeleteBtnClick(memo.id)}
-        >
-          删除
-        </button>
-      </p>
-    </details>
+          <div className="flex space-x-2">
+            {editModeFlag ? (
+              <>
+                <button
+                  className="btn btn-sm btn-success"
+                  onClick={handleUpdateBtnClick}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="loading loading-spinner"></span>
+                  ) : (
+                    "更新"
+                  )}
+                </button>
+                <button
+                  className="btn btn-sm btn-outline"
+                  onClick={handleCancelBtnClick}
+                  disabled={isLoading}
+                >
+                  取消
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => setEditModeFlag(true)}
+              >
+                编辑
+              </button>
+            )}
+
+            <button
+              className="btn btn-sm btn-error"
+              onClick={() => handleMemoDeleteBtnClick(memo.id)}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "删除"
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-2">
+          {editModeFlag ? (
+            <textarea
+              className="textarea textarea-bordered w-full h-32"
+              value={memo.content}
+              onChange={handleTextareaChange}
+              placeholder="编辑备忘录内容..."
+            />
+          ) : (
+            <p className="whitespace-pre-wrap text-base">{memo.content}</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

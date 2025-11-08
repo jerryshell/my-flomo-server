@@ -3,14 +3,18 @@ import ServerStatusCheck from "./ServerStatusCheck";
 
 const Header = () => {
   return (
-    <>
-      <h1>
-        <img src={logo} alt="logo" />
-        <span> </span>
-        <span>My Flomo</span>
-      </h1>
-      <ServerStatusCheck />
-    </>
+    <div className="navbar bg-base-100 shadow-lg">
+      <div className="navbar-start">
+        <div className="flex items-center space-x-2">
+          <img src={logo} alt="logo" className="w-8 h-8" />
+          <span className="text-xl font-bold">My Flomo</span>
+        </div>
+      </div>
+
+      <div className="navbar-end">
+        <ServerStatusCheck />
+      </div>
+    </div>
   );
 };
 

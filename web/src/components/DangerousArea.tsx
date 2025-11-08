@@ -1,23 +1,73 @@
+import { useState } from "react";
 import deleteMyAccountApi from "../api/deleteMyAccountApi";
 
 const DangerousArea = (props: { logout: () => void }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const deleteMyAccount = () => {
-    deleteMyAccountApi.deleteMyAccount().then((response) => {
-      const success = response.data.success;
-      if (success) {
-        alert(response.data.message);
-        props.logout();
-      }
-    });
+    if (!showConfirm) {
+      setShowConfirm(true);
+      return;
+    }
+
+    setIsLoading(true);
+    deleteMyAccountApi
+      .deleteMyAccount()
+      .then((response) => {
+        const success = response.data.success;
+        if (success) {
+          alert(response.data.message);
+          props.logout();
+        }
+      })
+      .catch((error) => {
+        console.error("删除账号失败", error);
+        alert("删除账号失败，请重试");
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setShowConfirm(false);
+      });
   };
 
   return (
-    <details>
-      <summary>️⚠️ 危险区 ⚠️</summary>
-      <button onClick={deleteMyAccount}>
-        ⚠️ 账号注销，永久抹除数据，无法恢复，点击立刻生效 ⚠️
-      </button>
-    </details>
+    <div className="space-y-3">
+      {showConfirm ? (
+        <div className="space-y-2">
+          <p className="text-sm text-error font-medium">
+            确定要删除账号吗？此操作不可逆！
+          </p>
+          <div className="flex gap-2">
+            <button
+              className="btn btn-error btn-sm"
+              onClick={deleteMyAccount}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "确认删除"
+              )}
+            </button>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => setShowConfirm(false)}
+              disabled={isLoading}
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          className="btn btn-error btn-outline btn-sm w-full"
+          onClick={deleteMyAccount}
+        >
+          账号注销（永久抹除数据，无法恢复）
+        </button>
+      )}
+    </div>
   );
 };
 

@@ -3,8 +3,14 @@ import memoApi from "../api/memoApi";
 
 const MemoCreate = (props: { fetchMemoList(): void }) => {
   const [newMemo, setNewMemo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveBtnClick = () => {
+    if (!newMemo.trim()) {
+      return;
+    }
+
+    setIsLoading(true);
     memoApi
       .create({
         content: newMemo,
@@ -17,18 +23,31 @@ const MemoCreate = (props: { fetchMemoList(): void }) => {
       })
       .finally(() => {
         setNewMemo("");
+        setIsLoading(false);
       });
   };
 
   return (
-    <>
-      <textarea
-        placeholder="开始记录你的想法..."
-        value={newMemo}
-        onChange={(e) => setNewMemo(e.target.value)}
-      />
-      <button onClick={handleSaveBtnClick}>保存</button>
-    </>
+    <div className="space-y-4">
+      <div className="form-control">
+        <textarea
+          className="textarea textarea-bordered h-24"
+          placeholder="开始记录你的想法..."
+          value={newMemo}
+          onChange={(e) => setNewMemo(e.target.value)}
+        />
+      </div>
+
+      <div className="form-control">
+        <button
+          className={`btn btn-primary ${isLoading ? "loading" : ""}`}
+          onClick={handleSaveBtnClick}
+          disabled={!newMemo.trim() || isLoading}
+        >
+          {isLoading ? "保存中..." : "保存"}
+        </button>
+      </div>
+    </div>
   );
 };
 
