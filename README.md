@@ -36,7 +36,7 @@ My Flomo 是一个自托管的备忘录管理应用，提供与 Flomo 兼容的�
 
 ```
 My Flomo/
-├── api/                    # 后端服务
+├── api/                   # 后端服务
 │   ├── config/            # 配置管理
 │   ├── db/                # 数据库连接
 │   ├── form/              # 表单结构定义
@@ -77,19 +77,19 @@ go mod download
 3. 配置环境变量（可选配置）
 
 ```bash
-export HOST=localhost # 服务监听地址，默认 localhost
-export PORT=8060 # 服务监听端口，默认 8060
-export DSN=my-flomo.db # SQLite 数据库文件路径，默认 my-flomo.db
-export JWT_KEY=YOUR_JWT_KEY # JWT 签名密钥，默认 YOUR_JWT_KEY
-export CRON_SPEC="0 20 * * *" # 定时任务表达式，默认每天 20:00
+export HOST=localhost                  # 服务监听地址，默认 localhost
+export PORT=8060                       # 服务监听端口，默认 8060
+export DSN=my-flomo.db                 # SQLite 数据库文件路径，默认 my-flomo.db
+export JWT_KEY=YOUR_JWT_KEY            # JWT 签名密钥，默认 YOUR_JWT_KEY
+export CRON_SPEC="0 20 * * *"          # 定时任务表达式，默认每天 20:00
 export SMTP_HOST=smtp-mail.outlook.com # SMTP 服务器地址，默认 smtp-mail.outlook.com
-export SMTP_PORT=587 # SMTP 服务端口，默认 587
-export SMTP_USERNAME=YOUR_EMAIL # SMTP 认证用户名，默认 YOUR_EMAIL
-export SMTP_PASSWORD=YOUR_PASSWORD # SMTP 认证密码，默认 YOUR_PASSWORD
+export SMTP_PORT=587                   # SMTP 服务端口，默认 587
+export SMTP_USERNAME=YOUR_EMAIL        # SMTP 认证用户名，默认 YOUR_EMAIL
+export SMTP_PASSWORD=YOUR_PASSWORD     # SMTP 认证密码，默认 YOUR_PASSWORD
 export SMTP_SUBJECT="My Flomo 每日回顾" # 邮件主题，默认 "My Flomo 每日回顾"
-export DEBUG=false # 调试模式，默认 false
-export LOG_PATH= # 日志文件路径，默认空（输出到控制台）
-export LOG_LEVEL=info # 日志级别，默认 info
+export DEBUG=false                     # 调试模式，默认 false
+export LOG_PATH=                       # 日志文件路径，默认空（输出到控制台）
+export LOG_LEVEL=info                  # 日志级别，默认 info
 ```
 
 4. 启动后端服务
