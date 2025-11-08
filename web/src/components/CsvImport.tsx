@@ -1,9 +1,12 @@
 import { useState } from "react";
 import csvApi from "../api/csvApi";
+import { useAlert } from "../hooks/useModal";
+import Alert from "./Alert";
 
 const CsvImport = (props: { fetchMemoList: () => void }) => {
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { alertOpen, alertConfig, showAlert, hideAlert } = useAlert();
 
   const handleCsvFileInputChange = (fileList: FileList | null) => {
     if (fileList && fileList.length > 0) {
@@ -28,14 +31,26 @@ const CsvImport = (props: { fetchMemoList: () => void }) => {
         const success = response.data.success;
         if (success) {
           props.fetchMemoList();
-          alert("CSV导入成功！");
+          showAlert({
+            message: "CSV导入成功！",
+            type: "success",
+            duration: 2000,
+          });
         } else {
-          alert(response.data.message);
+          showAlert({
+            message: response.data.message,
+            type: "error",
+            duration: 3000,
+          });
         }
       })
       .catch((e) => {
         console.log(e);
-        alert("CSV导入失败，请检查文件格式");
+        showAlert({
+          message: "CSV导入失败，请检查文件格式",
+          type: "error",
+          duration: 3000,
+        });
       })
       .finally(() => {
         setCsvFile(null);
@@ -44,41 +59,51 @@ const CsvImport = (props: { fetchMemoList: () => void }) => {
   };
 
   return (
-    <div className="space-y-2">
-      <h4 className="font-semibold">CSV 导入</h4>
-      <p className="text-sm text-gray-600">从 CSV 文件导入备忘录数据</p>
+    <>
+      <div className="space-y-2">
+        <h4 className="font-semibold">CSV 导入</h4>
+        <p className="text-sm text-gray-600">从 CSV 文件导入备忘录数据</p>
 
-      <div className="form-control">
-        <input
-          type="file"
-          name="file"
-          accept="text/csv"
-          className="file-input file-input-bordered w-full"
-          onChange={(e) => {
-            const files = e.target.files;
-            if (files != null && files.length > 0) {
-              handleCsvFileInputChange(files);
-            }
-          }}
-        />
+        <div className="form-control">
+          <input
+            type="file"
+            name="file"
+            accept="text/csv"
+            className="file-input file-input-bordered w-full"
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files != null && files.length > 0) {
+                handleCsvFileInputChange(files);
+              }
+            }}
+          />
+        </div>
+
+        {csvFile && (
+          <div className="text-sm text-success">已选择文件: {csvFile.name}</div>
+        )}
+
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleCsvImportBtnClick}
+          disabled={!csvFile || isLoading}
+        >
+          {isLoading ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            "提交导入"
+          )}
+        </button>
       </div>
 
-      {csvFile && (
-        <div className="text-sm text-success">已选择文件: {csvFile.name}</div>
-      )}
-
-      <button
-        className="btn btn-primary btn-sm"
-        onClick={handleCsvImportBtnClick}
-        disabled={!csvFile || isLoading}
-      >
-        {isLoading ? (
-          <span className="loading loading-spinner"></span>
-        ) : (
-          "提交导入"
-        )}
-      </button>
-    </div>
+      <Alert
+        isOpen={alertOpen}
+        onClose={hideAlert}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        duration={alertConfig.duration}
+      />
+    </>
   );
 };
 

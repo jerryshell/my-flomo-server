@@ -4,6 +4,8 @@ import LoginResponse from "../interfaces/LoginResponse";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
 import { getEmailValidationMessage } from "../utils/emailValidator";
+import { useAlert } from "../hooks/useModal";
+import Alert from "../components/Alert";
 
 const Logging = () => (
   <button className="btn btn-primary w-full" disabled>
@@ -19,6 +21,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [logging, setLogging] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const { alertOpen, alertConfig, showAlert, hideAlert } = useAlert();
 
   const handleLoginClick = () => {
     const emailValidationMessage = getEmailValidationMessage(email);
@@ -28,7 +31,11 @@ const LoginPage = () => {
     }
 
     if (email.length <= 0 || password.length <= 0) {
-      alert("邮箱和密码不能为空");
+      showAlert({
+        message: "邮箱和密码不能为空",
+        type: "warning",
+        duration: 3000,
+      });
       return;
     }
 
@@ -42,7 +49,11 @@ const LoginPage = () => {
       .then((response) => {
         const success = response.data.success;
         if (!success) {
-          alert(response.data.message);
+          showAlert({
+            message: response.data.message,
+            type: "error",
+            duration: 3000,
+          });
           return;
         }
         const data = response.data.data;
@@ -50,7 +61,11 @@ const LoginPage = () => {
       })
       .catch((error) => {
         console.error("login error", error);
-        alert("登录失败");
+        showAlert({
+          message: "登录失败",
+          type: "error",
+          duration: 3000,
+        });
       })
       .finally(() => {
         setLogging(false);
@@ -82,66 +97,81 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="hero h-screen bg-base-200 overflow-hidden">
-      <div className="hero-content flex-col lg:flex-row-reverse h-full">
-        <div className="text-center lg:text-left shrink-0">
-          <h1 className="text-5xl font-bold">My Flomo</h1>
-          <p className="py-6">随时随地记录想法和灵感</p>
-        </div>
-        <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <div className="card-body">
-            <h2 className="card-title">登录/注册</h2>
-            <p className="text-sm text-gray-500 mb-4">不存在的账号将自动注册</p>
+    <>
+      <div className="hero h-screen bg-base-200 overflow-hidden">
+        <div className="hero-content flex-col lg:flex-row-reverse h-full">
+          <div className="text-center lg:text-left shrink-0">
+            <h1 className="text-5xl font-bold">My Flomo</h1>
+            <p className="py-6">随时随地记录想法和灵感</p>
+          </div>
+          <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+            <div className="card-body">
+              <h2 className="card-title">登录/注册</h2>
+              <p className="text-sm text-gray-500 mb-4">
+                不存在的账号将自动注册
+              </p>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">邮箱</span>
-              </label>
-              <input
-                type="email"
-                placeholder="请输入邮箱"
-                className={`input input-bordered ${
-                  emailError ? "input-error" : ""
-                }`}
-                value={email}
-                onChange={(e) => handleEmailChange(e.target.value)}
-              />
-              {emailError && (
+              <div className="form-control">
                 <label className="label">
-                  <span className="label-text-alt text-error">
-                    {emailError}
-                  </span>
+                  <span className="label-text">邮箱</span>
                 </label>
-              )}
-            </div>
+                <input
+                  type="email"
+                  placeholder="请输入邮箱"
+                  className={`input input-bordered ${
+                    emailError ? "input-error" : ""
+                  }`}
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                />
+                {emailError && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">
+                      {emailError}
+                    </span>
+                  </label>
+                )}
+              </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">密码</span>
-              </label>
-              <input
-                type="password"
-                placeholder="请输入密码"
-                className="input input-bordered"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyUp={handleKeyUp}
-              />
-            </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">密码</span>
+                </label>
+                <input
+                  type="password"
+                  placeholder="请输入密码"
+                  className="input input-bordered"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyUp={handleKeyUp}
+                />
+              </div>
 
-            <div className="form-control mt-6">
-              {logging ? (
-                <Logging />
-              ) : (
-                <button className="btn btn-primary" onClick={handleLoginClick}>
-                  登录/注册
-                </button>
-              )}
+              <div className="form-control mt-6">
+                {logging ? (
+                  <Logging />
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleLoginClick}
+                  >
+                    登录/注册
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <Alert
+        isOpen={alertOpen}
+        onClose={hideAlert}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        duration={alertConfig.duration}
+      />
+    </>
   );
 };
 

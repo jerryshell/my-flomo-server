@@ -36,7 +36,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col bg-base-200">
       {token && <Header />}
-      
+
       <main className="flex-1">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -48,19 +48,25 @@ function App() {
             />
           )}
 
-          <Route path="*" element={
-            <div className="hero min-h-screen">
-              <div className="hero-content text-center">
-                <div className="max-w-md">
-                  <h1 className="text-5xl font-bold">404</h1>
-                  <p className="py-6">页面未找到</p>
-                  <button className="btn btn-primary" onClick={() => navigate(token ? "/home" : "/login")}>
-                    返回首页
-                  </button>
+          <Route
+            path="*"
+            element={
+              <div className="hero min-h-screen">
+                <div className="hero-content text-center">
+                  <div className="max-w-md">
+                    <h1 className="text-5xl font-bold">404</h1>
+                    <p className="py-6">页面未找到</p>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => navigate(token ? "/home" : "/login")}
+                    >
+                      返回首页
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          } />
+            }
+          />
         </Routes>
       </main>
 
