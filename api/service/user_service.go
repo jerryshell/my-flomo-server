@@ -21,7 +21,7 @@ func UserGetByEmail(email string) (*model.User, error) {
 
 func UserCreate(email string, password string) (*model.User, error) {
 	logger := util.NewLogger("user_service")
-	
+
 	// 对密码进行bcrypt加密
 	passwordBcrypt, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -34,14 +34,14 @@ func UserCreate(email string, password string) (*model.User, error) {
 		logger.Error("failed to create user in store", util.ErrorField(err), util.StringField("email", email))
 		return nil, err
 	}
-	
+
 	logger.Info("user created successfully", util.StringField("user_id", user.ID), util.StringField("email", email))
 	return user, nil
 }
 
 func UserUpdatePassword(userID string, password string) (*model.User, error) {
 	logger := util.NewLogger("user_service")
-	
+
 	user, err := store.UserGetByID(userID)
 	if err != nil {
 		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
@@ -74,7 +74,7 @@ func UserGetByPluginToken(token string) (*model.User, error) {
 
 func UserUpdatePluginToken(userID string) (*model.User, error) {
 	logger := util.NewLogger("user_service")
-	
+
 	user, err := store.UserGetByID(userID)
 	if err != nil {
 		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
@@ -111,9 +111,26 @@ func UserUpdatePluginToken(userID string) (*model.User, error) {
 	return user, nil
 }
 
+func UserGetSettings(userID string) (*model.User, error) {
+	logger := util.NewLogger("user_service")
+
+	user, err := store.UserGetByID(userID)
+	if err != nil {
+		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
+		return nil, err
+	}
+	if user.ID == "" {
+		logger.Warn("user not found", util.StringField("user_id", userID))
+		return nil, errors.New("找不到 user，id: " + userID)
+	}
+
+	logger.Debug("user settings retrieved successfully", util.StringField("user_id", userID), util.BoolField("daily_review_enabled", user.DailyReviewEnabled))
+	return user, nil
+}
+
 func UserUpdateSettings(userID string, dailyReviewEnabled bool) (*model.User, error) {
 	logger := util.NewLogger("user_service")
-	
+
 	user, err := store.UserGetByID(userID)
 	if err != nil {
 		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))

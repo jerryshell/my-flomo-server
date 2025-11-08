@@ -30,8 +30,20 @@ const UserSettingsCard = () => {
       }
     });
 
-    // 获取用户设置（暂时使用默认值）
-    setDailyReviewEnabled(false);
+    // 获取用户设置
+    userApi
+      .getSettings()
+      .then((response) => {
+        if (response.data.success) {
+          const settings = response.data.data;
+          setDailyReviewEnabled(settings.dailyReviewEnabled || false);
+        }
+      })
+      .catch((error) => {
+        console.error("获取用户设置失败", error);
+        // 如果获取失败，使用默认值
+        setDailyReviewEnabled(false);
+      });
   }, []);
 
   // 更新密码
@@ -92,14 +104,34 @@ const UserSettingsCard = () => {
   // 更新偏好设置
   const handleUpdatePreferences = () => {
     setPreferencesLoading(true);
-    setTimeout(() => {
-      showAlert({
-        message: "偏好设置已保存！",
-        type: "success",
-        duration: 2000,
+    userApi
+      .updateSettings({ dailyReviewEnabled })
+      .then((response) => {
+        if (response.data.success) {
+          showAlert({
+            message: "偏好设置已保存！",
+            type: "success",
+            duration: 2000,
+          });
+        } else {
+          showAlert({
+            message: response.data.message,
+            type: "error",
+            duration: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("偏好设置更新失败", error);
+        showAlert({
+          message: "偏好设置更新失败，请重试",
+          type: "error",
+          duration: 3000,
+        });
+      })
+      .finally(() => {
+        setPreferencesLoading(false);
       });
-      setPreferencesLoading(false);
-    }, 1000);
   };
 
   // 生成插件令牌

@@ -38,6 +38,23 @@ func UpdateUserPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, result.Success())
 }
 
+func GetUserSettings(c *gin.Context) {
+	user := c.MustGet("user").(*model.User)
+
+	userWithSettings, err := service.UserGetSettings(user.ID)
+	if err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	// 返回用户设置信息，排除敏感字段
+	settings := map[string]interface{}{
+		"dailyReviewEnabled": userWithSettings.DailyReviewEnabled,
+	}
+
+	c.JSON(http.StatusOK, result.SuccessWithData(settings))
+}
+
 func UpdateUserSettings(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 

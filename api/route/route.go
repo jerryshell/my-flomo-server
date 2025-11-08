@@ -35,6 +35,7 @@ func Setup(app *gin.Engine) {
 
 	userGroup := app.Group("/user")
 	{
+		userGroup.GET("/getSettings", middleware.JWTMiddleware(), handler.GetUserSettings)
 		userGroup.POST("/updatePassword", middleware.JWTMiddleware(), handler.UpdateUserPassword)
 		userGroup.POST("/updateSettings", middleware.JWTMiddleware(), handler.UpdateUserSettings)
 	}

@@ -1,6 +1,9 @@
 import api from "./api";
 
 const userApi = {
+  getSettings: () => {
+    return api.get("/user/getSettings");
+  },
   updatePassword: (data: { password: string }) => {
     return api.post("/user/updatePassword", data);
   },
