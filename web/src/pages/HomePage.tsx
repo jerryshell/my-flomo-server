@@ -1,3 +1,4 @@
+import { useState } from "react";
 import MemoCreate from "../components/MemoCreate";
 import FlomoImport from "../components/FlomoImport";
 import CsvExport from "../components/CsvExport";
@@ -5,7 +6,9 @@ import CsvImport from "../components/CsvImport";
 import DangerousArea from "../components/DangerousArea";
 import MemoList from "../components/MemoList";
 import UserSettingsCard from "../components/UserSettingsCard";
-import ServerStatusCheck from "../components/ServerStatusCheck";
+import ServerStatus from "../components/ServerStatus";
+import ServerDetails from "../components/ServerDetails";
+import { useHealthCheck } from "../hooks/useHealthCheck";
 
 interface HomePageProps {
   fetchMemoList(): void;
@@ -13,6 +16,8 @@ interface HomePageProps {
 }
 
 const HomePage = (props: HomePageProps) => {
+  const { serverStatus, healthData } = useHealthCheck();
+  const [showDetails, setShowDetails] = useState(false);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
@@ -25,7 +30,15 @@ const HomePage = (props: HomePageProps) => {
                 <div className="w-3 h-3 bg-info rounded-full"></div>
                 <h2 className="card-title text-lg font-semibold">服务器状态</h2>
               </div>
-              <ServerStatusCheck />
+              <ServerStatus
+                status={serverStatus}
+                healthData={healthData}
+                onToggleDetails={() => setShowDetails(!showDetails)}
+                showDetails={showDetails}
+              />
+              {showDetails && healthData && (
+                <ServerDetails healthData={healthData} />
+              )}
             </div>
           </div>
 
