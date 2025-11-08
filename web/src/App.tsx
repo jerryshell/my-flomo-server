@@ -12,8 +12,18 @@ import { atoms } from "./atoms/atoms";
 function App() {
   const token = useRecoilValue(atoms.token);
   const setMemoList = useSetRecoilState(atoms.memoList);
+  const setEmail = useSetRecoilState(atoms.email);
+  const setToken = useSetRecoilState(atoms.token);
 
   const navigate = useNavigate();
+
+  const logout = () => {
+    setEmail("");
+    setToken("");
+    localStorage.removeItem("email");
+    localStorage.removeItem("token");
+    localStorage.removeItem("expiresAt");
+  };
 
   const fetchMemoList = () => {
     return memoApi.list().then((response) => {
@@ -35,7 +45,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-base-200">
-      {token && <Header />}
+      {token && <Header logout={logout} />}
 
       <main className="flex-1">
         <Routes>
@@ -44,7 +54,9 @@ function App() {
           {token && (
             <Route
               path="/home"
-              element={<HomePage fetchMemoList={fetchMemoList} />}
+              element={
+                <HomePage fetchMemoList={fetchMemoList} logout={logout} />
+              }
             />
           )}
 

@@ -4,23 +4,15 @@ import CsvExport from "../components/CsvExport";
 import CsvImport from "../components/CsvImport";
 import DangerousArea from "../components/DangerousArea";
 import MemoList from "../components/MemoList";
-import { useSetRecoilState } from "recoil";
-import { atoms } from "../atoms/atoms";
 import UserSettingsCard from "../components/UserSettingsCard";
 import ServerStatusCheck from "../components/ServerStatusCheck";
 
-const HomePage = (props: { fetchMemoList(): void }) => {
-  const setEmail = useSetRecoilState(atoms.email);
-  const setToken = useSetRecoilState(atoms.token);
+interface HomePageProps {
+  fetchMemoList(): void;
+  logout: () => void;
+}
 
-  const logout = () => {
-    setEmail("");
-    setToken("");
-    localStorage.removeItem("email");
-    localStorage.removeItem("token");
-    localStorage.removeItem("expiresAt");
-  };
-
+const HomePage = (props: HomePageProps) => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
@@ -71,28 +63,6 @@ const HomePage = (props: { fetchMemoList(): void }) => {
                 <h2 className="card-title text-lg font-semibold">用户设置</h2>
               </div>
               <UserSettingsCard />
-
-              <div className="divider mt-6"></div>
-
-              <button
-                className="btn btn-outline btn-error w-full gap-2"
-                onClick={logout}
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                登出
-              </button>
             </div>
           </div>
 
@@ -105,7 +75,7 @@ const HomePage = (props: { fetchMemoList(): void }) => {
                   危险区域
                 </h2>
               </div>
-              <DangerousArea logout={logout} />
+              <DangerousArea logout={props.logout} />
             </div>
           </div>
         </div>
