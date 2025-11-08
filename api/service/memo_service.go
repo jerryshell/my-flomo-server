@@ -106,6 +106,12 @@ func MemoDailyReview() error {
 	for _, user := range userList {
 		logger.Debug("processing user for daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
 
+		// 检查用户是否开启了每日回顾功能
+		if !user.DailyReviewEnabled {
+			logger.Debug("daily review disabled for user, skipping", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+			continue
+		}
+
 		memo, err := MemoGetRandomByUserID(user.ID)
 		if err != nil {
 			logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))

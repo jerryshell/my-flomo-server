@@ -110,3 +110,26 @@ func UserUpdatePluginToken(userID string) (*model.User, error) {
 	logger.Info("user plugin token updated successfully", util.StringField("user_id", userID))
 	return user, nil
 }
+
+func UserUpdateSettings(userID string, dailyReviewEnabled bool) (*model.User, error) {
+	logger := util.NewLogger("user_service")
+	
+	user, err := store.UserGetByID(userID)
+	if err != nil {
+		logger.Error("failed to get user by id", util.ErrorField(err), util.StringField("user_id", userID))
+		return nil, err
+	}
+	if user.ID == "" {
+		logger.Warn("user not found", util.StringField("user_id", userID))
+		return nil, errors.New("找不到 user，id: " + userID)
+	}
+
+	user.DailyReviewEnabled = dailyReviewEnabled
+	if err = store.UserSave(user); err != nil {
+		logger.Error("failed to save user settings", util.ErrorField(err), util.StringField("user_id", userID))
+		return nil, err
+	}
+
+	logger.Info("user settings updated successfully", util.StringField("user_id", userID), util.BoolField("daily_review_enabled", dailyReviewEnabled))
+	return user, nil
+}

@@ -36,6 +36,7 @@ func Setup(app *gin.Engine) {
 	userGroup := app.Group("/user")
 	{
 		userGroup.POST("/updatePassword", middleware.JWTMiddleware(), handler.UpdateUserPassword)
+		userGroup.POST("/updateSettings", middleware.JWTMiddleware(), handler.UpdateUserSettings)
 	}
 
 	app.POST("/upload", middleware.JWTMiddleware(), handler.Upload)

@@ -169,3 +169,8 @@ func AnyField(key string, value interface{}) zap.Field {
 func TimeField(key string, value time.Time) zap.Field {
 	return zap.Time(key, value)
 }
+
+// BoolField 布尔字段
+func BoolField(key string, value bool) zap.Field {
+	return zap.Bool(key, value)
+}

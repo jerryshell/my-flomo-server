@@ -36,7 +36,7 @@ func main() {
 
 func initCron() {
 	logger := util.NewLogger("cron")
-	
+
 	c := cron.New()
 	_, err := c.AddFunc(config.Data.CronSpec, func() {
 		logger.Info("cron job started", util.StringField("cron_spec", config.Data.CronSpec))
@@ -51,6 +51,6 @@ func initCron() {
 		logger.Fatal("failed to add cron function", util.ErrorField(err))
 	}
 	c.Start()
-	
+
 	logger.Info("cron scheduler started")
 }

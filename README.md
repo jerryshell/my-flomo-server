@@ -1,13 +1,13 @@
 # My Flomo
 
-My Flomo 是一个自托管的备忘录管理应用，提供与 Flomo 兼容的功能实现。该项目采用前后端分离架构，后端使用 Go 语言开发，前端使用 React 和 TypeScript 构建，支持数据完全自主控制。
+My Flomo 是一个自托管的想法记录及回顾应用，提供与 Flomo 兼容的功能实现。该项目采用前后端分离架构，后端使用 Go 语言开发，前端使用 React 和 TypeScript 构建，支持数据完全自主控制。
 
 ## 功能特性
 
-- **备忘录管理**: 支持备忘录的创建、编辑、删除和查看操作
+- **Memo 管理**: 支持 Memo 的创建、编辑、删除和查看操作
 - **数据导入导出**: 提供 Flomo 数据导入和 CSV 格式的数据交换功能
 - **API 兼容**: 实现与 Flomo 兼容的 API 接口规范
-- **邮件回顾**: 配置定时任务发送每日备忘录回顾邮件
+- **邮件回顾**: 配置定时任务发送每日 Memo 回顾邮件
 - **插件支持**: 通过 API 插件令牌支持第三方应用集成
 - **账户管理**: 用户注册、登录、密码修改和账户注销功能
 - **数据安全**: 支持用户账户及相关数据的永久删除
@@ -145,20 +145,20 @@ npm run preview
 - `POST /auth/login` - 用户登录或注册
 - `POST /auth/verifyToken/token/:token` - 验证令牌有效性
 
-### 备忘录管理接口
+### Memo 管理接口
 
-- `GET /memo/list` - 获取备忘录列表（需认证）
-- `POST /memo/create` - 创建备忘录（需认证）
-- `POST /memo/update` - 更新备忘录（需认证）
-- `POST /memo/delete/id/:id` - 删除备忘录（需认证）
+- `GET /memo/list` - 获取 Memo 列表（需认证）
+- `POST /memo/create` - 创建 Memo（需认证）
+- `POST /memo/update` - 更新 Memo（需认证）
+- `POST /memo/delete/id/:id` - 删除 Memo（需认证）
 - `GET /memo/dailyReview` - 触发每日回顾邮件
 
 ### 插件功能接口
 
 - `GET /plugin/getToken` - 获取插件令牌（需认证）
 - `POST /plugin/createToken` - 创建插件令牌（需认证）
-- `POST /plugin/createMemo/:pluginToken` - 通过插件令牌创建备忘录
-- `GET /plugin/randomMemo/:pluginToken` - 通过插件令牌获取随机备忘录
+- `POST /plugin/createMemo/:pluginToken` - 通过插件令牌创建 Memo
+- `GET /plugin/randomMemo/:pluginToken` - 通过插件令牌获取随机 Memo
 
 ### 用户管理接口
 

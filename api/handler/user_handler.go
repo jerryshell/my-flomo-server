@@ -37,3 +37,20 @@ func UpdateUserPassword(c *gin.Context) {
 
 	c.JSON(http.StatusOK, result.Success())
 }
+
+func UpdateUserSettings(c *gin.Context) {
+	user := c.MustGet("user").(*model.User)
+
+	formData := &form.UserUpdateSettingsForm{}
+	if err := c.BindJSON(formData); err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	if _, err := service.UserUpdateSettings(user.ID, formData.DailyReviewEnabled); err != nil {
+		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, result.Success())
+}
