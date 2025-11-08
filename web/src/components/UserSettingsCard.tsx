@@ -222,39 +222,190 @@ const UserSettingsCard = () => {
           <h3 className="font-semibold text-lg mb-4 pb-2 border-b border-base-300">
             插件接口
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {pluginToken ? (
-              <div className="space-y-2">
-                <div className="bg-base-200 p-3 rounded">
-                  <p className="text-sm font-medium mb-1">新增记录:</p>
-                  <code className="text-xs break-all bg-base-300 p-1 rounded">
-                    {api.defaults.baseURL}/plugin/createMemo/{pluginToken}
-                  </code>
+              <div className="space-y-3">
+                {/* 新增记录接口 */}
+                <div className="bg-base-200 p-4 rounded-lg border border-base-300">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-base-content">
+                      新增记录接口
+                    </p>
+                    <button
+                      className="btn btn-xs btn-ghost text-base-content/60 hover:text-base-content"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${api.defaults.baseURL}/plugin/createMemo/${pluginToken}`
+                        );
+                        showAlert({
+                          message: "接口地址已复制到剪贴板",
+                          type: "success",
+                          duration: 2000,
+                        });
+                      }}
+                      title="复制接口地址"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                      复制
+                    </button>
+                  </div>
+                  <div className="bg-base-300/50 p-3 rounded">
+                    <code className="text-xs break-all font-mono text-base-content">
+                      {api.defaults.baseURL}/plugin/createMemo/{pluginToken}
+                    </code>
+                  </div>
+                  <p className="text-xs text-base-content/60 mt-2">
+                    POST 请求，用于通过插件创建新的 Memo 记录
+                  </p>
                 </div>
-                <div className="bg-base-200 p-3 rounded">
-                  <p className="text-sm font-medium mb-1">随机获取:</p>
-                  <code className="text-xs break-all bg-base-300 p-1 rounded">
-                    {api.defaults.baseURL}/plugin/randomMemo/{pluginToken}
-                  </code>
+
+                {/* 随机获取接口 */}
+                <div className="bg-base-200 p-4 rounded-lg border border-base-300">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-base-content">
+                      随机获取接口
+                    </p>
+                    <button
+                      className="btn btn-xs btn-ghost text-base-content/60 hover:text-base-content"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${api.defaults.baseURL}/plugin/randomMemo/${pluginToken}`
+                        );
+                        showAlert({
+                          message: "接口地址已复制到剪贴板",
+                          type: "success",
+                          duration: 2000,
+                        });
+                      }}
+                      title="复制接口地址"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                      复制
+                    </button>
+                  </div>
+                  <div className="bg-base-300/50 p-3 rounded">
+                    <code className="text-xs break-all font-mono text-base-content">
+                      {api.defaults.baseURL}/plugin/randomMemo/{pluginToken}
+                    </code>
+                  </div>
+                  <p className="text-xs text-base-content/60 mt-2">
+                    GET 请求，用于通过插件随机获取一条 Memo 记录
+                  </p>
+                </div>
+
+                {/* 令牌信息 */}
+                <div className="bg-base-200/50 p-3 rounded border border-base-300/50">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-base-content/60">
+                      当前令牌:
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <code className="text-xs font-mono bg-base-300/30 px-2 py-1 rounded">
+                        {pluginToken.substring(0, 8)}...
+                      </code>
+                      <button
+                        className="btn btn-xs btn-ghost text-base-content/60 hover:text-base-content"
+                        onClick={() => {
+                          navigator.clipboard.writeText(pluginToken);
+                          showAlert({
+                            message: "插件令牌已复制到剪贴板",
+                            type: "success",
+                            duration: 2000,
+                          });
+                        }}
+                        title="复制完整令牌"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-base-content/60">
-                点击下方按钮生成插件令牌
-              </p>
+              <div className="text-center py-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-base-content/30 mb-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                  />
+                </svg>
+                <p className="text-sm text-base-content/60 mb-4">
+                  尚未生成插件令牌，点击下方按钮创建
+                </p>
+              </div>
             )}
+
             <button
-              className="btn btn-outline btn-sm w-full"
+              className="btn btn-outline btn-sm w-full gap-2"
               onClick={handleGenerateToken}
               disabled={tokenLoading}
             >
               {tokenLoading ? (
                 <span className="loading loading-spinner"></span>
-              ) : pluginToken ? (
-                "重新生成令牌"
               ) : (
-                "生成令牌"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
               )}
+              {pluginToken ? "重新生成令牌" : "生成插件令牌"}
             </button>
           </div>
         </section>
