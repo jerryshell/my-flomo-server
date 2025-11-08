@@ -45,7 +45,7 @@ const UserSettings = () => {
             />
             <span className="label-text">开启每日回顾邮件</span>
           </label>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-base-content/50 mt-1">
             每日回顾功能会在指定时间随机发送一条 Memo 到邮箱
           </div>
         </div>

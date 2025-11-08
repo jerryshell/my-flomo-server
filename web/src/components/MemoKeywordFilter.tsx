@@ -27,7 +27,7 @@ const MemoKeywordFilter = () => {
           </div>
         </div>
         {memoKeyword && (
-          <div className="text-sm text-gray-500 mt-2">
+          <div className="text-sm text-base-content/60 mt-2">
             当前筛选关键字: {memoKeyword}
           </div>
         )}

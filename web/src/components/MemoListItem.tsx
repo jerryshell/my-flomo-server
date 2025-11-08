@@ -71,7 +71,7 @@ const MemoListItem = (props: { memo: Memo }) => {
       <div className="card bg-base-100 shadow-md mb-4">
         <div className="card-body p-4">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="card-title text-sm font-normal text-gray-500">
+            <h3 className="card-title text-sm font-normal text-base-content/60">
               {dayjs(memo.createdAt).format("YYYY-MM-DD HH:mm:ss")}
             </h3>
 

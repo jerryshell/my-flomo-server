@@ -107,7 +107,7 @@ const LoginPage = () => {
           <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
             <div className="card-body">
               <h2 className="card-title">登录/注册</h2>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-base-content/60 mb-4">
                 不存在的账号将自动注册
               </p>
 

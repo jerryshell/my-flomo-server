@@ -50,7 +50,7 @@ const FlomoImport = (props: { fetchMemoList: () => void }) => {
     <>
       <div className="space-y-2">
         <h4 className="font-semibold">从 Flomo 导入</h4>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-base-content/70">
           请选择从{" "}
           <a
             href="https://flomoapp.com/mine?source=account"
