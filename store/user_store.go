@@ -23,13 +23,13 @@ func UserGetByID(id string) (*model.User, error) {
 	return user, nil
 }
 
-func UserGetByUsername(username string) (*model.User, error) {
+func UserGetByEmail(email string) (*model.User, error) {
 	user := &model.User{}
-	err := db.DB.Where("username = ?", username).First(user).Error
+	err := db.DB.Where("email = ?", email).First(user).Error
 	return user, err
 }
 
-func UserCreate(username string, password string) (*model.User, error) {
+func UserCreate(email string, password string) (*model.User, error) {
 	id, err := util.NextIDStr()
 	if err != nil {
 		log.Println("util.NextIDStr :: err", err)
@@ -40,7 +40,7 @@ func UserCreate(username string, password string) (*model.User, error) {
 		BaseModel: model.BaseModel{
 			ID: id,
 		},
-		Username: username,
+		Email:    email,
 		Password: password,
 	}
 	err = db.DB.Create(user).Error

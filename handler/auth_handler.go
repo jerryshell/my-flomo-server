@@ -23,9 +23,9 @@ func LoginOrRegister(c *gin.Context) {
 		return
 	}
 
-	user, _ := service.UserGetByUsername(formData.Username)
+	user, _ := service.UserGetByEmail(formData.Email)
 	if user.ID == "" {
-		userByRegister, err := service.Register(formData.Username, formData.Password)
+		userByRegister, err := service.Register(formData.Email, formData.Password)
 		if err != nil {
 			log.Println("service.Register :: err", err)
 			c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
@@ -36,7 +36,7 @@ func LoginOrRegister(c *gin.Context) {
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password)); err != nil {
 		log.Println("bcrypt.CompareHashAndPassword :: err", err)
-		c.JSON(http.StatusOK, result.ErrorWithMessage("用户名或密码错误"))
+		c.JSON(http.StatusOK, result.ErrorWithMessage("邮箱或密码错误"))
 		return
 	}
 
@@ -46,7 +46,7 @@ func LoginOrRegister(c *gin.Context) {
 		IssuedAt:  now,
 		Issuer:    "my-flomo-server",
 		ExpiresAt: expiresAt,
-		Subject:   user.Username,
+		Subject:   user.Email,
 	}).SignedString([]byte(config.Data.JwtKey))
 	if err != nil {
 		log.Println("jwt.NewWithClaims :: err", err)
@@ -55,7 +55,6 @@ func LoginOrRegister(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
-		"username":  user.Username,
 		"email":     user.Email,
 		"token":     token,
 		"expiresAt": expiresAt,
@@ -70,7 +69,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if _, err := service.Register(formData.Username, formData.Password); err != nil {
+	if _, err := service.Register(formData.Email, formData.Password); err != nil {
 		log.Println("service.Register :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
@@ -88,6 +87,6 @@ func VerifyToken(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
-		"username": (*mapClaims)["sub"],
+		"email": (*mapClaims)["sub"],
 	}))
 }

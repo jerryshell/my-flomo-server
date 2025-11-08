@@ -22,17 +22,17 @@ func CsvExport(c *gin.Context) {
 		return
 	}
 
-	username, err := util.GetUsernameFromJWT(token)
+	email, err := util.GetEmailFromJWT(token)
 	if err != nil {
-		log.Println("util.GetUsernameFromJWT :: err", err)
+		log.Println("util.GetEmailFromJWT :: err", err)
 		c.Abort()
 		c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 		return
 	}
 
-	user, err := service.UserGetByUsername(username)
+	user, err := service.UserGetByEmail(email)
 	if err != nil {
-		log.Println("service.UserGetByUsername :: err", err)
+		log.Println("service.UserGetByEmail :: err", err)
 		c.Abort()
 		c.JSON(http.StatusOK, result.TokenErrorWithMessage(err.Error()))
 		return

@@ -27,11 +27,11 @@ func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
 	return &jwtMapClaims, nil
 }
 
-func GetUsernameFromJWT(token string) (string, error) {
+func GetEmailFromJWT(token string) (string, error) {
 	mapClaims, err := VerifyToken(token)
 	if err != nil {
 		return "", err
 	}
-	username := (*mapClaims)["sub"].(string)
-	return username, nil
+	email := (*mapClaims)["sub"].(string)
+	return email, nil
 }
