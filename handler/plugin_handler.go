@@ -15,28 +15,26 @@ import (
 func PluginTokenGet(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 
-	pluginToken, err := service.PluginTokenGetByUserID(user.ID)
-	if pluginToken.ID == "" {
-		log.Println("service.PluginTokenGetByUserID :: err", err)
+	if user.PluginToken == "" {
 		c.JSON(http.StatusOK, result.ErrorWithMessage("当前没有插件令牌，请重新生成"))
 		return
 	}
 
-	c.JSON(http.StatusOK, result.SuccessWithData(pluginToken.Token))
+	c.JSON(http.StatusOK, result.SuccessWithData(user.PluginToken))
 }
 
 // PluginTokenCreate 这里是兼容 flomo 生态的接口
 func PluginTokenCreate(c *gin.Context) {
 	user := c.MustGet("user").(*model.User)
 
-	pluginToken, err := service.PluginTokenCreateByUserID(user.ID)
+	user, err := service.UserUpdatePluginToken(user.ID)
 	if err != nil {
-		log.Println("service.PluginTokenCreateByUserID :: err", err)
+		log.Println("service.UserUpdatePluginToken :: err", err)
 		c.JSON(http.StatusOK, result.ErrorWithMessage(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, result.SuccessWithData(pluginToken.Token))
+	c.JSON(http.StatusOK, result.SuccessWithData(user.PluginToken))
 }
 
 // PluginTokenCreateMemo 这里是兼容 flomo 生态的接口
@@ -51,9 +49,9 @@ func PluginTokenCreateMemo(c *gin.Context) {
 		return
 	}
 
-	pluginToken, err := service.PluginTokenGetByToken(token)
+	user, err := service.UserGetByPluginToken(token)
 	if err != nil {
-		log.Println("service.PluginTokenGetByToken :: err", err)
+		log.Println("service.UserGetByPluginToken :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,
 			Success: false,
@@ -83,7 +81,7 @@ func PluginTokenCreateMemo(c *gin.Context) {
 		return
 	}
 
-	memo, err := service.MemoCreate(content, pluginToken.UserID)
+	memo, err := service.MemoCreate(content, user.ID)
 	if err != nil {
 		log.Println("service.MemoCreate :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
@@ -114,9 +112,9 @@ func PluginTokenRandomMemo(c *gin.Context) {
 		return
 	}
 
-	pluginToken, err := service.PluginTokenGetByToken(token)
+	user, err := service.UserGetByPluginToken(token)
 	if err != nil {
-		log.Println("service.PluginTokenGetByToken :: err", err)
+		log.Println("service.UserGetByPluginToken :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,
 			Success: false,
@@ -125,7 +123,7 @@ func PluginTokenRandomMemo(c *gin.Context) {
 		return
 	}
 
-	memo, err := service.MemoGetRandomByUserID(pluginToken.UserID)
+	memo, err := service.MemoGetRandomByUserID(user.ID)
 	if err != nil {
 		log.Println("service.MemoGetRandomByUserID :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{

@@ -29,6 +29,12 @@ func UserGetByEmail(email string) (*model.User, error) {
 	return user, err
 }
 
+func UserGetByPluginToken(token string) (*model.User, error) {
+	user := &model.User{}
+	err := db.DB.Where("plugin_token = ?", token).First(user).Error
+	return user, err
+}
+
 func UserCreate(email string, password string) (*model.User, error) {
 	id, err := util.NextIDStr()
 	if err != nil {

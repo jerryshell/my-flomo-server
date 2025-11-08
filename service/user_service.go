@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/base64"
 	"errors"
 	"log"
 
@@ -50,6 +51,31 @@ func UserUpdatePassword(userID string, password string) (*model.User, error) {
 	}
 
 	user.Password = string(passwordBcrypt)
+	if err = store.UserSave(user); err != nil {
+		log.Println("store.UserSave :: err", err)
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func UserGetByPluginToken(token string) (*model.User, error) {
+	return store.UserGetByPluginToken(token)
+}
+
+func UserUpdatePluginToken(userID string) (*model.User, error) {
+	user, err := store.UserGetByID(userID)
+	if err != nil {
+		log.Println("store.UserGetByID :: err", err)
+		return nil, err
+	}
+	if user.ID == "" {
+		return nil, errors.New("找不到 user，id: " + userID)
+	}
+
+	// 生成新的插件令牌
+	user.PluginToken = base64.RawStdEncoding.EncodeToString([]byte(userID))
+	
 	if err = store.UserSave(user); err != nil {
 		log.Println("store.UserSave :: err", err)
 		return nil, err
