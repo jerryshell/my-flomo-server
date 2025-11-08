@@ -3,25 +3,26 @@ package util
 import (
 	"strconv"
 
-	"github.com/sony/sonyflake"
+	"github.com/sony/sonyflake/v2"
 )
 
 var sf *sonyflake.Sonyflake
 
-func GetMachineID() (uint16, error) {
-	return uint16(1), nil
+func GetMachineID() (int, error) {
+	return 1, nil
 }
 
 func init() {
 	var st = sonyflake.Settings{
 		MachineID: GetMachineID,
 	}
-	if sf = sonyflake.NewSonyflake(st); sf == nil {
-		panic("sonyflake init failed")
+	var err error
+	if sf, err = sonyflake.New(st); err != nil {
+		panic("sonyflake init failed: " + err.Error())
 	}
 }
 
-func NextID() (uint64, error) {
+func NextID() (int64, error) {
 	return sf.NextID()
 }
 
@@ -34,6 +35,6 @@ func NextIDStr() (string, error) {
 		return "", err
 	}
 	
-	logger.Debug("generated new id", StringField("id", strconv.FormatUint(id, 10)))
-	return strconv.FormatUint(id, 10), nil
+	logger.Debug("generated new id", StringField("id", strconv.FormatInt(id, 10)))
+	return strconv.FormatInt(id, 10), nil
 }
