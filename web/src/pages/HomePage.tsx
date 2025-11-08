@@ -9,6 +9,7 @@ import { useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
 import UserPasswordUpdate from "../components/UserPasswordUpdate";
 import UserSettings from "../components/UserSettings";
+import ServerStatusCheck from "../components/ServerStatusCheck";
 
 const HomePage = (props: { fetchMemoList(): void }) => {
   const setEmail = useSetRecoilState(atoms.email);
@@ -27,6 +28,14 @@ const HomePage = (props: { fetchMemoList(): void }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 左侧功能区域 */}
         <div className="lg:col-span-1 space-y-6">
+          {/* 服务器状态卡片 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">服务器状态</h2>
+              <ServerStatusCheck />
+            </div>
+          </div>
+
           {/* 创建备忘录卡片 */}
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">

@@ -1,5 +1,4 @@
 import logo from "../favicon.svg";
-import ServerStatusCheck from "./ServerStatusCheck";
 
 const Header = () => {
   return (
@@ -12,7 +11,7 @@ const Header = () => {
       </div>
 
       <div className="navbar-end">
-        <ServerStatusCheck />
+        {/* 空白区域，可以根据需要添加其他导航元素 */}
       </div>
     </div>
   );
