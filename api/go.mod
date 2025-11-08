@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
-	github.com/caarlos0/env/v10 v10.0.0
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
