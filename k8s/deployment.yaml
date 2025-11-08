@@ -30,3 +30,10 @@ spec:
           ports:
             - name: http
               containerPort: 8060
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /app/data
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: my-flomo-server-pvc

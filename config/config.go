@@ -4,7 +4,7 @@ import "github.com/caarlos0/env/v10"
 
 type Config struct {
 	Port         int    `json:"port" env:"PORT" envDefault:"8060"`
-	DSN          string `json:"dsn" env:"DSN" envDefault:"host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai"`
+	DSN          string `json:"dsn" env:"DSN" envDefault:"my-flomo.db"`
 	JwtKey       string `json:"jwtKey" env:"JWT_KEY" envDefault:"YOUR_JWT_KEY"`
 	CronSpec     string `json:"cronSpec" env:"CRON_SPEC" envDefault:"0 20 * * *"`
 	SmtpHost     string `json:"smtpHost" env:"SMTP_HOST" envDefault:"smtp-mail.outlook.com"`

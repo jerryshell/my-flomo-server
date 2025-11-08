@@ -63,7 +63,7 @@ func PluginTokenCreateMemo(c *gin.Context) {
 	}
 
 	formData := &form.MemoCreateForm{}
-	if err := c.ShouldBindJSON(&formData); err != nil {
+	if err = c.ShouldBindJSON(&formData); err != nil {
 		log.Println("c.ShouldBindJSON :: err", err)
 		c.JSON(http.StatusOK, result.BaseResult{
 			Code:    -1,

@@ -19,9 +19,9 @@
 
 ### Docker
 
-提前准备好 PostgreSQL，然后建立一个数据库即可
+my-flomo-server 使用 SQLite 数据库，无需额外准备数据库
 
-无需建表，my-flomo-server 第一次启动会自动建表
+无需建表，my-flomo-server 第一次启动会自动创建 SQLite 数据库文件
 
 ```bash
 # 1. 创建并进入 my-flomo-server 目录
@@ -47,6 +47,8 @@ docker-compose up -d
 - `ingress/ingress.yaml` 的 `host`
 - `ingress/tls-ingress.yaml` 的 `host`
   - 这里的 TLS 需要前置条件，具体请看：[K8s Traefik cert-manager DNS01 TLS](https://github.com/jerryshell/k8s-traefik-cert-manager-dns01-tls)
+- `pvc.yaml` 的存储大小（默认为 1Gi）
+  - SQLite 数据库文件将存储在此持久卷中，确保数据不会在容器重启时丢失
 
 ## 相关项目
 

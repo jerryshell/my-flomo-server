@@ -5,7 +5,7 @@ metadata:
   labels:
     app: my-flomo-server
 data:
-  DSN: host=localhost user=my_flomo password=my_flomo dbname=my_flomo port=5432 sslmode=disable TimeZone=Asia/Shanghai
+  DSN: /app/data/my-flomo.db
   JWT_KEY: YOUR_JWT_KEY
   SMTP_HOST: smtp-mail.outlook.com
   SMTP_PORT: "587"

@@ -3,16 +3,16 @@ package db
 import (
 	"github.com/jerryshell/my-flomo-server/config"
 	"github.com/jerryshell/my-flomo-server/model"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func init() {
-	// 初始化 MySQL
+	// 初始化 SQLite
 	dsn := config.Data.DSN
-	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, _ := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	DB = db
 
 	// 迁移 schema

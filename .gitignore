@@ -1,4 +1,4 @@
 .DS_Store
 .idea
 my-flomo-server-*
-**/*-pi.yaml
+my-flomo.db
