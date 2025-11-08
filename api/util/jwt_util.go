@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/jerryshell/my-flomo/api/config"
 )
 
-func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
+func VerifyToken(tokenString string) (jwt.MapClaims, error) {
 	logger := NewLogger("jwt_util")
 	
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -26,10 +26,15 @@ func VerifyToken(tokenString string) (*jwt.MapClaims, error) {
 		logger.Warn("invalid jwt token")
 		return nil, errors.New("token无效")
 	}
-	jwtMapClaims := token.Claims.(jwt.MapClaims)
+	
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		logger.Warn("invalid token claims type")
+		return nil, errors.New("无效的token声明")
+	}
 	
 	logger.Debug("jwt token verified successfully")
-	return &jwtMapClaims, nil
+	return claims, nil
 }
 
 func GetEmailFromJWT(token string) (string, error) {
@@ -37,6 +42,9 @@ func GetEmailFromJWT(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	email := (*mapClaims)["sub"].(string)
+	email, ok := mapClaims["sub"].(string)
+	if !ok {
+		return "", errors.New("无效的subject声明")
+	}
 	return email, nil
 }

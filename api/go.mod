@@ -9,7 +9,7 @@ require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
-	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sony/sonyflake v1.3.0
 	go.uber.org/zap v1.27.0

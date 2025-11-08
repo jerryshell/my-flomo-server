@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/jerryshell/my-flomo/api/config"
 	"github.com/jerryshell/my-flomo/api/form"
 	"github.com/jerryshell/my-flomo/api/result"
@@ -50,12 +50,12 @@ func LoginOrRegister(c *gin.Context) {
 		return
 	}
 
-	now := time.Now().Unix()
-	expiresAt := time.Now().Add(time.Hour * 24 * 7).Unix()
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		IssuedAt:  now,
+	now := time.Now()
+	expiresAt := now.Add(time.Hour * 24 * 7)
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
+		IssuedAt:  jwt.NewNumericDate(now),
 		Issuer:    "my-flomo-server",
-		ExpiresAt: expiresAt,
+		ExpiresAt: jwt.NewNumericDate(expiresAt),
 		Subject:   user.Email,
 	}).SignedString([]byte(config.Data.JwtKey))
 	if err != nil {
@@ -68,7 +68,7 @@ func LoginOrRegister(c *gin.Context) {
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
 		"email":     user.Email,
 		"token":     token,
-		"expiresAt": expiresAt,
+		"expiresAt": expiresAt.Unix(),
 	}))
 }
 
@@ -111,8 +111,14 @@ func VerifyToken(c *gin.Context) {
 		return
 	}
 	
-	email := (*mapClaims)["sub"]
-	logger.Debug("token verified successfully", util.StringField("email", email.(string)))
+	email, ok := mapClaims["sub"].(string)
+	if !ok {
+		logger.Warn("invalid subject claim in token")
+		c.JSON(http.StatusOK, result.ErrorWithMessage("无效的token声明"))
+		return
+	}
+	
+	logger.Debug("token verified successfully", util.StringField("email", email))
 	c.JSON(http.StatusOK, result.SuccessWithData(gin.H{
 		"email": email,
 	}))
