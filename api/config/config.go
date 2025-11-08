@@ -10,12 +10,11 @@ type Config struct {
 	CronSpec     string `json:"cronSpec" env:"CRON_SPEC" envDefault:"0 20 * * *"`
 	SmtpHost     string `json:"smtpHost" env:"SMTP_HOST" envDefault:"smtp-mail.outlook.com"`
 	SmtpPort     int    `json:"smtpPort" env:"SMTP_PORT" envDefault:"587"`
-	SmtpUsername string `json:"smtpUsername" env:"SMTP_USERNAME" envDefault:"YOUR_EMAIL"`
-	SmtpPassword string `json:"smtpPassword" env:"SMTP_PASSWORD" envDefault:"YOUR_PASSWORD"`
+	SmtpUsername string `json:"smtpUsername" env:"SMTP_USERNAME" envDefault:""`
+	SmtpPassword string `json:"smtpPassword" env:"SMTP_PASSWORD" envDefault:""`
 	SmtpSubject  string `json:"smtpSubject" env:"SMTP_SUBJECT" envDefault:"My Flomo 每日回顾"`
-	Debug        bool   `json:"debug" env:"DEBUG" envDefault:"false"`
 	LogPath      string `json:"logPath" env:"LOG_PATH" envDefault:""`
-	LogLevel     string `json:"logLevel" env:"LOG_LEVEL" envDefault:"debug"`
+	LogLevel     string `json:"logLevel" env:"LOG_LEVEL" envDefault:"info"`
 }
 
 var Data *Config = &Config{}

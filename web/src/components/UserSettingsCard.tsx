@@ -155,7 +155,7 @@ const UserSettingsCard = () => {
 
       if (response.data.success) {
         showAlert({
-          message: "每日回顾测试已触发！请检查您的 Telegram 消息",
+          message: "每日回顾测试已触发！",
           type: "success",
           duration: 3000,
         });

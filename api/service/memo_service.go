@@ -133,52 +133,67 @@ func MemoDailyReview() error {
 		util.IntField("email_user_count", len(emailUserList)),
 		util.IntField("telegram_user_count", len(telegramUserList)))
 
-	// 邮件发送配置
-	dialer := gomail.NewDialer(
-		config.Data.SmtpHost,
-		config.Data.SmtpPort,
-		config.Data.SmtpUsername,
-		config.Data.SmtpPassword,
-	)
-
 	emailSuccessCount := 0
 	emailFailCount := 0
 	telegramSuccessCount := 0
 	telegramFailCount := 0
 
+	// 检查SMTP配置是否完整
+	smtpConfigured := config.Data.SmtpUsername != "" && config.Data.SmtpPassword != ""
+	if !smtpConfigured {
+		logger.Warn("SMTP credentials not configured, skipping email sending")
+	}
+
 	// 处理邮件用户
-	for _, user := range emailUserList {
-		logger.Debug("processing user for email daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+	if smtpConfigured {
+		// 邮件发送配置
+		dialer := gomail.NewDialer(
+			config.Data.SmtpHost,
+			config.Data.SmtpPort,
+			config.Data.SmtpUsername,
+			config.Data.SmtpPassword,
+		)
 
-		// 检查用户是否开启了每日回顾功能
-		if !user.DailyReviewEnabled {
-			logger.Debug("daily review disabled for user, skipping", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
-			continue
+		for _, user := range emailUserList {
+			logger.Debug("processing user for email daily review", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+
+			// 检查用户是否开启了每日回顾功能
+			if !user.DailyReviewEnabled {
+				logger.Debug("daily review disabled for user, skipping", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+				continue
+			}
+
+			memo, err := MemoGetRandomByUserID(user.ID)
+			if err != nil {
+				logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))
+				emailFailCount++
+				continue
+			}
+
+			logger.Debug("selected memo for user", util.StringField("user_id", user.ID), util.StringField("memo_id", memo.ID))
+
+			message := gomail.NewMessage()
+			message.SetHeader("From", config.Data.SmtpUsername)
+			message.SetHeader("To", user.Email)
+			message.SetHeader("Subject", config.Data.SmtpSubject)
+			message.SetBody("text/plain", memo.Content)
+
+			if err = dialer.DialAndSend(message); err != nil {
+				logger.Error("failed to send email to user", util.ErrorField(err), util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+				emailFailCount++
+				continue
+			}
+
+			logger.Info("daily review email sent successfully", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+			emailSuccessCount++
 		}
-
-		memo, err := MemoGetRandomByUserID(user.ID)
-		if err != nil {
-			logger.Error("failed to get random memo for user", util.ErrorField(err), util.StringField("user_id", user.ID))
-			emailFailCount++
-			continue
+	} else {
+		// SMTP未配置，记录日志
+		for _, user := range emailUserList {
+			if user.DailyReviewEnabled {
+				logger.Info("email daily review skipped due to missing SMTP configuration", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
+			}
 		}
-
-		logger.Debug("selected memo for user", util.StringField("user_id", user.ID), util.StringField("memo_id", memo.ID))
-
-		message := gomail.NewMessage()
-		message.SetHeader("From", config.Data.SmtpUsername)
-		message.SetHeader("To", user.Email)
-		message.SetHeader("Subject", config.Data.SmtpSubject)
-		message.SetBody("text/plain", memo.Content)
-
-		if err = dialer.DialAndSend(message); err != nil {
-			logger.Error("failed to send email to user", util.ErrorField(err), util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
-			emailFailCount++
-			continue
-		}
-
-		logger.Info("daily review email sent successfully", util.StringField("user_id", user.ID), util.StringField("user_email", user.Email))
-		emailSuccessCount++
 	}
 
 	// 处理Telegram用户

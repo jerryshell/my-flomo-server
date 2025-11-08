@@ -14,14 +14,32 @@ var LogConfig *zap.Config
 
 // InitLog 初始化日志配置
 func InitLog() {
+	// 设置默认日志级别为Info
 	logLevel := zapcore.InfoLevel
-	if Data.Debug {
+	development := false
+
+	// 根据LogLevel配置设置日志级别
+	switch Data.LogLevel {
+	case "debug":
 		logLevel = zapcore.DebugLevel
+		development = true
+	case "info":
+		logLevel = zapcore.InfoLevel
+	case "warn":
+		logLevel = zapcore.WarnLevel
+	case "error":
+		logLevel = zapcore.ErrorLevel
+	case "dpanic":
+		logLevel = zapcore.DPanicLevel
+	case "panic":
+		logLevel = zapcore.PanicLevel
+	case "fatal":
+		logLevel = zapcore.FatalLevel
 	}
 
 	LogConfig = &zap.Config{
 		Level:       zap.NewAtomicLevelAt(logLevel),
-		Development: Data.Debug,
+		Development: development,
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
 			TimeKey:        "time",

@@ -84,12 +84,11 @@ export JWT_KEY=YOUR_JWT_KEY            # JWT 签名密钥，默认 YOUR_JWT_KEY
 export CRON_SPEC="0 20 * * *"          # 定时任务表达式，默认每天 20:00
 export SMTP_HOST=smtp-mail.outlook.com # SMTP 服务器地址，默认 smtp-mail.outlook.com
 export SMTP_PORT=587                   # SMTP 服务端口，默认 587
-export SMTP_USERNAME=YOUR_EMAIL        # SMTP 认证用户名，默认 YOUR_EMAIL
-export SMTP_PASSWORD=YOUR_PASSWORD     # SMTP 认证密码，默认 YOUR_PASSWORD
+export SMTP_USERNAME=                  # SMTP 认证用户名，默认为空
+export SMTP_PASSWORD=                  # SMTP 认证密码，默认为空
 export SMTP_SUBJECT="My Flomo 每日回顾" # 邮件主题，默认 "My Flomo 每日回顾"
-export DEBUG=false                     # 调试模式，默认 false
 export LOG_PATH=                       # 日志文件路径，默认空（输出到控制台）
-export LOG_LEVEL=info                  # 日志级别，默认 info
+export LOG_LEVEL=debug                 # 日志级别，默认 info
 ```
 
 4. 启动后端服务
