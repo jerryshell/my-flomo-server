@@ -8,6 +8,7 @@ My Flomo 是一个自托管的想法记录及回顾应用，提供与 Flomo 兼�
 - **数据导入导出**: 提供 Flomo 数据导入和 CSV 格式的数据交换功能
 - **API 兼容**: 实现与 Flomo 兼容的 API 接口规范
 - **邮件回顾**: 配置定时任务发送每日 Memo 回顾邮件
+- **Telegram Bot 回顾**: 配置 Telegram Bot 接收每日 Memo 回顾消息
 - **插件支持**: 通过 API 插件令牌支持第三方应用集成
 - **账户管理**: 用户注册、登录、密码修改和账户注销功能
 - **数据安全**: 支持用户账户及相关数据的永久删除
@@ -22,6 +23,7 @@ My Flomo 是一个自托管的想法记录及回顾应用，提供与 Flomo 兼�
 - **身份认证**: JWT (JSON Web Token) 机制
 - **定时任务**: Cron 表达式调度
 - **邮件服务**: SMTP 协议支持
+- **Telegram Bot**: 通过 Telegram Bot API 发送每日回顾消息
 
 ### 前端实现
 
@@ -137,6 +139,35 @@ npm run build
 npm run preview
 ```
 
+## Telegram Bot 配置
+
+### 创建 Telegram Bot
+
+1. 在 Telegram 中搜索并联系 `@BotFather`
+2. 发送 `/newbot` 命令创建新机器人
+3. 按照提示设置机器人的名称和用户名
+4. 创建完成后，BotFather 会提供 Bot Token，请妥善保存
+
+### 配置每日回顾
+
+1. 获取 Chat ID：
+
+   - 在 Telegram 中搜索并联系 `@userinfobot`
+   - 发送任意消息，机器人会返回 Chat ID
+
+2. 在用户设置中配置 Telegram：
+
+   - 登录 My Flomo 应用
+   - 进入设置页面
+   - 启用每日回顾功能
+   - 填入 Telegram Bot Token 和 Chat ID
+
+3. 配置完成后，系统将在每日定时任务执行时，通过 Telegram Bot 发送一条随机 Memo 作为每日回顾
+
+4. 测试功能：
+   - 在设置页面点击"测试每日回顾"按钮
+   - 系统将立即发送一条随机 Memo 到 Telegram，用于验证配置是否正确
+
 ## API 接口文档
 
 ### 认证相关接口
@@ -150,7 +181,7 @@ npm run preview
 - `POST /memo/create` - 创建 Memo（需认证）
 - `POST /memo/update` - 更新 Memo（需认证）
 - `POST /memo/delete/id/:id` - 删除 Memo（需认证）
-- `GET /memo/dailyReview` - 触发每日回顾邮件
+- `GET /memo/dailyReview` - 触发每日回顾（邮件和 Telegram）
 
 ### 插件功能接口
 
@@ -161,7 +192,9 @@ npm run preview
 
 ### 用户管理接口
 
+- `GET /user/getSettings` - 获取用户设置（需认证）
 - `POST /user/updatePassword` - 更新用户密码（需认证）
+- `POST /user/updateSettings` - 更新用户设置（需认证）
 
 ### 数据管理接口
 

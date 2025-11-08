@@ -302,7 +302,7 @@ const UserSettingsCard = () => {
                   className="input input-bordered input-sm"
                   value={telegramChatId}
                   onChange={(e) => setTelegramChatId(e.target.value)}
-                  placeholder="请输入您的 Telegram Chat ID"
+                  placeholder="请输入 Telegram Chat ID"
                   disabled={!dailyReviewEnabled}
                 />
                 <div className="text-xs text-base-content/50 mt-1">
@@ -316,7 +316,7 @@ const UserSettingsCard = () => {
                   >
                     @userinfobot
                   </a>{" "}
-                  发送消息获取您的 Chat ID
+                  发送消息获取 Chat ID
                 </div>
               </div>
 
@@ -331,7 +331,7 @@ const UserSettingsCard = () => {
                   className="input input-bordered input-sm"
                   value={telegramBotToken}
                   onChange={(e) => setTelegramBotToken(e.target.value)}
-                  placeholder="请输入您的 Telegram Bot Token"
+                  placeholder="请输入 Telegram Bot Token"
                   disabled={!dailyReviewEnabled}
                 />
                 <div className="text-xs text-base-content/50 mt-1">
