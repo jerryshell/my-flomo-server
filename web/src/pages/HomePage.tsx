@@ -3,12 +3,10 @@ import FlomoImport from "../components/FlomoImport";
 import CsvExport from "../components/CsvExport";
 import CsvImport from "../components/CsvImport";
 import DangerousArea from "../components/DangerousArea";
-import PluginToken from "../components/PluginToken";
 import MemoList from "../components/MemoList";
 import { useSetRecoilState } from "recoil";
 import { atoms } from "../atoms/atoms";
-import UserPasswordUpdate from "../components/UserPasswordUpdate";
-import UserSettings from "../components/UserSettings";
+import UserSettingsCard from "../components/UserSettingsCard";
 import ServerStatusCheck from "../components/ServerStatusCheck";
 
 const HomePage = (props: { fetchMemoList(): void }) => {
@@ -72,33 +70,29 @@ const HomePage = (props: { fetchMemoList(): void }) => {
                 <div className="w-3 h-3 bg-primary rounded-full"></div>
                 <h2 className="card-title text-lg font-semibold">用户设置</h2>
               </div>
-              <div className="space-y-4">
-                <UserPasswordUpdate />
-                <UserSettings />
-                <PluginToken />
+              <UserSettingsCard />
 
-                <div className="divider"></div>
+              <div className="divider mt-6"></div>
 
-                <button
-                  className="btn btn-outline btn-error w-full gap-2"
-                  onClick={logout}
+              <button
+                className="btn btn-outline btn-error w-full gap-2"
+                onClick={logout}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  登出
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                登出
+              </button>
             </div>
           </div>
 

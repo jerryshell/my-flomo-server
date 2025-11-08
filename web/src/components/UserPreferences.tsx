@@ -3,7 +3,7 @@ import userApi from "../api/userApi";
 import { useAlert } from "../hooks/useModal";
 import Alert from "./Alert";
 
-const UserSettings = () => {
+const UserPreferences = () => {
   const [dailyReviewEnabled, setDailyReviewEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const { alertOpen, alertConfig, showAlert, hideAlert } = useAlert();
@@ -74,4 +74,4 @@ const UserSettings = () => {
   );
 };
 
-export default UserSettings;
+export default UserPreferences;

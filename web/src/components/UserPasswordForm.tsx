@@ -3,7 +3,7 @@ import userApi from "../api/userApi";
 import { useAlert } from "../hooks/useModal";
 import Alert from "./Alert";
 
-const UserPasswordUpdate = () => {
+const UserPasswordForm = () => {
   const [newPassword, setNewPassword] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -121,4 +121,4 @@ const UserPasswordUpdate = () => {
   );
 };
 
-export default UserPasswordUpdate;
+export default UserPasswordForm;
